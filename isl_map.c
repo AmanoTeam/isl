@@ -15731,6 +15731,24 @@ __isl_give isl_mat *isl_basic_set_extract_equalities(
 	return isl_mat_sub_alloc6(ctx, bset->eq, 0, bset->n_eq, 0, 1 + total);
 }
 
+__isl_give isl_vec *isl_basic_map_get_inequality(__isl_keep isl_basic_map *bmap,
+	int ineq)
+{
+	isl_size dim;
+	isl_ctx *ctx;
+	isl_vec *v;
+
+	ctx = isl_basic_map_get_ctx(bmap);
+	dim = isl_basic_map_dim(bmap, isl_dim_all);
+	if (dim < 0)
+		return NULL;
+	v = isl_vec_alloc(ctx, 1 + dim);
+	if (!v)
+		return NULL;
+	isl_seq_cpy(v->el, bmap->ineq[ineq], v->size);
+	return v;
+}
+
 /* Are the "n" "coefficients" starting at "first" of the integer division
  * expressions at position "pos1" in "bmap1" and "pos2" in "bmap2" equal
  * to each other?
