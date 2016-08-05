@@ -15749,6 +15749,12 @@ __isl_give isl_vec *isl_basic_map_get_inequality(__isl_keep isl_basic_map *bmap,
 	return v;
 }
 
+__isl_give isl_vec *isl_basic_set_get_inequality(__isl_keep isl_basic_set *bset,
+	int ineq)
+{
+	return isl_basic_map_get_inequality(bset_to_bmap(bset), ineq);
+}
+
 /* Are the "n" "coefficients" starting at "first" of the integer division
  * expressions at position "pos1" in "bmap1" and "pos2" in "bmap2" equal
  * to each other?
