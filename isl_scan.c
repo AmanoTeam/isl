@@ -313,11 +313,13 @@ static int isl_set_count(__isl_keep isl_set *set, isl_int *count)
  */
 __isl_give isl_val *isl_set_count_val(__isl_keep isl_set *set)
 {
+	isl_ctx *ctx;
 	isl_val *v;
 
 	if (!set)
 		return NULL;
-	v = isl_val_zero(isl_set_get_ctx(set));
+	ctx = isl_set_get_ctx(set);
+	v = isl_val_zero(ctx);
 	v = isl_val_cow(v);
 	if (!v)
 		return NULL;
