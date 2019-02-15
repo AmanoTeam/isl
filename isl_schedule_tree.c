@@ -144,20 +144,9 @@ __isl_give isl_schedule_tree *isl_schedule_tree_dup(
 	return dup;
 }
 
-/* Return an isl_schedule_tree that is equal to "tree" and that has only
- * a single reference.
- */
-__isl_give isl_schedule_tree *isl_schedule_tree_cow(
-	__isl_take isl_schedule_tree *tree)
-{
-	if (!tree)
-		return NULL;
-
-	if (tree->ref == 1)
-		return tree;
-	tree->ref--;
-	return isl_schedule_tree_dup(tree);
-}
+#undef TYPE
+#define TYPE	isl_schedule_tree
+#include "isl_ref_cow_templ.c"
 
 /* Return a new reference to "tree".
  */

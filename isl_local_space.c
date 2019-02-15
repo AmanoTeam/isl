@@ -117,16 +117,9 @@ __isl_give isl_local_space *isl_local_space_dup(__isl_keep isl_local_space *ls)
 
 }
 
-__isl_give isl_local_space *isl_local_space_cow(__isl_take isl_local_space *ls)
-{
-	if (!ls)
-		return NULL;
-
-	if (ls->ref == 1)
-		return ls;
-	ls->ref--;
-	return isl_local_space_dup(ls);
-}
+#undef TYPE
+#define TYPE	isl_local_space
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_local_space *isl_local_space_free(
 	__isl_take isl_local_space *ls)

@@ -918,17 +918,9 @@ __isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_dup(
 	return qpolynomial_fold_alloc(type, space, list);
 }
 
-__isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_cow(
-	__isl_take isl_qpolynomial_fold *fold)
-{
-	if (!fold)
-		return NULL;
-
-	if (fold->ref == 1)
-		return fold;
-	fold->ref--;
-	return isl_qpolynomial_fold_dup(fold);
-}
+#undef TYPE
+#define TYPE	isl_qpolynomial_fold
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_qpolynomial_fold *isl_qpolynomial_fold_free(
 	__isl_take isl_qpolynomial_fold *fold)

@@ -217,19 +217,9 @@ __isl_give isl_vec *isl_vec_dup(__isl_keep isl_vec *vec)
 	return vec2;
 }
 
-__isl_give isl_vec *isl_vec_cow(__isl_take isl_vec *vec)
-{
-	struct isl_vec *vec2;
-	if (!vec)
-		return NULL;
-
-	if (vec->ref == 1)
-		return vec;
-
-	vec2 = isl_vec_dup(vec);
-	isl_vec_free(vec);
-	return vec2;
-}
+#undef TYPE
+#define TYPE	isl_vec
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_vec *isl_vec_free(__isl_take isl_vec *vec)
 {

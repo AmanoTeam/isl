@@ -69,17 +69,9 @@ __isl_give isl_ast_print_options *isl_ast_print_options_dup(
 	return dup;
 }
 
-__isl_give isl_ast_print_options *isl_ast_print_options_cow(
-	__isl_take isl_ast_print_options *options)
-{
-	if (!options)
-		return NULL;
-
-	if (options->ref == 1)
-		return options;
-	options->ref--;
-	return isl_ast_print_options_dup(options);
-}
+#undef TYPE
+#define TYPE	isl_ast_print_options
+#include "isl_ref_cow_templ.c"
 
 __isl_give isl_ast_print_options *isl_ast_print_options_copy(
 	__isl_keep isl_ast_print_options *options)
@@ -229,16 +221,9 @@ __isl_give isl_ast_expr *isl_ast_expr_dup(__isl_keep isl_ast_expr *expr)
 	return dup;
 }
 
-__isl_give isl_ast_expr *isl_ast_expr_cow(__isl_take isl_ast_expr *expr)
-{
-	if (!expr)
-		return NULL;
-
-	if (expr->ref == 1)
-		return expr;
-	expr->ref--;
-	return isl_ast_expr_dup(expr);
-}
+#undef TYPE
+#define TYPE	isl_ast_expr
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_ast_expr *isl_ast_expr_free(__isl_take isl_ast_expr *expr)
 {
@@ -1166,16 +1151,9 @@ __isl_give isl_ast_node *isl_ast_node_dup(__isl_keep isl_ast_node *node)
 	return dup;
 }
 
-__isl_give isl_ast_node *isl_ast_node_cow(__isl_take isl_ast_node *node)
-{
-	if (!node)
-		return NULL;
-
-	if (node->ref == 1)
-		return node;
-	node->ref--;
-	return isl_ast_node_dup(node);
-}
+#undef TYPE
+#define TYPE	isl_ast_node
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_ast_node *isl_ast_node_free(__isl_take isl_ast_node *node)
 {

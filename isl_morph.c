@@ -75,16 +75,9 @@ __isl_give isl_morph *isl_morph_dup(__isl_keep isl_morph *morph)
 		isl_mat_copy(morph->map), isl_mat_copy(morph->inv));
 }
 
-__isl_give isl_morph *isl_morph_cow(__isl_take isl_morph *morph)
-{
-	if (!morph)
-		return NULL;
-
-	if (morph->ref == 1)
-		return morph;
-	morph->ref--;
-	return isl_morph_dup(morph);
-}
+#undef TYPE
+#define TYPE	isl_morph
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_morph *isl_morph_free(__isl_take isl_morph *morph)
 {

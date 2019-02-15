@@ -198,20 +198,9 @@ __isl_give isl_schedule_node *isl_schedule_node_dup(
 				node->child_pos);
 }
 
-/* Return an isl_schedule_node that is equal to "node" and that has only
- * a single reference.
- */
-__isl_give isl_schedule_node *isl_schedule_node_cow(
-	__isl_take isl_schedule_node *node)
-{
-	if (!node)
-		return NULL;
-
-	if (node->ref == 1)
-		return node;
-	node->ref--;
-	return isl_schedule_node_dup(node);
-}
+#undef TYPE
+#define TYPE	isl_schedule_node
+#include "isl_ref_cow_templ.c"
 
 /* Return a new reference to "node".
  */

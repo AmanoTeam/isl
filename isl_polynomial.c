@@ -731,16 +731,9 @@ __isl_give isl_poly *isl_poly_dup(__isl_keep isl_poly *poly)
 		return isl_poly_dup_rec(poly);
 }
 
-__isl_give isl_poly *isl_poly_cow(__isl_take isl_poly *poly)
-{
-	if (!poly)
-		return NULL;
-
-	if (poly->ref == 1)
-		return poly;
-	poly->ref--;
-	return isl_poly_dup(poly);
-}
+#undef TYPE
+#define TYPE	isl_poly
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_poly *isl_poly_free(__isl_take isl_poly *poly)
 {
@@ -1394,16 +1387,9 @@ error:
 	return NULL;
 }
 
-__isl_give isl_qpolynomial *isl_qpolynomial_cow(__isl_take isl_qpolynomial *qp)
-{
-	if (!qp)
-		return NULL;
-
-	if (qp->ref == 1)
-		return qp;
-	qp->ref--;
-	return isl_qpolynomial_dup(qp);
-}
+#undef TYPE
+#define TYPE	isl_qpolynomial
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_qpolynomial *isl_qpolynomial_free(
 	__isl_take isl_qpolynomial *qp)
@@ -4040,16 +4026,9 @@ __isl_give isl_term *isl_term_dup(__isl_keep isl_term *term)
 	return dup;
 }
 
-__isl_give isl_term *isl_term_cow(__isl_take isl_term *term)
-{
-	if (!term)
-		return NULL;
-
-	if (term->ref == 1)
-		return term;
-	term->ref--;
-	return isl_term_dup(term);
-}
+#undef TYPE
+#define TYPE	isl_term
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_term *isl_term_free(__isl_take isl_term *term)
 {

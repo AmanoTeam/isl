@@ -288,16 +288,9 @@ error:
 	return NULL;
 }
 
-__isl_give isl_ast_build *isl_ast_build_cow(__isl_take isl_ast_build *build)
-{
-	if (!build)
-		return NULL;
-
-	if (build->ref == 1)
-		return build;
-	build->ref--;
-	return isl_ast_build_dup(build);
-}
+#undef TYPE
+#define TYPE	isl_ast_build
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_ast_build *isl_ast_build_free(
 	__isl_take isl_ast_build *build)

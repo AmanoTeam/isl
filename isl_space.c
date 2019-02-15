@@ -455,16 +455,9 @@ error:
 	return NULL;
 }
 
-__isl_give isl_space *isl_space_cow(__isl_take isl_space *space)
-{
-	if (!space)
-		return NULL;
-
-	if (space->ref == 1)
-		return space;
-	space->ref--;
-	return isl_space_dup(space);
-}
+#undef TYPE
+#define TYPE	isl_space
+#include "isl_ref_cow_templ.c"
 
 __isl_give isl_space *isl_space_copy(__isl_keep isl_space *space)
 {

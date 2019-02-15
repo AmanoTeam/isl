@@ -155,16 +155,9 @@ __isl_give isl_constraint *isl_constraint_dup(__isl_keep isl_constraint *c)
 						isl_vec_copy(c->v));
 }
 
-__isl_give isl_constraint *isl_constraint_cow(__isl_take isl_constraint *c)
-{
-	if (!c)
-		return NULL;
-
-	if (c->ref == 1)
-		return c;
-	c->ref--;
-	return isl_constraint_dup(c);
-}
+#undef TYPE
+#define TYPE	isl_constraint
+#include "isl_ref_cow_templ.c"
 
 __isl_give isl_constraint *isl_constraint_copy(
 	__isl_keep isl_constraint *constraint)

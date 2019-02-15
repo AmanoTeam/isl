@@ -160,16 +160,9 @@ __isl_give isl_aff *isl_aff_dup(__isl_keep isl_aff *aff)
 					    isl_vec_copy(aff->v));
 }
 
-__isl_give isl_aff *isl_aff_cow(__isl_take isl_aff *aff)
-{
-	if (!aff)
-		return NULL;
-
-	if (aff->ref == 1)
-		return aff;
-	aff->ref--;
-	return isl_aff_dup(aff);
-}
+#undef TYPE
+#define TYPE	isl_aff
+#include "isl_ref_cow_templ.c"
 
 /* Return a copy of the rational affine expression of "aff".
  */

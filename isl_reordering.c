@@ -87,16 +87,9 @@ __isl_give isl_reordering *isl_reordering_dup(__isl_keep isl_reordering *r)
 	return dup;
 }
 
-__isl_give isl_reordering *isl_reordering_cow(__isl_take isl_reordering *r)
-{
-	if (!r)
-		return NULL;
-
-	if (r->ref == 1)
-		return r;
-	r->ref--;
-	return isl_reordering_dup(r);
-}
+#undef TYPE
+#define TYPE	isl_reordering
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_reordering *isl_reordering_free(__isl_take isl_reordering *exp)
 {

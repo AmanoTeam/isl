@@ -386,16 +386,9 @@ __isl_give UNION *FN(UNION,dup)(__isl_keep UNION *u)
 	return FN(UNION,transform)(u, &control);
 }
 
-__isl_give UNION *FN(UNION,cow)(__isl_take UNION *u)
-{
-	if (!u)
-		return NULL;
-
-	if (u->ref == 1)
-		return u;
-	u->ref--;
-	return FN(UNION,dup)(u);
-}
+#undef TYPE
+#define TYPE	UNION
+#include "isl_ref_cow_templ.c"
 
 __isl_null UNION *FN(UNION,free)(__isl_take UNION *u)
 {

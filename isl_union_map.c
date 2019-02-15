@@ -260,16 +260,9 @@ error:
 	return NULL;
 }
 
-__isl_give isl_union_map *isl_union_map_cow(__isl_take isl_union_map *umap)
-{
-	if (!umap)
-		return NULL;
-
-	if (umap->ref == 1)
-		return umap;
-	umap->ref--;
-	return isl_union_map_dup(umap);
-}
+#undef TYPE
+#define TYPE	isl_union_map
+#include "isl_ref_cow_templ.c"
 
 struct isl_union_align {
 	isl_reordering *exp;

@@ -85,17 +85,9 @@ __isl_give MULTI(BASE) *FN(MULTI(BASE),dup)(__isl_keep MULTI(BASE) *multi)
 	return dup;
 }
 
-__isl_give MULTI(BASE) *FN(MULTI(BASE),cow)(__isl_take MULTI(BASE) *multi)
-{
-	if (!multi)
-		return NULL;
-
-	if (multi->ref == 1)
-		return multi;
-
-	multi->ref--;
-	return FN(MULTI(BASE),dup)(multi);
-}
+#undef TYPE
+#define TYPE	MULTI(BASE)
+#include "isl_ref_cow_templ.c"
 
 __isl_give MULTI(BASE) *FN(MULTI(BASE),copy)(__isl_keep MULTI(BASE) *multi)
 {

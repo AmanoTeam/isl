@@ -129,20 +129,9 @@ __isl_give isl_schedule_band *isl_schedule_band_dup(
 	return dup;
 }
 
-/* Return an isl_schedule_band that is equal to "band" and that has only
- * a single reference.
- */
-__isl_give isl_schedule_band *isl_schedule_band_cow(
-	__isl_take isl_schedule_band *band)
-{
-	if (!band)
-		return NULL;
-
-	if (band->ref == 1)
-		return band;
-	band->ref--;
-	return isl_schedule_band_dup(band);
-}
+#undef TYPE
+#define TYPE	isl_schedule_band
+#include "isl_ref_cow_templ.c"
 
 /* Return a new reference to "band".
  */

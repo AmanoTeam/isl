@@ -115,19 +115,9 @@ static __isl_give isl_schedule *isl_schedule_dup(
 	return isl_schedule_from_schedule_tree(ctx, tree);
 }
 
-/* Return an isl_schedule that is equal to "schedule" and that has only
- * a single reference.
- */
-__isl_give isl_schedule *isl_schedule_cow(__isl_take isl_schedule *schedule)
-{
-	if (!schedule)
-		return NULL;
-	if (schedule->ref == 1)
-		return schedule;
-
-	schedule->ref--;
-	return isl_schedule_dup(schedule);
-}
+#undef TYPE
+#define TYPE	isl_schedule
+#include "isl_ref_cow_templ.c"
 
 __isl_null isl_schedule *isl_schedule_free(__isl_take isl_schedule *sched)
 {

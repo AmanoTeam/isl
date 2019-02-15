@@ -73,16 +73,9 @@ __isl_give LIST(EL) *FN(LIST(EL),dup)(__isl_keep LIST(EL) *list)
 	return dup;
 }
 
-__isl_give LIST(EL) *FN(LIST(EL),cow)(__isl_take LIST(EL) *list)
-{
-	if (!list)
-		return NULL;
-
-	if (list->ref == 1)
-		return list;
-	list->ref--;
-	return FN(LIST(EL),dup)(list);
-}
+#undef TYPE
+#define TYPE	LIST(EL)
+#include "isl_ref_cow_templ.c"
 
 /* Make sure "list" has room for at least "n" more pieces.
  * Always return a list with a single reference.

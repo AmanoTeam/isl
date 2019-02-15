@@ -183,16 +183,9 @@ __isl_give PW *FN(PW,dup)(__isl_keep PW *pw)
 	return dup;
 }
 
-__isl_give PW *FN(PW,cow)(__isl_take PW *pw)
-{
-	if (!pw)
-		return NULL;
-
-	if (pw->ref == 1)
-		return pw;
-	pw->ref--;
-	return FN(PW,dup)(pw);
-}
+#undef TYPE
+#define TYPE	PW
+#include "isl_ref_cow_templ.c"
 
 __isl_give PW *FN(PW,copy)(__isl_keep PW *pw)
 {

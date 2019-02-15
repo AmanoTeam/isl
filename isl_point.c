@@ -112,19 +112,9 @@ __isl_give isl_point *isl_point_dup(__isl_keep isl_point *pnt)
 	return pnt2;
 }
 
-__isl_give isl_point *isl_point_cow(__isl_take isl_point *pnt)
-{
-	struct isl_point *pnt2;
-	if (!pnt)
-		return NULL;
-
-	if (pnt->ref == 1)
-		return pnt;
-
-	pnt2 = isl_point_dup(pnt);
-	isl_point_free(pnt);
-	return pnt2;
-}
+#undef TYPE
+#define TYPE	isl_point
+#include "isl_ref_cow_templ.c"
 
 __isl_give isl_point *isl_point_copy(__isl_keep isl_point *pnt)
 {

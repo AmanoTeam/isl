@@ -244,19 +244,9 @@ __isl_give isl_val *isl_val_dup(__isl_keep isl_val *val)
 	return dup;
 }
 
-/* Return an isl_val that is equal to "val" and that has only
- * a single reference.
- */
-__isl_give isl_val *isl_val_cow(__isl_take isl_val *val)
-{
-	if (!val)
-		return NULL;
-
-	if (val->ref == 1)
-		return val;
-	val->ref--;
-	return isl_val_dup(val);
-}
+#undef TYPE
+#define TYPE	isl_val
+#include "isl_ref_cow_templ.c"
 
 /* Free "v" and return NULL.
  */
