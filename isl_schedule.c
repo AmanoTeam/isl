@@ -99,23 +99,34 @@ __isl_give isl_schedule *isl_schedule_copy(__isl_keep isl_schedule *sched)
 	return sched;
 }
 
-/* Return an isl_schedule that is equal to "schedule" and that has only
- * a single reference.
+/* Create a duplicate of the given isl_schedule.
  */
-__isl_give isl_schedule *isl_schedule_cow(__isl_take isl_schedule *schedule)
+static __isl_give isl_schedule *isl_schedule_dup(
+	__isl_keep isl_schedule *schedule)
 {
 	isl_ctx *ctx;
 	isl_schedule_tree *tree;
 
 	if (!schedule)
 		return NULL;
+
+	ctx = isl_schedule_get_ctx(schedule);
+	tree = isl_schedule_tree_copy(schedule->root);
+	return isl_schedule_from_schedule_tree(ctx, tree);
+}
+
+/* Return an isl_schedule that is equal to "schedule" and that has only
+ * a single reference.
+ */
+__isl_give isl_schedule *isl_schedule_cow(__isl_take isl_schedule *schedule)
+{
+	if (!schedule)
+		return NULL;
 	if (schedule->ref == 1)
 		return schedule;
 
-	ctx = isl_schedule_get_ctx(schedule);
 	schedule->ref--;
-	tree = isl_schedule_tree_copy(schedule->root);
-	return isl_schedule_from_schedule_tree(ctx, tree);
+	return isl_schedule_dup(schedule);
 }
 
 __isl_null isl_schedule *isl_schedule_free(__isl_take isl_schedule *sched)
