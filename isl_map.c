@@ -1388,11 +1388,7 @@ __isl_give isl_basic_set *isl_basic_set_copy(__isl_keep isl_basic_set *bset)
 
 __isl_give isl_set *isl_set_copy(__isl_keep isl_set *set)
 {
-	if (!set)
-		return NULL;
-
-	set->ref++;
-	return set;
+	return set_from_map(isl_map_copy(set_to_map(set)));
 }
 
 __isl_give isl_basic_map *isl_basic_map_copy(__isl_keep isl_basic_map *bmap)
