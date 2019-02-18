@@ -201,18 +201,7 @@ __isl_give isl_schedule_node *isl_schedule_node_dup(
 #undef TYPE
 #define TYPE	isl_schedule_node
 #include "isl_ref_cow_templ.c"
-
-/* Return a new reference to "node".
- */
-__isl_give isl_schedule_node *isl_schedule_node_copy(
-	__isl_keep isl_schedule_node *node)
-{
-	if (!node)
-		return NULL;
-
-	node->ref++;
-	return node;
-}
+#include "isl_ref_copy_templ.c"
 
 /* Free "node" and return NULL.
  */

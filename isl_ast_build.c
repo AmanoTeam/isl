@@ -173,15 +173,6 @@ __isl_give isl_ast_build *isl_ast_build_alloc(isl_ctx *ctx)
 	return isl_ast_build_from_context(context);
 }
 
-__isl_give isl_ast_build *isl_ast_build_copy(__isl_keep isl_ast_build *build)
-{
-	if (!build)
-		return NULL;
-
-	build->ref++;
-	return build;
-}
-
 __isl_give isl_ast_build *isl_ast_build_dup(__isl_keep isl_ast_build *build)
 {
 	isl_ctx *ctx;
@@ -291,6 +282,7 @@ error:
 #undef TYPE
 #define TYPE	isl_ast_build
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_ast_build *isl_ast_build_free(
 	__isl_take isl_ast_build *build)

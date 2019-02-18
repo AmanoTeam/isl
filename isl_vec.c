@@ -195,15 +195,6 @@ error:
 	return NULL;
 }
 
-__isl_give isl_vec *isl_vec_copy(__isl_keep isl_vec *vec)
-{
-	if (!vec)
-		return NULL;
-
-	vec->ref++;
-	return vec;
-}
-
 __isl_give isl_vec *isl_vec_dup(__isl_keep isl_vec *vec)
 {
 	struct isl_vec *vec2;
@@ -220,6 +211,7 @@ __isl_give isl_vec *isl_vec_dup(__isl_keep isl_vec *vec)
 #undef TYPE
 #define TYPE	isl_vec
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_vec *isl_vec_free(__isl_take isl_vec *vec)
 {

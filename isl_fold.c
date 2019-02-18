@@ -895,16 +895,6 @@ __isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_alloc(
 	return qpolynomial_fold_alloc(type, space, list);
 }
 
-__isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_copy(
-	__isl_keep isl_qpolynomial_fold *fold)
-{
-	if (!fold)
-		return NULL;
-
-	fold->ref++;
-	return fold;
-}
-
 __isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_dup(
 	__isl_keep isl_qpolynomial_fold *fold)
 {
@@ -921,6 +911,7 @@ __isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_dup(
 #undef TYPE
 #define TYPE	isl_qpolynomial_fold
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_qpolynomial_fold *isl_qpolynomial_fold_free(
 	__isl_take isl_qpolynomial_fold *fold)

@@ -214,17 +214,6 @@ __isl_give isl_val *isl_val_rat_from_isl_int(isl_ctx *ctx,
 	return v;
 }
 
-/* Return a new reference to "v".
- */
-__isl_give isl_val *isl_val_copy(__isl_keep isl_val *v)
-{
-	if (!v)
-		return NULL;
-
-	v->ref++;
-	return v;
-}
-
 /* Return a fresh copy of "val".
  */
 __isl_give isl_val *isl_val_dup(__isl_keep isl_val *val)
@@ -247,6 +236,7 @@ __isl_give isl_val *isl_val_dup(__isl_keep isl_val *val)
 #undef TYPE
 #define TYPE	isl_val
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 /* Free "v" and return NULL.
  */

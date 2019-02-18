@@ -1406,14 +1406,9 @@ __isl_give isl_basic_map *isl_basic_map_copy(__isl_keep isl_basic_map *bmap)
 	return bmap;
 }
 
-__isl_give isl_map *isl_map_copy(__isl_keep isl_map *map)
-{
-	if (!map)
-		return NULL;
-
-	map->ref++;
-	return map;
-}
+#undef TYPE
+#define TYPE	isl_map
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_basic_map *isl_basic_map_free(__isl_take isl_basic_map *bmap)
 {

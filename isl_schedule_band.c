@@ -132,18 +132,7 @@ __isl_give isl_schedule_band *isl_schedule_band_dup(
 #undef TYPE
 #define TYPE	isl_schedule_band
 #include "isl_ref_cow_templ.c"
-
-/* Return a new reference to "band".
- */
-__isl_give isl_schedule_band *isl_schedule_band_copy(
-	__isl_keep isl_schedule_band *band)
-{
-	if (!band)
-		return NULL;
-
-	band->ref++;
-	return band;
-}
+#include "isl_ref_copy_templ.c"
 
 /* Free a reference to "band" and return NULL.
  */

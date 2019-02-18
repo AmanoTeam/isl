@@ -48,15 +48,6 @@ __isl_give LIST(EL) *FN(LIST(EL),alloc)(isl_ctx *ctx, int n)
 	return list;
 }
 
-__isl_give LIST(EL) *FN(LIST(EL),copy)(__isl_keep LIST(EL) *list)
-{
-	if (!list)
-		return NULL;
-
-	list->ref++;
-	return list;
-}
-
 __isl_give LIST(EL) *FN(LIST(EL),dup)(__isl_keep LIST(EL) *list)
 {
 	int i;
@@ -76,6 +67,7 @@ __isl_give LIST(EL) *FN(LIST(EL),dup)(__isl_keep LIST(EL) *list)
 #undef TYPE
 #define TYPE	LIST(EL)
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 /* Make sure "list" has room for at least "n" more pieces.
  * Always return a list with a single reference.

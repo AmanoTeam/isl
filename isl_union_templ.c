@@ -113,15 +113,6 @@ __isl_give UNION *FN(UNION,ZERO)(__isl_take isl_space *space OPT_TYPE_PARAM)
 	return FN(FN(UNION,ZERO),space)(space OPT_TYPE_ARG(NO_LOC));
 }
 
-__isl_give UNION *FN(UNION,copy)(__isl_keep UNION *u)
-{
-	if (!u)
-		return NULL;
-
-	u->ref++;
-	return u;
-}
-
 /* Do the tuples of "space" correspond to those of the domain of "part"?
  * That is, is the domain space of "part" equal to "space", ignoring parameters?
  */
@@ -389,6 +380,7 @@ __isl_give UNION *FN(UNION,dup)(__isl_keep UNION *u)
 #undef TYPE
 #define TYPE	UNION
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null UNION *FN(UNION,free)(__isl_take UNION *u)
 {

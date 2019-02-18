@@ -72,16 +72,7 @@ __isl_give isl_ast_print_options *isl_ast_print_options_dup(
 #undef TYPE
 #define TYPE	isl_ast_print_options
 #include "isl_ref_cow_templ.c"
-
-__isl_give isl_ast_print_options *isl_ast_print_options_copy(
-	__isl_keep isl_ast_print_options *options)
-{
-	if (!options)
-		return NULL;
-
-	options->ref++;
-	return options;
-}
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_ast_print_options *isl_ast_print_options_free(
 	__isl_take isl_ast_print_options *options)
@@ -184,15 +175,6 @@ __isl_give isl_ast_expr *isl_ast_expr_alloc_op(isl_ctx *ctx,
 	return alloc_op(op, args);
 }
 
-__isl_give isl_ast_expr *isl_ast_expr_copy(__isl_keep isl_ast_expr *expr)
-{
-	if (!expr)
-		return NULL;
-
-	expr->ref++;
-	return expr;
-}
-
 __isl_give isl_ast_expr *isl_ast_expr_dup(__isl_keep isl_ast_expr *expr)
 {
 	isl_ast_expr *dup;
@@ -224,6 +206,7 @@ __isl_give isl_ast_expr *isl_ast_expr_dup(__isl_keep isl_ast_expr *expr)
 #undef TYPE
 #define TYPE	isl_ast_expr
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_ast_expr *isl_ast_expr_free(__isl_take isl_ast_expr *expr)
 {
@@ -1074,15 +1057,6 @@ error:
 	return NULL;
 }
 
-__isl_give isl_ast_node *isl_ast_node_copy(__isl_keep isl_ast_node *node)
-{
-	if (!node)
-		return NULL;
-
-	node->ref++;
-	return node;
-}
-
 /* Return a fresh copy of "node".
  *
  * In the case of a degenerate for node, take into account
@@ -1154,6 +1128,7 @@ __isl_give isl_ast_node *isl_ast_node_dup(__isl_keep isl_ast_node *node)
 #undef TYPE
 #define TYPE	isl_ast_node
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_ast_node *isl_ast_node_free(__isl_take isl_ast_node *node)
 {

@@ -664,15 +664,6 @@ static void poly_free_rec(__isl_take isl_poly_rec *rec)
 		isl_poly_free(rec->p[i]);
 }
 
-__isl_give isl_poly *isl_poly_copy(__isl_keep isl_poly *poly)
-{
-	if (!poly)
-		return NULL;
-
-	poly->ref++;
-	return poly;
-}
-
 __isl_give isl_poly *isl_poly_dup_cst(__isl_keep isl_poly *poly)
 {
 	isl_poly_cst *cst;
@@ -734,6 +725,7 @@ __isl_give isl_poly *isl_poly_dup(__isl_keep isl_poly *poly)
 #undef TYPE
 #define TYPE	isl_poly
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_poly *isl_poly_free(__isl_take isl_poly *poly)
 {
@@ -1339,15 +1331,6 @@ error:
 	return NULL;
 }
 
-__isl_give isl_qpolynomial *isl_qpolynomial_copy(__isl_keep isl_qpolynomial *qp)
-{
-	if (!qp)
-		return NULL;
-
-	qp->ref++;
-	return qp;
-}
-
 #undef TYPE
 #define TYPE	isl_qpolynomial
 
@@ -1390,6 +1373,7 @@ error:
 #undef TYPE
 #define TYPE	isl_qpolynomial
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_qpolynomial *isl_qpolynomial_free(
 	__isl_take isl_qpolynomial *qp)
@@ -3994,15 +3978,6 @@ error:
 	return NULL;
 }
 
-__isl_give isl_term *isl_term_copy(__isl_keep isl_term *term)
-{
-	if (!term)
-		return NULL;
-
-	term->ref++;
-	return term;
-}
-
 __isl_give isl_term *isl_term_dup(__isl_keep isl_term *term)
 {
 	int i;
@@ -4029,6 +4004,7 @@ __isl_give isl_term *isl_term_dup(__isl_keep isl_term *term)
 #undef TYPE
 #define TYPE	isl_term
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_term *isl_term_free(__isl_take isl_term *term)
 {

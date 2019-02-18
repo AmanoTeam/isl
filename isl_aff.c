@@ -142,15 +142,6 @@ error:
 	return NULL;
 }
 
-__isl_give isl_aff *isl_aff_copy(__isl_keep isl_aff *aff)
-{
-	if (!aff)
-		return NULL;
-
-	aff->ref++;
-	return aff;
-}
-
 __isl_give isl_aff *isl_aff_dup(__isl_keep isl_aff *aff)
 {
 	if (!aff)
@@ -163,6 +154,7 @@ __isl_give isl_aff *isl_aff_dup(__isl_keep isl_aff *aff)
 #undef TYPE
 #define TYPE	isl_aff
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 /* Return a copy of the rational affine expression of "aff".
  */

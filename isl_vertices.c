@@ -26,14 +26,9 @@
 static __isl_give isl_vertices *compute_chambers(__isl_take isl_basic_set *bset,
 	__isl_take isl_vertices *vertices);
 
-__isl_give isl_vertices *isl_vertices_copy(__isl_keep isl_vertices *vertices)
-{
-	if (!vertices)
-		return NULL;
-
-	vertices->ref++;
-	return vertices;
-}
+#undef TYPE
+#define TYPE	isl_vertices
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_vertices *isl_vertices_free(__isl_take isl_vertices *vertices)
 {

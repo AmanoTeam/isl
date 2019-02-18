@@ -113,15 +113,10 @@ __isl_give isl_ast_graft *isl_ast_graft_alloc_domain(
 	return isl_ast_graft_alloc(node, build);
 }
 
-static __isl_give isl_ast_graft *isl_ast_graft_copy(
-	__isl_keep isl_ast_graft *graft)
-{
-	if (!graft)
-		return NULL;
-
-	graft->ref++;
-	return graft;
-}
+#undef TYPE
+#define TYPE	isl_ast_graft
+static
+#include "isl_ref_copy_templ.c"
 
 /* Do all the grafts in "list" have the same guard and is this guard
  * independent of the current depth?

@@ -263,6 +263,7 @@ error:
 #undef TYPE
 #define TYPE	isl_union_map
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 struct isl_union_align {
 	isl_reordering *exp;
@@ -391,15 +392,6 @@ __isl_give isl_union_set *isl_union_set_union(__isl_take isl_union_set *uset1,
 	__isl_take isl_union_set *uset2)
 {
 	return isl_union_map_union(uset1, uset2);
-}
-
-__isl_give isl_union_map *isl_union_map_copy(__isl_keep isl_union_map *umap)
-{
-	if (!umap)
-		return NULL;
-
-	umap->ref++;
-	return umap;
 }
 
 __isl_give isl_union_set *isl_union_set_copy(__isl_keep isl_union_set *uset)

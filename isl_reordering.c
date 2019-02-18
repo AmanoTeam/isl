@@ -56,15 +56,6 @@ static __isl_give isl_reordering *isl_reordering_set_dst_len_from_space(
 	return r;
 }
 
-__isl_give isl_reordering *isl_reordering_copy(__isl_keep isl_reordering *exp)
-{
-	if (!exp)
-		return NULL;
-
-	exp->ref++;
-	return exp;
-}
-
 __isl_give isl_reordering *isl_reordering_dup(__isl_keep isl_reordering *r)
 {
 	int i;
@@ -90,6 +81,7 @@ __isl_give isl_reordering *isl_reordering_dup(__isl_keep isl_reordering *r)
 #undef TYPE
 #define TYPE	isl_reordering
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_reordering *isl_reordering_free(__isl_take isl_reordering *exp)
 {

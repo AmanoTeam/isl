@@ -88,17 +88,6 @@ __isl_give isl_schedule *isl_schedule_empty(__isl_take isl_space *space)
 	return isl_schedule_from_domain(isl_union_set_empty(space));
 }
 
-/* Return a new reference to "sched".
- */
-__isl_give isl_schedule *isl_schedule_copy(__isl_keep isl_schedule *sched)
-{
-	if (!sched)
-		return NULL;
-
-	sched->ref++;
-	return sched;
-}
-
 /* Create a duplicate of the given isl_schedule.
  */
 static __isl_give isl_schedule *isl_schedule_dup(
@@ -118,6 +107,7 @@ static __isl_give isl_schedule *isl_schedule_dup(
 #undef TYPE
 #define TYPE	isl_schedule
 #include "isl_ref_cow_templ.c"
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_schedule *isl_schedule_free(__isl_take isl_schedule *sched)
 {

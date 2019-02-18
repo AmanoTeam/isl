@@ -147,18 +147,7 @@ __isl_give isl_schedule_tree *isl_schedule_tree_dup(
 #undef TYPE
 #define TYPE	isl_schedule_tree
 #include "isl_ref_cow_templ.c"
-
-/* Return a new reference to "tree".
- */
-__isl_give isl_schedule_tree *isl_schedule_tree_copy(
-	__isl_keep isl_schedule_tree *tree)
-{
-	if (!tree)
-		return NULL;
-
-	tree->ref++;
-	return tree;
-}
+#include "isl_ref_copy_templ.c"
 
 /* Free "tree" and return NULL.
  */

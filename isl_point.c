@@ -115,15 +115,7 @@ __isl_give isl_point *isl_point_dup(__isl_keep isl_point *pnt)
 #undef TYPE
 #define TYPE	isl_point
 #include "isl_ref_cow_templ.c"
-
-__isl_give isl_point *isl_point_copy(__isl_keep isl_point *pnt)
-{
-	if (!pnt)
-		return NULL;
-
-	pnt->ref++;
-	return pnt;
-}
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_point *isl_point_free(__isl_take isl_point *pnt)
 {

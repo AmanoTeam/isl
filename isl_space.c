@@ -458,15 +458,7 @@ error:
 #undef TYPE
 #define TYPE	isl_space
 #include "isl_ref_cow_templ.c"
-
-__isl_give isl_space *isl_space_copy(__isl_keep isl_space *space)
-{
-	if (!space)
-		return NULL;
-
-	space->ref++;
-	return space;
-}
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_space *isl_space_free(__isl_take isl_space *space)
 {

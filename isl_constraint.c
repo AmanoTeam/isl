@@ -158,16 +158,7 @@ __isl_give isl_constraint *isl_constraint_dup(__isl_keep isl_constraint *c)
 #undef TYPE
 #define TYPE	isl_constraint
 #include "isl_ref_cow_templ.c"
-
-__isl_give isl_constraint *isl_constraint_copy(
-	__isl_keep isl_constraint *constraint)
-{
-	if (!constraint)
-		return NULL;
-
-	constraint->ref++;
-	return constraint;
-}
+#include "isl_ref_copy_templ.c"
 
 __isl_null isl_constraint *isl_constraint_free(__isl_take isl_constraint *c)
 {

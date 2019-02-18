@@ -667,6 +667,7 @@ EXTRA_DIST = \
 	isl_pw_union_opt.c \
 	isl_read_from_str_templ.c \
 	read_in_string_templ.c \
+	isl_ref_copy_templ.c \
 	isl_ref_cow_templ.c \
 	isl_restore_templ.c \
 	set_to_map.c \
