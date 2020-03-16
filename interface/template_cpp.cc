@@ -873,6 +873,7 @@ member_methods {
 	{ "params",		{ set_params, map_params } },
 	{ "plain_multi_val_if_fixed",
 				{ un_set } },
+	{ "pos_set",		fn_domain },
 	{ "preimage",		{ set_backward } },
 	{ "preimage_domain",	{ domain_backward } },
 	{ "preimage_domain_wrapped_domain",
@@ -920,6 +921,7 @@ member_methods {
 	{ "wrapped_reverse",	{ set_reverse } },
 	{ "zero",		fn_un_op },
 	{ "zero_on_domain",	{ anonymous_map_from_domain } },
+	{ "zero_set",		fn_domain },
 };
 
 /* Signatures for constructors of multi-expressions

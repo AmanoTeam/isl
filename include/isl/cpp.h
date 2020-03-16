@@ -494,6 +494,7 @@ class aff {
   inline isl::set ne_set(isl::aff aff2) const;
   inline isl::set ne_set(const isl::pw_aff &pwaff2) const;
   inline isl::aff neg() const;
+  inline isl::set neg_set() const;
   inline isl::set params() const;
   inline bool plain_is_empty() const;
   inline bool plain_is_equal(const isl::aff &aff2) const;
@@ -504,6 +505,7 @@ class aff {
   inline bool plain_is_equal(const isl::pw_multi_aff &pma2) const;
   inline bool plain_is_equal(const isl::union_pw_aff &upa2) const;
   inline bool plain_is_equal(const isl::union_pw_multi_aff &upma2) const;
+  inline isl::set pos_set() const;
   inline isl::pw_multi_aff preimage_domain_wrapped_domain(const isl::pw_multi_aff &pma2) const;
   inline isl::union_pw_multi_aff preimage_domain_wrapped_domain(const isl::union_pw_multi_aff &upma2) const;
   inline isl::multi_aff product(const isl::multi_aff &multi2) const;
@@ -564,6 +566,7 @@ class aff {
   inline isl::union_pw_aff union_add(const isl::union_pw_aff &upa2) const;
   inline isl::union_pw_multi_aff union_add(const isl::union_pw_multi_aff &upma2) const;
   static inline isl::aff zero_on_domain(isl::space space);
+  inline isl::set zero_set() const;
 };
 
 // declarations for isl::aff_list
@@ -5460,6 +5463,18 @@ isl::aff aff::neg() const
   return manage(res);
 }
 
+isl::set aff::neg_set() const
+{
+  if (!ptr)
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  auto saved_ctx = ctx();
+  options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
+  auto res = isl_aff_neg_set(copy());
+  if (!res)
+    exception::throw_last_error(saved_ctx);
+  return manage(res);
+}
+
 isl::set aff::params() const
 {
   if (!ptr)
@@ -5533,6 +5548,18 @@ bool aff::plain_is_equal(const isl::union_pw_multi_aff &upma2) const
   if (!ptr)
     exception::throw_invalid("NULL input", __FILE__, __LINE__);
   return isl::pw_aff(*this).plain_is_equal(upma2);
+}
+
+isl::set aff::pos_set() const
+{
+  if (!ptr)
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  auto saved_ctx = ctx();
+  options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
+  auto res = isl_aff_pos_set(copy());
+  if (!res)
+    exception::throw_last_error(saved_ctx);
+  return manage(res);
 }
 
 isl::pw_multi_aff aff::preimage_domain_wrapped_domain(const isl::pw_multi_aff &pma2) const
@@ -5985,6 +6012,18 @@ isl::aff aff::zero_on_domain(isl::space space)
   auto saved_ctx = space.ctx();
   options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
   auto res = isl_aff_zero_on_domain_space(space.release());
+  if (!res)
+    exception::throw_last_error(saved_ctx);
+  return manage(res);
+}
+
+isl::set aff::zero_set() const
+{
+  if (!ptr)
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  auto saved_ctx = ctx();
+  options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
+  auto res = isl_aff_zero_set(copy());
   if (!res)
     exception::throw_last_error(saved_ctx);
   return manage(res);

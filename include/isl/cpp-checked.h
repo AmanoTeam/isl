@@ -429,6 +429,7 @@ class aff {
   inline isl::checked::set ne_set(isl::checked::aff aff2) const;
   inline isl::checked::set ne_set(const isl::checked::pw_aff &pwaff2) const;
   inline isl::checked::aff neg() const;
+  inline isl::checked::set neg_set() const;
   inline isl::checked::set params() const;
   inline boolean plain_is_empty() const;
   inline boolean plain_is_equal(const isl::checked::aff &aff2) const;
@@ -439,6 +440,7 @@ class aff {
   inline boolean plain_is_equal(const isl::checked::pw_multi_aff &pma2) const;
   inline boolean plain_is_equal(const isl::checked::union_pw_aff &upa2) const;
   inline boolean plain_is_equal(const isl::checked::union_pw_multi_aff &upma2) const;
+  inline isl::checked::set pos_set() const;
   inline isl::checked::pw_multi_aff preimage_domain_wrapped_domain(const isl::checked::pw_multi_aff &pma2) const;
   inline isl::checked::union_pw_multi_aff preimage_domain_wrapped_domain(const isl::checked::union_pw_multi_aff &upma2) const;
   inline isl::checked::multi_aff product(const isl::checked::multi_aff &multi2) const;
@@ -499,6 +501,7 @@ class aff {
   inline isl::checked::union_pw_aff union_add(const isl::checked::union_pw_aff &upa2) const;
   inline isl::checked::union_pw_multi_aff union_add(const isl::checked::union_pw_multi_aff &upma2) const;
   static inline isl::checked::aff zero_on_domain(isl::checked::space space);
+  inline isl::checked::set zero_set() const;
 };
 
 // declarations for isl::aff_list
@@ -5104,6 +5107,12 @@ isl::checked::aff aff::neg() const
   return manage(res);
 }
 
+isl::checked::set aff::neg_set() const
+{
+  auto res = isl_aff_neg_set(copy());
+  return manage(res);
+}
+
 isl::checked::set aff::params() const
 {
   return isl::checked::pw_aff(*this).params();
@@ -5153,6 +5162,12 @@ boolean aff::plain_is_equal(const isl::checked::union_pw_aff &upa2) const
 boolean aff::plain_is_equal(const isl::checked::union_pw_multi_aff &upma2) const
 {
   return isl::checked::pw_aff(*this).plain_is_equal(upma2);
+}
+
+isl::checked::set aff::pos_set() const
+{
+  auto res = isl_aff_pos_set(copy());
+  return manage(res);
 }
 
 isl::checked::pw_multi_aff aff::preimage_domain_wrapped_domain(const isl::checked::pw_multi_aff &pma2) const
@@ -5459,6 +5474,12 @@ isl::checked::union_pw_multi_aff aff::union_add(const isl::checked::union_pw_mul
 isl::checked::aff aff::zero_on_domain(isl::checked::space space)
 {
   auto res = isl_aff_zero_on_domain_space(space.release());
+  return manage(res);
+}
+
+isl::checked::set aff::zero_set() const
+{
+  auto res = isl_aff_zero_set(copy());
   return manage(res);
 }
 

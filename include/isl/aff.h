@@ -171,7 +171,13 @@ __isl_give isl_aff *isl_aff_pullback_multi_aff(__isl_take isl_aff *aff,
 	__isl_take isl_multi_aff *ma);
 
 __isl_give isl_basic_set *isl_aff_zero_basic_set(__isl_take isl_aff *aff);
+__isl_export
+__isl_give isl_set *isl_aff_zero_set(__isl_take isl_aff *aff);
 __isl_give isl_basic_set *isl_aff_neg_basic_set(__isl_take isl_aff *aff);
+__isl_export
+__isl_give isl_set *isl_aff_pos_set(__isl_take isl_aff *aff);
+__isl_export
+__isl_give isl_set *isl_aff_neg_set(__isl_take isl_aff *aff);
 
 __isl_give isl_basic_set *isl_aff_eq_basic_set(__isl_take isl_aff *aff1,
 	__isl_take isl_aff *aff2);

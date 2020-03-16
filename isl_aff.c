@@ -2331,6 +2331,14 @@ __isl_give isl_basic_set *isl_aff_pos_basic_set(__isl_take isl_aff *aff)
 	return isl_aff_nonneg_basic_set(aff);
 }
 
+/* Return a set containing those elements in the domain space
+ * of "aff" where it is positive.
+ */
+__isl_give isl_set *isl_aff_pos_set(__isl_take isl_aff *aff)
+{
+	return isl_set_from_basic_set(isl_aff_pos_basic_set(aff));
+}
+
 /* Return a basic set containing those elements in the domain space
  * of aff where it is negative.
  */
@@ -2338,6 +2346,14 @@ __isl_give isl_basic_set *isl_aff_neg_basic_set(__isl_take isl_aff *aff)
 {
 	aff = isl_aff_neg(aff);
 	return isl_aff_pos_basic_set(aff);
+}
+
+/* Return a set containing those elements in the domain space
+ * of aff where it is negative.
+ */
+__isl_give isl_set *isl_aff_neg_set(__isl_take isl_aff *aff)
+{
+	return isl_set_from_basic_set(isl_aff_neg_basic_set(aff));
 }
 
 /* Return a basic set containing those elements in the space
@@ -2375,6 +2391,14 @@ static __isl_give isl_basic_set *aff_zero_basic_set(__isl_take isl_aff *aff,
 __isl_give isl_basic_set *isl_aff_zero_basic_set(__isl_take isl_aff *aff)
 {
 	return aff_zero_basic_set(aff, 0, NULL);
+}
+
+/* Return a set containing those elements in the space
+ * of aff where it is zero.
+ */
+__isl_give isl_set *isl_aff_zero_set(__isl_take isl_aff *aff)
+{
+	return isl_set_from_basic_set(isl_aff_zero_basic_set(aff));
 }
 
 /* Return a basic set containing those elements in the shared space

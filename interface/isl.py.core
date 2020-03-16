@@ -4934,6 +4934,16 @@ class aff(pw_aff, multi_aff):
         res = isl.isl_aff_neg(isl.isl_aff_copy(arg0.ptr))
         obj = aff(ctx=ctx, ptr=res)
         return obj
+    def neg_set(arg0):
+        try:
+            if not arg0.__class__ is aff:
+                arg0 = aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_aff_neg_set(isl.isl_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
     def plain_is_equal(arg0, arg1):
         try:
             if not arg0.__class__ is aff:
@@ -4950,6 +4960,16 @@ class aff(pw_aff, multi_aff):
         if res < 0:
             raise Error
         return bool(res)
+    def pos_set(arg0):
+        try:
+            if not arg0.__class__ is aff:
+                arg0 = aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_aff_pos_set(isl.isl_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
     def pullback(*args):
         if len(args) == 2 and args[1].__class__ is multi_aff:
             args = list(args)
@@ -5047,6 +5067,16 @@ class aff(pw_aff, multi_aff):
             obj = aff(ctx=ctx, ptr=res)
             return obj
         raise Error
+    def zero_set(arg0):
+        try:
+            if not arg0.__class__ is aff:
+                arg0 = aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_aff_zero_set(isl.isl_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
 
 isl.isl_aff_read_from_str.restype = c_void_p
 isl.isl_aff_read_from_str.argtypes = [Context, c_char_p]
@@ -5091,7 +5121,11 @@ isl.isl_aff_ne_set.restype = c_void_p
 isl.isl_aff_ne_set.argtypes = [c_void_p, c_void_p]
 isl.isl_aff_neg.restype = c_void_p
 isl.isl_aff_neg.argtypes = [c_void_p]
+isl.isl_aff_neg_set.restype = c_void_p
+isl.isl_aff_neg_set.argtypes = [c_void_p]
 isl.isl_aff_plain_is_equal.argtypes = [c_void_p, c_void_p]
+isl.isl_aff_pos_set.restype = c_void_p
+isl.isl_aff_pos_set.argtypes = [c_void_p]
 isl.isl_aff_pullback_multi_aff.restype = c_void_p
 isl.isl_aff_pullback_multi_aff.argtypes = [c_void_p, c_void_p]
 isl.isl_aff_scale_val.restype = c_void_p
@@ -5106,6 +5140,8 @@ isl.isl_aff_unbind_params_insert_domain.restype = c_void_p
 isl.isl_aff_unbind_params_insert_domain.argtypes = [c_void_p, c_void_p]
 isl.isl_aff_zero_on_domain_space.restype = c_void_p
 isl.isl_aff_zero_on_domain_space.argtypes = [c_void_p]
+isl.isl_aff_zero_set.restype = c_void_p
+isl.isl_aff_zero_set.argtypes = [c_void_p]
 isl.isl_aff_copy.restype = c_void_p
 isl.isl_aff_copy.argtypes = [c_void_p]
 isl.isl_aff_free.restype = c_void_p
