@@ -430,6 +430,9 @@ class aff {
   inline isl::checked::set ne_set(const isl::checked::pw_aff &pwaff2) const;
   inline isl::checked::aff neg() const;
   inline isl::checked::set neg_set() const;
+  inline isl::checked::set non_zero_set() const;
+  inline isl::checked::set nonneg_set() const;
+  inline isl::checked::set nonpos_set() const;
   inline isl::checked::set params() const;
   inline boolean plain_is_empty() const;
   inline boolean plain_is_equal(const isl::checked::aff &aff2) const;
@@ -2899,6 +2902,9 @@ class pw_aff {
   inline class size n_piece() const;
   inline isl::checked::set ne_set(isl::checked::pw_aff pwaff2) const;
   inline isl::checked::pw_aff neg() const;
+  inline isl::checked::set non_zero_set() const;
+  inline isl::checked::set nonneg_set() const;
+  inline isl::checked::set nonpos_set() const;
   static inline isl::checked::pw_aff param_on_domain(isl::checked::set domain, isl::checked::id id);
   inline isl::checked::set params() const;
   inline boolean plain_is_empty() const;
@@ -2909,6 +2915,7 @@ class pw_aff {
   inline boolean plain_is_equal(const isl::checked::union_pw_aff &upa2) const;
   inline boolean plain_is_equal(const isl::checked::union_pw_multi_aff &upma2) const;
   inline boolean plain_is_equal(const isl::checked::aff &pwaff2) const;
+  inline isl::checked::set pos_set() const;
   inline isl::checked::pw_multi_aff preimage_domain_wrapped_domain(const isl::checked::pw_multi_aff &pma2) const;
   inline isl::checked::union_pw_multi_aff preimage_domain_wrapped_domain(const isl::checked::union_pw_multi_aff &upma2) const;
   inline isl::checked::multi_pw_aff product(const isl::checked::multi_pw_aff &multi2) const;
@@ -2965,6 +2972,7 @@ class pw_aff {
   inline isl::checked::union_pw_aff union_add(const isl::checked::union_pw_aff &upa2) const;
   inline isl::checked::union_pw_multi_aff union_add(const isl::checked::union_pw_multi_aff &upma2) const;
   inline isl::checked::pw_aff union_add(const isl::checked::aff &pwaff2) const;
+  inline isl::checked::set zero_set() const;
 };
 
 // declarations for isl::pw_aff_list
@@ -5111,6 +5119,21 @@ isl::checked::set aff::neg_set() const
 {
   auto res = isl_aff_neg_set(copy());
   return manage(res);
+}
+
+isl::checked::set aff::non_zero_set() const
+{
+  return isl::checked::pw_aff(*this).non_zero_set();
+}
+
+isl::checked::set aff::nonneg_set() const
+{
+  return isl::checked::pw_aff(*this).nonneg_set();
+}
+
+isl::checked::set aff::nonpos_set() const
+{
+  return isl::checked::pw_aff(*this).nonpos_set();
 }
 
 isl::checked::set aff::params() const
@@ -14303,6 +14326,24 @@ isl::checked::pw_aff pw_aff::neg() const
   return manage(res);
 }
 
+isl::checked::set pw_aff::non_zero_set() const
+{
+  auto res = isl_pw_aff_non_zero_set(copy());
+  return manage(res);
+}
+
+isl::checked::set pw_aff::nonneg_set() const
+{
+  auto res = isl_pw_aff_nonneg_set(copy());
+  return manage(res);
+}
+
+isl::checked::set pw_aff::nonpos_set() const
+{
+  auto res = isl_pw_aff_nonpos_set(copy());
+  return manage(res);
+}
+
 isl::checked::pw_aff pw_aff::param_on_domain(isl::checked::set domain, isl::checked::id id)
 {
   auto res = isl_pw_aff_param_on_domain_id(domain.release(), id.release());
@@ -14354,6 +14395,12 @@ boolean pw_aff::plain_is_equal(const isl::checked::union_pw_multi_aff &upma2) co
 boolean pw_aff::plain_is_equal(const isl::checked::aff &pwaff2) const
 {
   return this->plain_is_equal(isl::checked::pw_aff(pwaff2));
+}
+
+isl::checked::set pw_aff::pos_set() const
+{
+  auto res = isl_pw_aff_pos_set(copy());
+  return manage(res);
 }
 
 isl::checked::pw_multi_aff pw_aff::preimage_domain_wrapped_domain(const isl::checked::pw_multi_aff &pma2) const
@@ -14647,6 +14694,12 @@ isl::checked::union_pw_multi_aff pw_aff::union_add(const isl::checked::union_pw_
 isl::checked::pw_aff pw_aff::union_add(const isl::checked::aff &pwaff2) const
 {
   return this->union_add(isl::checked::pw_aff(pwaff2));
+}
+
+isl::checked::set pw_aff::zero_set() const
+{
+  auto res = isl_pw_aff_zero_set(copy());
+  return manage(res);
 }
 
 inline std::ostream &operator<<(std::ostream &os, const pw_aff &obj)

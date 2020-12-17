@@ -270,7 +270,8 @@ struct aff<Anonymous> : public isl::aff {
   inline typed::aff<Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::aff<Anonymous> mod(long mod) const;
   inline typed::aff<Anonymous> neg() const;
-  inline typed::set<Anonymous> neg_set() const;
+  inline typed::set<> neg_set() const;
+  inline typed::set<> nonpos_set() const;
   inline typed::set<> params() const;
   inline typed::set<> pos_set() const;
   inline typed::pw_multi_aff<Anonymous> preimage_domain_wrapped_domain(const typed::pw_multi_aff<> &pma2) const = delete;
@@ -485,7 +486,8 @@ struct aff<Domain, Anonymous> : public isl::aff {
   inline typed::aff<Domain, Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::aff<Domain, Anonymous> mod(long mod) const;
   inline typed::aff<Domain, Anonymous> neg() const;
-  inline typed::set<Domain, Anonymous> neg_set() const = delete;
+  inline typed::set<Domain> neg_set() const;
+  inline typed::set<Domain> nonpos_set() const;
   inline typed::set<> params() const;
   inline typed::set<Domain> pos_set() const;
   inline typed::pw_multi_aff<Domain, Anonymous> preimage_domain_wrapped_domain(const typed::pw_multi_aff<> &pma2) const = delete;
@@ -715,7 +717,8 @@ struct aff<pair<Domain2, Range2>, Anonymous> : public isl::aff {
   inline typed::aff<pair<Domain2, Range2>, Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::aff<pair<Domain2, Range2>, Anonymous> mod(long mod) const;
   inline typed::aff<pair<Domain2, Range2>, Anonymous> neg() const;
-  inline typed::set<pair<Domain2, Range2>, Anonymous> neg_set() const = delete;
+  inline typed::set<pair<Domain2, Range2>> neg_set() const;
+  inline typed::set<pair<Domain2, Range2>> nonpos_set() const;
   inline typed::set<> params() const;
   inline typed::set<pair<Domain2, Range2>> pos_set() const;
   template <typename Domain3>
@@ -7509,7 +7512,9 @@ struct pw_aff<Anonymous> : public isl::pw_aff {
   inline typed::pw_aff<Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::pw_aff<Anonymous> mod(long mod) const;
   inline typed::pw_aff<Anonymous> neg() const;
+  inline typed::set<> nonpos_set() const;
   inline typed::set<> params() const;
+  inline typed::set<> pos_set() const;
   inline typed::pw_multi_aff<Anonymous> preimage_domain_wrapped_domain(const typed::pw_multi_aff<> &pma2) const = delete;
   inline typed::union_pw_multi_aff<Anonymous> preimage_domain_wrapped_domain(const typed::union_pw_multi_aff<> &upma2) const = delete;
   template <typename Range>
@@ -7565,6 +7570,7 @@ struct pw_aff<Anonymous> : public isl::pw_aff {
   inline typed::union_pw_aff<Anonymous> union_add(const typed::union_pw_aff<Anonymous> &upa2) const;
   inline typed::union_pw_multi_aff<Anonymous> union_add(const typed::union_pw_multi_aff<Anonymous> &upma2) const;
   inline typed::pw_aff<Anonymous> union_add(const typed::aff<Anonymous> &pwaff2) const;
+  inline typed::set<> zero_set() const;
 };
 
 template <typename Domain>
@@ -7720,7 +7726,9 @@ struct pw_aff<Domain, Anonymous> : public isl::pw_aff {
   inline typed::pw_aff<Domain, Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::pw_aff<Domain, Anonymous> mod(long mod) const;
   inline typed::pw_aff<Domain, Anonymous> neg() const;
+  inline typed::set<Domain> nonpos_set() const;
   inline typed::set<> params() const;
+  inline typed::set<Domain> pos_set() const;
   inline typed::pw_multi_aff<Domain, Anonymous> preimage_domain_wrapped_domain(const typed::pw_multi_aff<> &pma2) const = delete;
   inline typed::union_pw_multi_aff<Domain, Anonymous> preimage_domain_wrapped_domain(const typed::union_pw_multi_aff<> &upma2) const = delete;
   template <typename Domain2, typename Range2>
@@ -7787,6 +7795,7 @@ struct pw_aff<Domain, Anonymous> : public isl::pw_aff {
   inline typed::union_pw_aff<Domain, Anonymous> union_add(const typed::union_pw_aff<Domain, Anonymous> &upa2) const;
   inline typed::union_pw_multi_aff<Domain, Anonymous> union_add(const typed::union_pw_multi_aff<Domain, Anonymous> &upma2) const;
   inline typed::pw_aff<Domain, Anonymous> union_add(const typed::aff<Domain, Anonymous> &pwaff2) const;
+  inline typed::set<Domain> zero_set() const;
 };
 
 template <typename Domain2, typename Range2>
@@ -7943,7 +7952,9 @@ struct pw_aff<pair<Domain2, Range2>, Anonymous> : public isl::pw_aff {
   inline typed::pw_aff<pair<Domain2, Range2>, Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::pw_aff<pair<Domain2, Range2>, Anonymous> mod(long mod) const;
   inline typed::pw_aff<pair<Domain2, Range2>, Anonymous> neg() const;
+  inline typed::set<pair<Domain2, Range2>> nonpos_set() const;
   inline typed::set<> params() const;
+  inline typed::set<pair<Domain2, Range2>> pos_set() const;
   template <typename Domain3>
   inline typed::pw_multi_aff<pair<Domain3, Range2>, Anonymous> preimage_domain_wrapped_domain(const typed::pw_multi_aff<Domain3, Domain2> &pma2) const;
   template <typename Domain3>
@@ -8012,6 +8023,7 @@ struct pw_aff<pair<Domain2, Range2>, Anonymous> : public isl::pw_aff {
   inline typed::union_pw_aff<pair<Domain2, Range2>, Anonymous> union_add(const typed::union_pw_aff<pair<Domain2, Range2>, Anonymous> &upa2) const;
   inline typed::union_pw_multi_aff<pair<Domain2, Range2>, Anonymous> union_add(const typed::union_pw_multi_aff<pair<Domain2, Range2>, Anonymous> &upma2) const;
   inline typed::pw_aff<pair<Domain2, Range2>, Anonymous> union_add(const typed::aff<pair<Domain2, Range2>, Anonymous> &pwaff2) const;
+  inline typed::set<pair<Domain2, Range2>> zero_set() const;
 };
 
 template <>
@@ -14840,10 +14852,16 @@ typed::aff<Anonymous> typed::aff<Anonymous>::neg() const
   return typed::aff<Anonymous>(res);
 }
 
-typed::set<Anonymous> typed::aff<Anonymous>::neg_set() const
+typed::set<> typed::aff<Anonymous>::neg_set() const
 {
   auto res = isl::aff::neg_set();
-  return typed::set<Anonymous>(res);
+  return typed::set<>(res);
+}
+
+typed::set<> typed::aff<Anonymous>::nonpos_set() const
+{
+  auto res = isl::aff::nonpos_set();
+  return typed::set<>(res);
 }
 
 typed::set<> typed::aff<Anonymous>::params() const
@@ -15539,6 +15557,20 @@ typed::aff<Domain, Anonymous> typed::aff<Domain, Anonymous>::neg() const
 {
   auto res = isl::aff::neg();
   return typed::aff<Domain, Anonymous>(res);
+}
+
+template <typename Domain>
+typed::set<Domain> typed::aff<Domain, Anonymous>::neg_set() const
+{
+  auto res = isl::aff::neg_set();
+  return typed::set<Domain>(res);
+}
+
+template <typename Domain>
+typed::set<Domain> typed::aff<Domain, Anonymous>::nonpos_set() const
+{
+  auto res = isl::aff::nonpos_set();
+  return typed::set<Domain>(res);
 }
 
 template <typename Domain>
@@ -16422,6 +16454,20 @@ typed::aff<pair<Domain2, Range2>, Anonymous> typed::aff<pair<Domain2, Range2>, A
 {
   auto res = isl::aff::neg();
   return typed::aff<pair<Domain2, Range2>, Anonymous>(res);
+}
+
+template <typename Domain2, typename Range2>
+typed::set<pair<Domain2, Range2>> typed::aff<pair<Domain2, Range2>, Anonymous>::neg_set() const
+{
+  auto res = isl::aff::neg_set();
+  return typed::set<pair<Domain2, Range2>>(res);
+}
+
+template <typename Domain2, typename Range2>
+typed::set<pair<Domain2, Range2>> typed::aff<pair<Domain2, Range2>, Anonymous>::nonpos_set() const
+{
+  auto res = isl::aff::nonpos_set();
+  return typed::set<pair<Domain2, Range2>>(res);
 }
 
 template <typename Domain2, typename Range2>
@@ -35758,9 +35804,21 @@ typed::pw_aff<Anonymous> typed::pw_aff<Anonymous>::neg() const
   return typed::pw_aff<Anonymous>(res);
 }
 
+typed::set<> typed::pw_aff<Anonymous>::nonpos_set() const
+{
+  auto res = isl::pw_aff::nonpos_set();
+  return typed::set<>(res);
+}
+
 typed::set<> typed::pw_aff<Anonymous>::params() const
 {
   auto res = isl::pw_aff::params();
+  return typed::set<>(res);
+}
+
+typed::set<> typed::pw_aff<Anonymous>::pos_set() const
+{
+  auto res = isl::pw_aff::pos_set();
   return typed::set<>(res);
 }
 
@@ -35959,6 +36017,12 @@ typed::pw_aff<Anonymous> typed::pw_aff<Anonymous>::union_add(const typed::aff<An
 {
   auto res = isl::pw_aff::union_add(pwaff2);
   return typed::pw_aff<Anonymous>(res);
+}
+
+typed::set<> typed::pw_aff<Anonymous>::zero_set() const
+{
+  auto res = isl::pw_aff::zero_set();
+  return typed::set<>(res);
 }
 
 template <typename Domain>
@@ -36444,10 +36508,24 @@ typed::pw_aff<Domain, Anonymous> typed::pw_aff<Domain, Anonymous>::neg() const
 }
 
 template <typename Domain>
+typed::set<Domain> typed::pw_aff<Domain, Anonymous>::nonpos_set() const
+{
+  auto res = isl::pw_aff::nonpos_set();
+  return typed::set<Domain>(res);
+}
+
+template <typename Domain>
 typed::set<> typed::pw_aff<Domain, Anonymous>::params() const
 {
   auto res = isl::pw_aff::params();
   return typed::set<>(res);
+}
+
+template <typename Domain>
+typed::set<Domain> typed::pw_aff<Domain, Anonymous>::pos_set() const
+{
+  auto res = isl::pw_aff::pos_set();
+  return typed::set<Domain>(res);
 }
 
 template <typename Domain>
@@ -36796,6 +36874,13 @@ typed::pw_aff<Domain, Anonymous> typed::pw_aff<Domain, Anonymous>::union_add(con
 {
   auto res = isl::pw_aff::union_add(pwaff2);
   return typed::pw_aff<Domain, Anonymous>(res);
+}
+
+template <typename Domain>
+typed::set<Domain> typed::pw_aff<Domain, Anonymous>::zero_set() const
+{
+  auto res = isl::pw_aff::zero_set();
+  return typed::set<Domain>(res);
 }
 
 template <typename Domain2, typename Range2>
@@ -37302,10 +37387,24 @@ typed::pw_aff<pair<Domain2, Range2>, Anonymous> typed::pw_aff<pair<Domain2, Rang
 }
 
 template <typename Domain2, typename Range2>
+typed::set<pair<Domain2, Range2>> typed::pw_aff<pair<Domain2, Range2>, Anonymous>::nonpos_set() const
+{
+  auto res = isl::pw_aff::nonpos_set();
+  return typed::set<pair<Domain2, Range2>>(res);
+}
+
+template <typename Domain2, typename Range2>
 typed::set<> typed::pw_aff<pair<Domain2, Range2>, Anonymous>::params() const
 {
   auto res = isl::pw_aff::params();
   return typed::set<>(res);
+}
+
+template <typename Domain2, typename Range2>
+typed::set<pair<Domain2, Range2>> typed::pw_aff<pair<Domain2, Range2>, Anonymous>::pos_set() const
+{
+  auto res = isl::pw_aff::pos_set();
+  return typed::set<pair<Domain2, Range2>>(res);
 }
 
 template <typename Domain2, typename Range2>
@@ -37670,6 +37769,13 @@ typed::pw_aff<pair<Domain2, Range2>, Anonymous> typed::pw_aff<pair<Domain2, Rang
 {
   auto res = isl::pw_aff::union_add(pwaff2);
   return typed::pw_aff<pair<Domain2, Range2>, Anonymous>(res);
+}
+
+template <typename Domain2, typename Range2>
+typed::set<pair<Domain2, Range2>> typed::pw_aff<pair<Domain2, Range2>, Anonymous>::zero_set() const
+{
+  auto res = isl::pw_aff::zero_set();
+  return typed::set<pair<Domain2, Range2>>(res);
 }
 
 typed::pw_aff_list<Anonymous>::pw_aff_list(const isl::ctx &ctx, int n)

@@ -868,6 +868,8 @@ member_methods {
 	{ "mod",		bin_val },
 	{ "on_domain",		from_domain },
 	{ "neg",		fn_un_op },
+	{ "neg_set",		fn_domain },
+	{ "nonpos_set",		fn_domain },
 	{ "offset",		fn_un_op },
 	{ "param_on_domain",	anonymous_from_domain_bin_anon },
 	{ "params",		{ set_params, map_params } },

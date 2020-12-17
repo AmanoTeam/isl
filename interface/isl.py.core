@@ -3553,6 +3553,36 @@ class pw_aff(union_pw_aff, pw_multi_aff, multi_pw_aff):
         res = isl.isl_pw_aff_neg(isl.isl_pw_aff_copy(arg0.ptr))
         obj = pw_aff(ctx=ctx, ptr=res)
         return obj
+    def non_zero_set(arg0):
+        try:
+            if not arg0.__class__ is pw_aff:
+                arg0 = pw_aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_pw_aff_non_zero_set(isl.isl_pw_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
+    def nonneg_set(arg0):
+        try:
+            if not arg0.__class__ is pw_aff:
+                arg0 = pw_aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_pw_aff_nonneg_set(isl.isl_pw_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
+    def nonpos_set(arg0):
+        try:
+            if not arg0.__class__ is pw_aff:
+                arg0 = pw_aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_pw_aff_nonpos_set(isl.isl_pw_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
     @staticmethod
     def param_on_domain(*args):
         if len(args) == 2 and args[0].__class__ is set and (args[1].__class__ is id or type(args[1]) == str):
@@ -3593,6 +3623,16 @@ class pw_aff(union_pw_aff, pw_multi_aff, multi_pw_aff):
         if res < 0:
             raise Error
         return bool(res)
+    def pos_set(arg0):
+        try:
+            if not arg0.__class__ is pw_aff:
+                arg0 = pw_aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_pw_aff_pos_set(isl.isl_pw_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
     def pullback(*args):
         if len(args) == 2 and args[1].__class__ is multi_aff:
             args = list(args)
@@ -3771,6 +3811,16 @@ class pw_aff(union_pw_aff, pw_multi_aff, multi_pw_aff):
         res = isl.isl_pw_aff_union_add(isl.isl_pw_aff_copy(arg0.ptr), isl.isl_pw_aff_copy(arg1.ptr))
         obj = pw_aff(ctx=ctx, ptr=res)
         return obj
+    def zero_set(arg0):
+        try:
+            if not arg0.__class__ is pw_aff:
+                arg0 = pw_aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_pw_aff_zero_set(isl.isl_pw_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
 
 isl.isl_pw_aff_from_aff.restype = c_void_p
 isl.isl_pw_aff_from_aff.argtypes = [c_void_p]
@@ -3845,11 +3895,19 @@ isl.isl_pw_aff_ne_set.restype = c_void_p
 isl.isl_pw_aff_ne_set.argtypes = [c_void_p, c_void_p]
 isl.isl_pw_aff_neg.restype = c_void_p
 isl.isl_pw_aff_neg.argtypes = [c_void_p]
+isl.isl_pw_aff_non_zero_set.restype = c_void_p
+isl.isl_pw_aff_non_zero_set.argtypes = [c_void_p]
+isl.isl_pw_aff_nonneg_set.restype = c_void_p
+isl.isl_pw_aff_nonneg_set.argtypes = [c_void_p]
+isl.isl_pw_aff_nonpos_set.restype = c_void_p
+isl.isl_pw_aff_nonpos_set.argtypes = [c_void_p]
 isl.isl_pw_aff_param_on_domain_id.restype = c_void_p
 isl.isl_pw_aff_param_on_domain_id.argtypes = [c_void_p, c_void_p]
 isl.isl_pw_aff_params.restype = c_void_p
 isl.isl_pw_aff_params.argtypes = [c_void_p]
 isl.isl_pw_aff_plain_is_equal.argtypes = [c_void_p, c_void_p]
+isl.isl_pw_aff_pos_set.restype = c_void_p
+isl.isl_pw_aff_pos_set.argtypes = [c_void_p]
 isl.isl_pw_aff_pullback_multi_aff.restype = c_void_p
 isl.isl_pw_aff_pullback_multi_aff.argtypes = [c_void_p, c_void_p]
 isl.isl_pw_aff_pullback_multi_pw_aff.restype = c_void_p
@@ -3876,6 +3934,8 @@ isl.isl_pw_aff_to_union_pw_aff.restype = c_void_p
 isl.isl_pw_aff_to_union_pw_aff.argtypes = [c_void_p]
 isl.isl_pw_aff_union_add.restype = c_void_p
 isl.isl_pw_aff_union_add.argtypes = [c_void_p, c_void_p]
+isl.isl_pw_aff_zero_set.restype = c_void_p
+isl.isl_pw_aff_zero_set.argtypes = [c_void_p]
 isl.isl_pw_aff_copy.restype = c_void_p
 isl.isl_pw_aff_copy.argtypes = [c_void_p]
 isl.isl_pw_aff_free.restype = c_void_p
