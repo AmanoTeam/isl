@@ -32,11 +32,6 @@ isl_ctx *isl_constraint_get_ctx(__isl_keep isl_constraint *c)
 	return c ? isl_local_space_get_ctx(c->ls) : NULL;
 }
 
-static isl_size n(__isl_keep isl_constraint *c, enum isl_dim_type type)
-{
-	return isl_local_space_dim(c->ls, type);
-}
-
 static unsigned offset(__isl_keep isl_constraint *c, enum isl_dim_type type)
 {
 	return isl_local_space_offset(c->ls, type);
@@ -391,7 +386,7 @@ isl_size isl_constraint_dim(__isl_keep isl_constraint *constraint,
 {
 	if (!constraint)
 		return isl_size_error;
-	return n(constraint, type);
+	return isl_local_space_dim(constraint->ls, type);
 }
 
 #undef TYPE
