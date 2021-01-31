@@ -399,6 +399,7 @@ isl_bool isl_constraint_involves_dims(__isl_keep isl_constraint *constraint,
 {
 	int i;
 	int *active = NULL;
+	isl_size off;
 	isl_bool involves = isl_bool_false;
 
 	if (!constraint)
@@ -406,7 +407,9 @@ isl_bool isl_constraint_involves_dims(__isl_keep isl_constraint *constraint,
 	if (n == 0)
 		return isl_bool_false;
 
-	if (isl_constraint_check_range(constraint, type, first, n) < 0)
+	off = isl_local_space_var_offset(constraint->ls, type);
+	if (off < 0 ||
+	    isl_constraint_check_range(constraint, type, first, n) < 0)
 		return isl_bool_error;
 
 	active = isl_local_space_get_active(constraint->ls,
@@ -414,9 +417,8 @@ isl_bool isl_constraint_involves_dims(__isl_keep isl_constraint *constraint,
 	if (!active)
 		goto error;
 
-	first += isl_local_space_offset(constraint->ls, type) - 1;
 	for (i = 0; i < n; ++i)
-		if (active[first + i]) {
+		if (active[off + first + i]) {
 			involves = isl_bool_true;
 			break;
 		}
