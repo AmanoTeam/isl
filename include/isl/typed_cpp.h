@@ -7512,6 +7512,7 @@ struct pw_aff<Anonymous> : public isl::pw_aff {
   inline typed::pw_aff<Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::pw_aff<Anonymous> mod(long mod) const;
   inline typed::pw_aff<Anonymous> neg() const;
+  inline typed::set<> neg_set() const;
   inline typed::set<> nonpos_set() const;
   inline typed::set<> params() const;
   inline typed::set<> pos_set() const;
@@ -7726,6 +7727,7 @@ struct pw_aff<Domain, Anonymous> : public isl::pw_aff {
   inline typed::pw_aff<Domain, Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::pw_aff<Domain, Anonymous> mod(long mod) const;
   inline typed::pw_aff<Domain, Anonymous> neg() const;
+  inline typed::set<Domain> neg_set() const;
   inline typed::set<Domain> nonpos_set() const;
   inline typed::set<> params() const;
   inline typed::set<Domain> pos_set() const;
@@ -7952,6 +7954,7 @@ struct pw_aff<pair<Domain2, Range2>, Anonymous> : public isl::pw_aff {
   inline typed::pw_aff<pair<Domain2, Range2>, Anonymous> mod(const typed::val<Anonymous> &mod) const;
   inline typed::pw_aff<pair<Domain2, Range2>, Anonymous> mod(long mod) const;
   inline typed::pw_aff<pair<Domain2, Range2>, Anonymous> neg() const;
+  inline typed::set<pair<Domain2, Range2>> neg_set() const;
   inline typed::set<pair<Domain2, Range2>> nonpos_set() const;
   inline typed::set<> params() const;
   inline typed::set<pair<Domain2, Range2>> pos_set() const;
@@ -35804,6 +35807,12 @@ typed::pw_aff<Anonymous> typed::pw_aff<Anonymous>::neg() const
   return typed::pw_aff<Anonymous>(res);
 }
 
+typed::set<> typed::pw_aff<Anonymous>::neg_set() const
+{
+  auto res = isl::pw_aff::neg_set();
+  return typed::set<>(res);
+}
+
 typed::set<> typed::pw_aff<Anonymous>::nonpos_set() const
 {
   auto res = isl::pw_aff::nonpos_set();
@@ -36505,6 +36514,13 @@ typed::pw_aff<Domain, Anonymous> typed::pw_aff<Domain, Anonymous>::neg() const
 {
   auto res = isl::pw_aff::neg();
   return typed::pw_aff<Domain, Anonymous>(res);
+}
+
+template <typename Domain>
+typed::set<Domain> typed::pw_aff<Domain, Anonymous>::neg_set() const
+{
+  auto res = isl::pw_aff::neg_set();
+  return typed::set<Domain>(res);
 }
 
 template <typename Domain>
@@ -37384,6 +37400,13 @@ typed::pw_aff<pair<Domain2, Range2>, Anonymous> typed::pw_aff<pair<Domain2, Rang
 {
   auto res = isl::pw_aff::neg();
   return typed::pw_aff<pair<Domain2, Range2>, Anonymous>(res);
+}
+
+template <typename Domain2, typename Range2>
+typed::set<pair<Domain2, Range2>> typed::pw_aff<pair<Domain2, Range2>, Anonymous>::neg_set() const
+{
+  auto res = isl::pw_aff::neg_set();
+  return typed::set<pair<Domain2, Range2>>(res);
 }
 
 template <typename Domain2, typename Range2>

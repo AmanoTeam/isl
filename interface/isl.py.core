@@ -3553,6 +3553,16 @@ class pw_aff(union_pw_aff, pw_multi_aff, multi_pw_aff):
         res = isl.isl_pw_aff_neg(isl.isl_pw_aff_copy(arg0.ptr))
         obj = pw_aff(ctx=ctx, ptr=res)
         return obj
+    def neg_set(arg0):
+        try:
+            if not arg0.__class__ is pw_aff:
+                arg0 = pw_aff(arg0)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_pw_aff_neg_set(isl.isl_pw_aff_copy(arg0.ptr))
+        obj = set(ctx=ctx, ptr=res)
+        return obj
     def non_zero_set(arg0):
         try:
             if not arg0.__class__ is pw_aff:
@@ -3895,6 +3905,8 @@ isl.isl_pw_aff_ne_set.restype = c_void_p
 isl.isl_pw_aff_ne_set.argtypes = [c_void_p, c_void_p]
 isl.isl_pw_aff_neg.restype = c_void_p
 isl.isl_pw_aff_neg.argtypes = [c_void_p]
+isl.isl_pw_aff_neg_set.restype = c_void_p
+isl.isl_pw_aff_neg_set.argtypes = [c_void_p]
 isl.isl_pw_aff_non_zero_set.restype = c_void_p
 isl.isl_pw_aff_non_zero_set.argtypes = [c_void_p]
 isl.isl_pw_aff_nonneg_set.restype = c_void_p

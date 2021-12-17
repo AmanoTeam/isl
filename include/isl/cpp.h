@@ -2968,6 +2968,7 @@ class pw_aff {
   inline unsigned n_piece() const;
   inline isl::set ne_set(isl::pw_aff pwaff2) const;
   inline isl::pw_aff neg() const;
+  inline isl::set neg_set() const;
   inline isl::set non_zero_set() const;
   inline isl::set nonneg_set() const;
   inline isl::set nonpos_set() const;
@@ -19416,6 +19417,18 @@ isl::pw_aff pw_aff::neg() const
   auto saved_ctx = ctx();
   options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
   auto res = isl_pw_aff_neg(copy());
+  if (!res)
+    exception::throw_last_error(saved_ctx);
+  return manage(res);
+}
+
+isl::set pw_aff::neg_set() const
+{
+  if (!ptr)
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  auto saved_ctx = ctx();
+  options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
+  auto res = isl_pw_aff_neg_set(copy());
   if (!res)
     exception::throw_last_error(saved_ctx);
   return manage(res);

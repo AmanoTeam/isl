@@ -2902,6 +2902,7 @@ class pw_aff {
   inline class size n_piece() const;
   inline isl::checked::set ne_set(isl::checked::pw_aff pwaff2) const;
   inline isl::checked::pw_aff neg() const;
+  inline isl::checked::set neg_set() const;
   inline isl::checked::set non_zero_set() const;
   inline isl::checked::set nonneg_set() const;
   inline isl::checked::set nonpos_set() const;
@@ -14323,6 +14324,12 @@ isl::checked::set pw_aff::ne_set(isl::checked::pw_aff pwaff2) const
 isl::checked::pw_aff pw_aff::neg() const
 {
   auto res = isl_pw_aff_neg(copy());
+  return manage(res);
+}
+
+isl::checked::set pw_aff::neg_set() const
+{
+  auto res = isl_pw_aff_neg_set(copy());
   return manage(res);
 }
 

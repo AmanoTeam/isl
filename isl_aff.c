@@ -2968,6 +2968,14 @@ __isl_give isl_set *isl_pw_aff_pos_set(__isl_take isl_pw_aff *pa)
 }
 
 /* Return a set containing those elements in the domain
+ * of "pa" where it is negative.
+ */
+__isl_give isl_set *isl_pw_aff_neg_set(__isl_take isl_pw_aff *pa)
+{
+	return isl_pw_aff_pos_set(isl_pw_aff_neg(pa));
+}
+
+/* Return a set containing those elements in the domain
  * of "pa" where it is non-positive.
  */
 __isl_give isl_set *isl_pw_aff_nonpos_set(__isl_take isl_pw_aff *pa)
