@@ -3062,33 +3062,12 @@ __isl_give isl_set *isl_pw_aff_bind_id(__isl_take isl_pw_aff *pa,
 }
 
 /* Return a set containing those elements in the shared domain
- * of pwaff1 and pwaff2 where pwaff1 is greater than (or equal) to pwaff2.
- *
- * We compute the difference on the shared domain and then construct
- * the set of values where this difference is non-negative.
- * If strict is set, then construct the set where the difference is positive.
- * If equal is set, we only return the elements where pwaff1 and pwaff2
- * are equal.
- */
-static __isl_give isl_set *pw_aff_gte_set(__isl_take isl_pw_aff *pwaff1,
-	__isl_take isl_pw_aff *pwaff2, int strict, int equal)
-{
-	pwaff1 = isl_pw_aff_sub(pwaff1, pwaff2);
-
-	if (strict)
-		return isl_pw_aff_pos_set(pwaff1);
-	if (equal)
-		return isl_pw_aff_zero_set(pwaff1);
-	return isl_pw_aff_nonneg_set(pwaff1);
-}
-
-/* Return a set containing those elements in the shared domain
  * of pwaff1 and pwaff2 where pwaff1 is equal to pwaff2.
  */
 __isl_give isl_set *isl_pw_aff_eq_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2)
 {
-	return pw_aff_gte_set(pwaff1, pwaff2, 0, 1);
+	return isl_pw_aff_zero_set(isl_pw_aff_sub(pwaff1, pwaff2));
 }
 
 /* Return a set containing those elements in the shared domain
@@ -3097,7 +3076,7 @@ __isl_give isl_set *isl_pw_aff_eq_set(__isl_take isl_pw_aff *pwaff1,
 __isl_give isl_set *isl_pw_aff_ge_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2)
 {
-	return pw_aff_gte_set(pwaff1, pwaff2, 0, 0);
+	return isl_pw_aff_nonneg_set(isl_pw_aff_sub(pwaff1, pwaff2));
 }
 
 /* Return a set containing those elements in the shared domain
@@ -3106,7 +3085,7 @@ __isl_give isl_set *isl_pw_aff_ge_set(__isl_take isl_pw_aff *pwaff1,
 __isl_give isl_set *isl_pw_aff_gt_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2)
 {
-	return pw_aff_gte_set(pwaff1, pwaff2, 1, 0);
+	return isl_pw_aff_pos_set(isl_pw_aff_sub(pwaff1, pwaff2));
 }
 
 __isl_give isl_set *isl_pw_aff_le_set(__isl_take isl_pw_aff *pwaff1,
