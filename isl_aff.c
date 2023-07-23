@@ -3290,13 +3290,7 @@ __isl_give isl_set *isl_pw_aff_list_gt_set(__isl_take isl_pw_aff_list *list1,
 __isl_give isl_set *isl_pw_aff_ne_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2)
 {
-	isl_set *set_lt, *set_gt;
-
-	isl_pw_aff_align_params_bin(&pwaff1, &pwaff2);
-	set_lt = isl_pw_aff_lt_set(isl_pw_aff_copy(pwaff1),
-				   isl_pw_aff_copy(pwaff2));
-	set_gt = isl_pw_aff_gt_set(pwaff1, pwaff2);
-	return isl_set_union_disjoint(set_lt, set_gt);
+	return isl_pw_aff_non_zero_set(isl_pw_aff_sub(pwaff1, pwaff2));
 }
 
 __isl_give isl_pw_aff *isl_pw_aff_scale_down(__isl_take isl_pw_aff *pwaff,
