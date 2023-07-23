@@ -3075,6 +3075,7 @@ static __isl_give isl_set *pw_aff_gte_set(__isl_take isl_pw_aff *pwaff1,
 {
 	isl_set *set1, *set2;
 
+	isl_pw_aff_align_params_bin(&pwaff1, &pwaff2);
 	set1 = isl_pw_aff_domain(isl_pw_aff_copy(pwaff1));
 	set2 = isl_pw_aff_domain(isl_pw_aff_copy(pwaff2));
 	set1 = isl_set_intersect(set1, set2);
@@ -3102,7 +3103,6 @@ static __isl_give isl_set *pw_aff_gte_set(__isl_take isl_pw_aff *pwaff1,
 __isl_give isl_set *isl_pw_aff_eq_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2)
 {
-	isl_pw_aff_align_params_bin(&pwaff1, &pwaff2);
 	return pw_aff_gte_set(pwaff1, pwaff2, 0, 1);
 }
 
@@ -3112,7 +3112,6 @@ __isl_give isl_set *isl_pw_aff_eq_set(__isl_take isl_pw_aff *pwaff1,
 __isl_give isl_set *isl_pw_aff_ge_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2)
 {
-	isl_pw_aff_align_params_bin(&pwaff1, &pwaff2);
 	return pw_aff_gte_set(pwaff1, pwaff2, 0, 0);
 }
 
@@ -3122,7 +3121,6 @@ __isl_give isl_set *isl_pw_aff_ge_set(__isl_take isl_pw_aff *pwaff1,
 __isl_give isl_set *isl_pw_aff_gt_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2)
 {
-	isl_pw_aff_align_params_bin(&pwaff1, &pwaff2);
 	return pw_aff_gte_set(pwaff1, pwaff2, 1, 0);
 }
 
