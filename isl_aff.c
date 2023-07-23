@@ -3066,7 +3066,7 @@ __isl_give isl_set *isl_pw_aff_bind_id(__isl_take isl_pw_aff *pa,
  *
  * We compute the difference on the shared domain and then construct
  * the set of values where this difference is non-negative.
- * If strict is set, we first subtract 1 from the difference.
+ * If strict is set, then construct the set where the difference is positive.
  * If equal is set, we only return the elements where pwaff1 and pwaff2
  * are equal.
  */
@@ -3082,16 +3082,10 @@ static __isl_give isl_set *pw_aff_gte_set(__isl_take isl_pw_aff *pwaff1,
 	pwaff1 = isl_pw_aff_intersect_domain(pwaff1, isl_set_copy(set1));
 	pwaff2 = isl_pw_aff_intersect_domain(pwaff2, isl_set_copy(set1));
 	pwaff1 = isl_pw_aff_add(pwaff1, isl_pw_aff_neg(pwaff2));
+	isl_set_free(set1);
 
-	if (strict) {
-		isl_space *space = isl_set_get_space(set1);
-		isl_aff *aff;
-		aff = isl_aff_zero_on_domain(isl_local_space_from_space(space));
-		aff = isl_aff_add_constant_si(aff, -1);
-		pwaff1 = isl_pw_aff_add(pwaff1, isl_pw_aff_alloc(set1, aff));
-	} else
-		isl_set_free(set1);
-
+	if (strict)
+		return isl_pw_aff_pos_set(pwaff1);
 	if (equal)
 		return isl_pw_aff_zero_set(pwaff1);
 	return isl_pw_aff_nonneg_set(pwaff1);

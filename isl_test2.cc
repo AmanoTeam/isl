@@ -537,6 +537,8 @@ static void test_locus(isl::ctx ctx)
 	C(&isl::pw_aff::gt_set, {
 	{ "[n] -> { [n] : n >= 0 }", "[m] -> { [m - 1] }",
 	  "[n, m] -> { : n > m - 1 and n >= 0 }" },
+	{ "[n] -> { [n/2] : n >= 0 }", "[m] -> { [m - 1] }",
+	  "[n, m] -> { : n > 2m - 2 and n >= 0 }" },
 	});
 
 	C(&isl::pw_aff::ne_set, {
