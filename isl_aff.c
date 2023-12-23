@@ -3073,16 +3073,7 @@ __isl_give isl_set *isl_pw_aff_bind_id(__isl_take isl_pw_aff *pa,
 static __isl_give isl_set *pw_aff_gte_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2, int strict, int equal)
 {
-	isl_set *set1, *set2;
-
-	isl_pw_aff_align_params_bin(&pwaff1, &pwaff2);
-	set1 = isl_pw_aff_domain(isl_pw_aff_copy(pwaff1));
-	set2 = isl_pw_aff_domain(isl_pw_aff_copy(pwaff2));
-	set1 = isl_set_intersect(set1, set2);
-	pwaff1 = isl_pw_aff_intersect_domain(pwaff1, isl_set_copy(set1));
-	pwaff2 = isl_pw_aff_intersect_domain(pwaff2, isl_set_copy(set1));
 	pwaff1 = isl_pw_aff_add(pwaff1, isl_pw_aff_neg(pwaff2));
-	isl_set_free(set1);
 
 	if (strict)
 		return isl_pw_aff_pos_set(pwaff1);
