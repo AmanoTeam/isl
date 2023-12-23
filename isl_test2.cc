@@ -520,6 +520,31 @@ static void test_box_hull(isl::ctx ctx)
 	});
 }
 
+/* Perform basic locus tests.
+ */
+static void test_locus(isl::ctx ctx)
+{
+	C(&isl::pw_aff::eq_set, {
+	{ "[n] -> { [n] : n >= 0 }", "[m] -> { [m - 1] }",
+	  "[n, m] -> { : n = m - 1 and n >= 0 }" },
+	});
+
+	C(&isl::pw_aff::ge_set, {
+	{ "[n] -> { [n] : n >= 0 }", "[m] -> { [m - 1] }",
+	  "[n, m] -> { : n >= m - 1 and n >= 0 }" },
+	});
+
+	C(&isl::pw_aff::gt_set, {
+	{ "[n] -> { [n] : n >= 0 }", "[m] -> { [m - 1] }",
+	  "[n, m] -> { : n > m - 1 and n >= 0 }" },
+	});
+
+	C(&isl::pw_aff::ne_set, {
+	{ "[n] -> { [n] : n >= 0 }", "[m] -> { [m - 1] }",
+	  "[n, m] -> { : n != m - 1 and n >= 0 }" },
+	});
+}
+
 /* Perform some coalescing tests.
  */
 static void test_coalesce(isl::ctx ctx)
@@ -1059,6 +1084,7 @@ static std::vector<std::pair<const char *, void (*)(isl::ctx)>> tests =
 	{ "preimage", &test_preimage },
 	{ "fixed power", &test_fixed_power },
 	{ "box hull", &test_box_hull },
+	{ "locus", &test_locus },
 	{ "coalesce", &test_coalesce },
 	{ "intersect", &test_intersect },
 	{ "lexmin", &test_lexmin },
