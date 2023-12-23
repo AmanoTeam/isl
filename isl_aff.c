@@ -3073,7 +3073,7 @@ __isl_give isl_set *isl_pw_aff_bind_id(__isl_take isl_pw_aff *pa,
 static __isl_give isl_set *pw_aff_gte_set(__isl_take isl_pw_aff *pwaff1,
 	__isl_take isl_pw_aff *pwaff2, int strict, int equal)
 {
-	pwaff1 = isl_pw_aff_add(pwaff1, isl_pw_aff_neg(pwaff2));
+	pwaff1 = isl_pw_aff_sub(pwaff1, pwaff2);
 
 	if (strict)
 		return isl_pw_aff_pos_set(pwaff1);
