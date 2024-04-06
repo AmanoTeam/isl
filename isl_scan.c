@@ -301,7 +301,7 @@ error:
 	return -1;
 }
 
-int isl_set_count(__isl_keep isl_set *set, isl_int *count)
+static int isl_set_count(__isl_keep isl_set *set, isl_int *count)
 {
 	if (!set)
 		return -1;
