@@ -301,13 +301,6 @@ error:
 	return -1;
 }
 
-static int isl_set_count(__isl_keep isl_set *set, isl_int *count)
-{
-	if (!set)
-		return -1;
-	return isl_set_count_upto(set, set->ctx->zero, count);
-}
-
 /* Count the total number of elements in "set" (in an inefficient way) and
  * return the result.
  */
@@ -323,7 +316,7 @@ __isl_give isl_val *isl_set_count_val(__isl_keep isl_set *set)
 	v = isl_val_cow(v);
 	if (!v)
 		return NULL;
-	if (isl_set_count(set, &v->n) < 0)
+	if (isl_set_count_upto(set, ctx->zero, &v->n) < 0)
 		v = isl_val_free(v);
 	return v;
 }
