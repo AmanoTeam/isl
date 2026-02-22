@@ -2934,6 +2934,24 @@ static int compute_separate_domain(struct isl_codegen_domains *domains,
 	return 0;
 }
 
+/* Eliminate dimensions inner to the current dimension as well as
+ * existentially quantified variables and local variables
+ * that depend on the current dimension.
+ * The result then consists only of constraints that are independent
+ * of the current dimension and upper and lower bounds on the current
+ * dimension.
+ * Do this as a preparation for splitting up the domain into disjoint
+ * basic sets.
+ */
+static __isl_give isl_set *compute_domains_eliminate(
+	__isl_keep isl_ast_build *build, __isl_take isl_set *domain)
+{
+	domain = isl_ast_build_eliminate_inner(build, domain);
+	domain = isl_ast_build_eliminate_divs(build, domain);
+
+	return domain;
+}
+
 /* Split up the domain at the current depth into disjoint
  * basic sets for which code should be generated separately
  * for the given separation class domain.
@@ -2995,7 +3013,7 @@ static isl_stat compute_partial_domains(struct isl_codegen_domains *domains,
 	domain = isl_set_intersect(domain,
 				isl_set_copy(domains->schedule_domain));
 
-	domain = isl_ast_build_eliminate(domains->build, domain);
+	domain = compute_domains_eliminate(domains->build, domain);
 	domain = isl_set_intersect(domain, isl_set_copy(class_domain));
 
 	domain = isl_set_coalesce_preserve(domain);
@@ -3363,7 +3381,7 @@ static __isl_give isl_ast_graft_list *generate_shifted_component_tree_base(
 		return generate_shifted_component_tree_unroll(executed, domain,
 								build);
 
-	domain = isl_ast_build_eliminate(build, domain);
+	domain = compute_domains_eliminate(build, domain);
 	domain = isl_set_coalesce_preserve(domain);
 
 	outer_disjunction = has_pure_outer_disjunction(domain, build);
