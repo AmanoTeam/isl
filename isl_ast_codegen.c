@@ -431,7 +431,7 @@ static __isl_give isl_aff *lower_bound(__isl_keep isl_constraint *c,
 	aff = isl_constraint_get_bound(c, isl_dim_set, pos);
 	aff = isl_aff_ceil(aff);
 
-	if (isl_ast_build_has_stride(build, pos)) {
+	if (isl_ast_build_has_stride(build)) {
 		isl_aff *offset;
 		isl_val *stride;
 
@@ -613,7 +613,7 @@ static __isl_give isl_pw_aff_list *lower_bounds(
 		list = isl_pw_aff_list_add(list, isl_pw_aff_from_aff(aff));
 	}
 
-	if (isl_ast_build_has_stride(build, pos))
+	if (isl_ast_build_has_stride(build))
 		list = remove_redundant_lower_bounds(list, build);
 
 	return list;
@@ -725,7 +725,7 @@ static __isl_give isl_set *add_implied_guards(__isl_take isl_set *guard,
 	isl_set *dom, *set;
 
 	depth = isl_ast_build_get_depth(build);
-	has_stride = isl_ast_build_has_stride(build, depth);
+	has_stride = isl_ast_build_has_stride(build);
 	if (depth < 0 || has_stride < 0)
 		return isl_set_free(guard);
 	if (!has_stride && !degenerate)
@@ -1049,7 +1049,7 @@ static __isl_give isl_ast_expr *for_inc(__isl_keep isl_ast_build *build)
 		return NULL;
 	ctx = isl_ast_build_get_ctx(build);
 
-	if (!isl_ast_build_has_stride(build, depth))
+	if (!isl_ast_build_has_stride(build))
 		return isl_ast_expr_alloc_int_si(ctx, 1);
 
 	v = isl_ast_build_get_stride(build, depth);
@@ -1690,7 +1690,7 @@ static __isl_give isl_ast_graft *create_node(__isl_take isl_union_map *executed,
 	if (depth < 0)
 		build = isl_ast_build_free(build);
 	data.depth = depth;
-	if (!isl_ast_build_has_stride(build, data.depth))
+	if (!isl_ast_build_has_stride(build))
 		return create_node_scaled(executed, bounds, domain, build);
 
 	offset = isl_ast_build_get_offset(build, data.depth);
