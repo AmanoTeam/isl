@@ -320,6 +320,15 @@ static __isl_give isl_ast_expr *ast_expr_add(__isl_take isl_ast_expr *expr1,
 	return ast_expr_binary_non_zero(&isl_ast_expr_add, expr1, expr2);
 }
 
+/* Create an expression representing the disjunction of "expr1" and "expr2",
+ * provided neither of the two expressions is identically zero.
+ */
+static __isl_give isl_ast_expr *ast_expr_or(__isl_take isl_ast_expr *expr1,
+	__isl_take isl_ast_expr *expr2)
+{
+	return ast_expr_binary_non_zero(&isl_ast_expr_or, expr1, expr2);
+}
+
 /* Subtract expr2 from expr1.
  *
  * If expr2 is zero, we simply return expr1.
@@ -2142,7 +2151,7 @@ __isl_give isl_ast_expr *isl_ast_build_expr_from_set_internal(
 		bset = isl_basic_set_gist(bset,
 				isl_set_simple_hull(isl_set_copy(domain)));
 		expr = isl_ast_build_expr_from_basic_set(build, bset);
-		res = isl_ast_expr_or(res, expr);
+		res = ast_expr_or(res, expr);
 	}
 
 	isl_set_free(domain);
