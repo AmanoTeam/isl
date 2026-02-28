@@ -1956,6 +1956,21 @@ error:
 	return NULL;
 }
 
+/* Are "set" and "bset" disjoint?
+ */
+static isl_bool is_disjoint(__isl_keep isl_set *set,
+	__isl_keep isl_basic_set *bset)
+{
+	isl_set *set2;
+	isl_bool disjoint;
+
+	set2 = isl_set_from_basic_set(isl_basic_set_copy(bset));
+	disjoint = isl_set_is_disjoint(set, set2);
+	isl_set_free(set2);
+
+	return disjoint;
+}
+
 /* Wrapper around isl_constraint_cmp_last_non_zero for use
  * as a callback to isl_constraint_list_sort.
  * If isl_constraint_cmp_last_non_zero cannot tell the constraints
@@ -1974,6 +1989,8 @@ static int cmp_constraint(__isl_keep isl_constraint *a,
 
 /* Construct an isl_ast_expr that evaluates the conditions defining "bset".
  * The result is simplified in terms of build->domain.
+ *
+ * If "bset" is empty (within the build domain), then return the expression "0".
  *
  * If "bset" is not bounded by any constraint, then we construct
  * the expression "1", i.e., "true".
@@ -1996,11 +2013,24 @@ __isl_give isl_ast_expr *isl_ast_build_expr_from_basic_set(
 	 __isl_keep isl_ast_build *build, __isl_take isl_basic_set *bset)
 {
 	int i;
+	isl_bool disjoint;
 	isl_size n;
 	isl_constraint *c;
 	isl_constraint_list *list;
 	isl_ast_expr *res;
-	isl_set *set;
+	isl_set *set, *domain;
+
+	domain = isl_ast_build_get_domain(build);
+	disjoint = is_disjoint(domain, bset);
+	isl_set_free(domain);
+
+	if (disjoint < 0) {
+		build = NULL;
+	} else if (disjoint) {
+		isl_ctx *ctx = isl_ast_build_get_ctx(build);
+		isl_basic_set_free(bset);
+		return isl_ast_expr_from_val(isl_val_zero(ctx));
+	}
 
 	list = isl_basic_set_get_constraint_list(bset);
 	isl_basic_set_free(bset);
