@@ -1060,8 +1060,9 @@ static isl_stat replace_by_partial_if_simpler(struct isl_parallel_stat *stat)
  * and set data->sign accordingly.
  * Also check if "c" is part of a positively weighted sum of constraints
  * that is equal to data->div, where each constraint has distinct non-zero
- * coefficients.  If "c" is the last constraint in this sum
- * (and the sum is "simpler" than data->nonneg)
+ * coefficients.  If "c" does not involve any non-zero coefficients,
+ * then it is not considered to be part of this sum.  If "c" is
+ * the last constraint in this sum (and the sum is "simpler" than data->nonneg)
  * then also replace data->nonneg by this sum.
  * If "c" is equal or opposite to data->div, then it is not considered
  * to be part of a sum.
@@ -1104,9 +1105,12 @@ static isl_stat check_parallel_or_opposite(struct isl_extract_mod_data *data,
 		stat.partial = isl_bool_false;
 
 	ok = parallel_or_opposite_scan(&stat, &is_parallel_or_opposite, 0);
-	if (ok >= 0 && ok)
-		if (update_partial(&stat) < 0)
+	if (ok >= 0 && ok) {
+		if (stat.partial && !stat.f)
+			ok = isl_bool_false;
+		else if (update_partial(&stat) < 0)
 			ok = isl_bool_error;
+	}
 	isl_val_free(stat.f);
 	if (ok < 0 || !ok)
 		return isl_stat_non_error_bool(ok);
