@@ -281,10 +281,14 @@ static isl_bool ast_expr_is_zero(__isl_keep isl_ast_expr *expr)
 	return isl_val_is_zero(expr->u.v);
 }
 
-/* Create an expression representing the sum of "expr1" and "expr2",
+/* Create a binary expression by calling "fn" on "expr1" and "expr2",
  * provided neither of the two expressions is identically zero.
+ * Otherwise, return the non-zero expression (or zero if they are both zero).
  */
-static __isl_give isl_ast_expr *ast_expr_add(__isl_take isl_ast_expr *expr1,
+static __isl_give isl_ast_expr *ast_expr_binary_non_zero(
+	__isl_give isl_ast_expr *(*fn)(__isl_take isl_ast_expr *expr1,
+		__isl_take isl_ast_expr *expr2),
+	__isl_take isl_ast_expr *expr1,
 	__isl_take isl_ast_expr *expr2)
 {
 	if (!expr1 || !expr2)
@@ -300,11 +304,20 @@ static __isl_give isl_ast_expr *ast_expr_add(__isl_take isl_ast_expr *expr1,
 		return expr1;
 	}
 
-	return isl_ast_expr_add(expr1, expr2);
+	return fn(expr1, expr2);
 error:
 	isl_ast_expr_free(expr1);
 	isl_ast_expr_free(expr2);
 	return NULL;
+}
+
+/* Create an expression representing the sum of "expr1" and "expr2",
+ * provided neither of the two expressions is identically zero.
+ */
+static __isl_give isl_ast_expr *ast_expr_add(__isl_take isl_ast_expr *expr1,
+	__isl_take isl_ast_expr *expr2)
+{
+	return ast_expr_binary_non_zero(&isl_ast_expr_add, expr1, expr2);
 }
 
 /* Subtract expr2 from expr1.
