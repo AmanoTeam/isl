@@ -189,9 +189,8 @@ error:
 /* Check if constraint "c" imposes any stride on dimension data->pos
  * and, if so, update the stride information in "data".
  *
- * In order to impose a stride on the dimension, "c" needs to be an equality
- * and it needs to involve the dimension.  Note that "c" may also be
- * a div constraint and thus an inequality that we cannot use.
+ * In order to impose a stride on the dimension,
+ * "c" needs to involve the dimension.
  *
  * Let c be of the form
  *
@@ -220,21 +219,20 @@ error:
  *
  * The expression "-a h(p)/g" can therefore be used as offset.
  */
-static isl_stat detect_stride(__isl_take isl_constraint *c, void *user)
+static isl_stat detect_stride(struct isl_detect_stride_data *data,
+	__isl_take isl_constraint *c)
 {
-	struct isl_detect_stride_data *data = user;
 	int i;
 	isl_size n_div;
 	isl_ctx *ctx;
 	isl_stat r = isl_stat_ok;
 	isl_val *v, *stride, *m;
-	isl_bool is_eq, relevant, has_stride;
+	isl_bool relevant, has_stride;
 
-	is_eq = isl_constraint_is_equality(c);
 	relevant = isl_constraint_involves_dims(c, isl_dim_set, data->pos, 1);
-	if (is_eq < 0 || relevant < 0)
+	if (relevant < 0)
 		goto error;
-	if (!is_eq || !relevant)
+	if (!relevant)
 		goto done;
 
 	n_div = isl_constraint_dim(c, isl_dim_div);
@@ -280,6 +278,27 @@ done:	isl_constraint_free(c);
 	return r;
 }
 
+/* Check if constraint "c" imposes any stride on dimension data->pos
+ * and, if so, update the stride information in "data".
+ *
+ * In order to impose a stride on the dimension, "c" needs to be an equality.
+ * Note that "c" may also be
+ * a div constraint and thus an inequality that we cannot use.
+ */
+static isl_stat detect_stride_eq(__isl_take isl_constraint *c, void *user)
+{
+	struct isl_detect_stride_data *data = user;
+	isl_bool is_eq;
+
+	is_eq = isl_constraint_is_equality(c);
+	if (is_eq < 0 || !is_eq) {
+		isl_constraint_free(c);
+		return isl_stat_non_error_bool(is_eq);
+	}
+
+	return detect_stride(data, c);
+}
+
 /* Check if the equality constraints implied by "set" impose any stride
  * on set dimension "pos" and store the results in data->stride and
  * data->offset.
@@ -295,7 +314,7 @@ static isl_stat set_detect_stride_eq(__isl_keep isl_set *set, int pos,
 
 	hull = isl_set_affine_hull(isl_set_copy(set));
 
-	res = isl_basic_set_foreach_constraint(hull, &detect_stride, data);
+	res = isl_basic_set_foreach_constraint(hull, &detect_stride_eq, data);
 
 	isl_basic_set_free(hull);
 
