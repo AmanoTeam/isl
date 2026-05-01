@@ -24,6 +24,8 @@
 #include <isl_space_private.h>
 #include <isl_mat_private.h>
 #include <isl_vec_private.h>
+#include <isl_constraint_private.h>
+#include <isl_val_private.h>
 
 #include <bset_to_bmap.c>
 #include <bset_from_bmap.c>
@@ -2263,6 +2265,79 @@ __isl_give isl_basic_map *isl_basic_map_remove_duplicate_constraints(
 	constraint_index_free(&ci);
 	return exploit_opposite_constraints(bmap, opposite, progress,
 								detect_divs);
+}
+
+/* Internal data structure for call_on_constraint.
+ *
+ * "bset" is the basic set containing the constraint.
+ * "fn" is the callback function.
+ * "user" is the user-specified callback function argument.
+ */
+struct isl_call_on_constraint_data {
+	__isl_keep isl_basic_set *bset;
+	isl_stat (*fn)(__isl_take isl_constraint *c, __isl_take isl_val *d,
+		void *user);
+	void *user;
+};
+
+/* Call data->fn on one of the pair of constraints "k" and "l"
+ * with opposite coefficients, with "sum" equal to the sum
+ * of the constant terms, and return isl_bool_true if any further
+ * pairs of inequality constraints should be considered after this pair.
+ * The latter is always the case.
+ */
+static isl_bool call_on_constraint(int *opposite, int k, int l, isl_int sum,
+	void *user)
+{
+	struct isl_call_on_constraint_data *data = user;
+	isl_local_space *ls;
+	isl_vec *v;
+	isl_constraint *c;
+	isl_ctx *ctx;
+	isl_val *d;
+
+	ls = isl_basic_set_get_local_space(data->bset);
+	v = isl_basic_set_get_inequality(data->bset, k);
+	c = isl_constraint_alloc_vec(0, ls, v);
+	ctx = isl_constraint_get_ctx(c);
+	d = isl_val_int_from_isl_int(ctx, sum);
+	if (data->fn(c, d, data->user) < 0)
+		return isl_bool_error;
+	return isl_bool_true;
+}
+
+/* Call "fn" on each pair of constraints in "bset" with opposite coefficients.
+ * The value "d" passed to the callback is the sum of the constant terms.
+ * The constraint "c" is one of the two constraints with opposite coefficients.
+ */
+isl_stat isl_basic_set_foreach_opposite_constraint_pair(
+	__isl_keep isl_basic_set *bset,
+	isl_stat (*fn)(__isl_take isl_constraint *c, __isl_take isl_val *d,
+		void *user), void *user)
+{
+	struct isl_call_on_constraint_data data = { bset, fn, user };
+	struct isl_constraint_index ci;
+	int *opposite;
+	isl_size n;
+	isl_bool all;
+
+	n = isl_basic_set_n_inequality(bset);
+	if (n < 0)
+		return isl_stat_error;
+	if (n < 2)
+		return isl_stat_ok;
+
+	if (setup_constraint_index(&ci, bset) < 0)
+		return isl_stat_error;
+
+	opposite = detect_opposites(&ci, bset);
+	constraint_index_free(&ci);
+
+	if (!opposite)
+		return isl_stat_error;
+	all = every_opposite_constraint_pair(n, opposite, bset_to_bmap(bset),
+			&call_on_constraint, &data);
+	return isl_stat_non_error_bool(all);
 }
 
 /* Detect all pairs of inequalities that form an equality.

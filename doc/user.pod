@@ -2670,6 +2670,22 @@ represents an equality.  If not, it represents an inequality.
 	isl_bool isl_constraint_is_equality(
 		__isl_keep isl_constraint *constraint);
 
+The function C<isl_basic_set_foreach_opposite_constraint_pair>
+iterates over special pairs of constraints that may or may not appear
+in the description of C<bset>.  In particular, the callback C<fn>
+is called (once) for each pair of constraints that have opposite
+coefficients for all variables.  The value C<d> is the sum
+of the constant terms of the two constraints.  Only one of the two
+constraints is passed in, since the other one can be constructed
+from the given constraint and C<d>.
+
+	#include <isl/constraint.h>
+	isl_stat isl_basic_set_foreach_opposite_constraint_pair(
+		__isl_keep isl_basic_set *bset,
+		isl_stat (*fn)(__isl_take isl_constraint *c,
+			__isl_take isl_val *d,
+			void *user), void *user);
+
 It is also possible to obtain a list of constraints from a basic
 map or set
 
