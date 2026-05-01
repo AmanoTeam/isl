@@ -285,26 +285,45 @@ error:
 	return isl_stat_error;
 }
 
-/* Check if the constraints in "set" imply any stride on set dimension "pos" and
- * store the results in data->stride and data->offset.
+/* Check if the equality constraints implied by "set" impose any stride
+ * on set dimension "pos" and store the results in data->stride and
+ * data->offset.
  *
  * In particular, compute the affine hull and then check if
  * any of the constraints in the hull impose any stride on the dimension.
+ */
+static isl_stat set_detect_stride_eq(__isl_keep isl_set *set, int pos,
+	struct isl_detect_stride_data *data)
+{
+	isl_basic_set *hull;
+	isl_stat res;
+
+	hull = isl_set_affine_hull(isl_set_copy(set));
+
+	res = isl_basic_set_foreach_constraint(hull, &detect_stride, data);
+
+	isl_basic_set_free(hull);
+
+	return res;
+}
+
+/* Check if the constraints in "set" imply any stride on set dimension "pos" and
+ * store the results in data->stride and data->offset.
+ *
+ * In particular, check if any equality constraints implied by "set"
+ * impose any stride on the dimension.
  * If no such constraint can be found, then the offset is taken
  * to be the zero expression and the stride is taken to be one.
  */
 static void set_detect_stride(__isl_keep isl_set *set, int pos,
 	struct isl_detect_stride_data *data)
 {
-	isl_basic_set *hull;
-
-	hull = isl_set_affine_hull(isl_set_copy(set));
-
 	data->pos = pos;
 	data->found = 0;
 	data->stride = NULL;
 	data->offset = NULL;
-	if (isl_basic_set_foreach_constraint(hull, &detect_stride, data) < 0)
+
+	if (set_detect_stride_eq(set, pos, data) < 0)
 		goto error;
 
 	if (!data->found) {
@@ -318,10 +337,8 @@ static void set_detect_stride(__isl_keep isl_set *set, int pos,
 			data->offset = isl_aff_zero_on_domain(ls);
 		}
 	}
-	isl_basic_set_free(hull);
 	return;
 error:
-	isl_basic_set_free(hull);
 	data->stride = isl_val_free(data->stride);
 	data->offset = isl_aff_free(data->offset);
 }
