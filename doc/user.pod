@@ -7324,6 +7324,11 @@ are not sufficient.
 		__isl_take isl_local_space *ls,
 		enum isl_dim_type type, unsigned first, unsigned n);
 
+	#include <isl/constraint.h>
+	__isl_give isl_constraint *
+	isl_constraint_drop_all_locals(
+		__isl_take isl_constraint *c);
+
 	#include <isl/set.h>
 	__isl_give isl_basic_set *isl_basic_set_add_dims(
 		__isl_take isl_basic_set *bset,

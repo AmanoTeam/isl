@@ -111,6 +111,9 @@ __isl_give isl_aff *isl_constraint_get_div(__isl_keep isl_constraint *constraint
 __isl_give isl_constraint *isl_constraint_negate(
 	__isl_take isl_constraint *constraint);
 
+__isl_give isl_constraint *isl_constraint_drop_all_locals(
+	__isl_take isl_constraint *c);
+
 isl_bool isl_constraint_is_equality(__isl_keep isl_constraint *constraint);
 isl_bool isl_constraint_is_div_constraint(
 	__isl_keep isl_constraint *constraint);

@@ -395,6 +395,37 @@ __isl_give isl_space *isl_constraint_get_space(
 	return constraint ? isl_local_space_get_space(constraint->ls) : NULL;
 }
 
+#undef TYPE
+#define TYPE	isl_constraint
+
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_local_space
+#undef FIELD_NAME
+#define FIELD_NAME	ls
+#undef PROPERTY
+#define PROPERTY	local_space
+
+static
+#include "isl_take_templ.c"
+static
+#include "isl_restore_templ.c"
+
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_vec
+#undef FIELD_NAME
+#define FIELD_NAME	v
+#undef PROPERTY
+#define PROPERTY	int_aff
+
+static
+#include "isl_peek_templ.c"
+static
+#include "isl_get_templ.c"
+static
+#include "isl_take_templ.c"
+static
+#include "isl_restore_templ.c"
+
 isl_size isl_constraint_dim(__isl_keep isl_constraint *constraint,
 	enum isl_dim_type type)
 {
@@ -652,6 +683,36 @@ __isl_give isl_constraint *isl_constraint_negate(
 		return isl_constraint_free(constraint);
 	isl_int_sub_ui(constraint->v->el[0], constraint->v->el[0], 1);
 	return constraint;
+}
+
+/* Drop all local variables from the constraints.
+ */
+__isl_give isl_constraint *isl_constraint_drop_all_locals(
+	__isl_take isl_constraint *c)
+{
+	isl_local_space *ls;
+	isl_vec *v;
+	isl_size n_div, dim;
+
+	n_div = isl_constraint_dim(c, isl_dim_div);
+	if (n_div < 0)
+		return isl_constraint_free(c);
+	if (n_div == 0)
+		return c;
+	dim = isl_constraint_dim(c, isl_dim_all);
+	if (dim < 0)
+		return isl_constraint_free(c);
+
+	ls = isl_constraint_take_local_space(c);
+	v = isl_constraint_take_int_aff(c);
+
+	ls = isl_local_space_drop_dims(ls, isl_dim_div, 0, n_div);
+	v = isl_vec_drop_els(v, 1 + dim - n_div, n_div);
+
+	c = isl_constraint_restore_int_aff(c, v);
+	c = isl_constraint_restore_local_space(c, ls);
+
+	return c;
 }
 
 isl_bool isl_constraint_is_equality(struct isl_constraint *constraint)
