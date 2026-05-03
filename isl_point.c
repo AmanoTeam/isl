@@ -34,18 +34,6 @@ isl_ctx *isl_point_get_ctx(__isl_keep isl_point *pnt)
 	return pnt ? isl_space_get_ctx(pnt->dim) : NULL;
 }
 
-/* Return the space of "pnt".
- */
-__isl_keep isl_space *isl_point_peek_space(__isl_keep isl_point *pnt)
-{
-	return pnt ? pnt->dim : NULL;
-}
-
-__isl_give isl_space *isl_point_get_space(__isl_keep isl_point *pnt)
-{
-	return isl_space_copy(isl_point_peek_space(pnt));
-}
-
 #undef TYPE1
 #define TYPE1		isl_basic_map
 #undef TYPE2
@@ -187,22 +175,10 @@ isl_bool isl_point_is_void(__isl_keep isl_point *pnt)
 #undef PROPERTY
 #define PROPERTY	space
 
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 #include "isl_take_templ.c"
 #include "isl_restore_templ.c"
-
-/* Return the coordinate vector of "pnt".
- */
-__isl_keep isl_vec *isl_point_peek_vec(__isl_keep isl_point *pnt)
-{
-	return pnt ? pnt->vec : NULL;
-}
-
-/* Return a copy of the coordinate vector of "pnt".
- */
-__isl_give isl_vec *isl_point_get_vec(__isl_keep isl_point *pnt)
-{
-	return isl_vec_copy(isl_point_peek_vec(pnt));
-}
 
 #undef TYPE
 #define TYPE	isl_point
@@ -214,6 +190,8 @@ __isl_give isl_vec *isl_point_get_vec(__isl_keep isl_point *pnt)
 #undef PROPERTY
 #define PROPERTY	vec
 
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 #include "isl_take_templ.c"
 #include "isl_restore_templ.c"
 

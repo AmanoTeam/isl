@@ -205,23 +205,19 @@ isl_bool isl_fixed_box_is_valid(__isl_keep isl_fixed_box *box)
 	return isl_bool_not(isl_multi_aff_involves_nan(box->offset));
 }
 
-/* Return the offsets of the box "box".
- */
-static __isl_keep isl_multi_aff *isl_fixed_box_peek_offset(
-	__isl_keep isl_fixed_box *box)
-{
-	if (!box)
-		return NULL;
-	return box->offset;
-}
+#undef TYPE
+#define TYPE	isl_fixed_box
 
-/* Return a copy of the offsets of the box "box".
- */
-__isl_give isl_multi_aff *isl_fixed_box_get_offset(
-	__isl_keep isl_fixed_box *box)
-{
-	return isl_multi_aff_copy(isl_fixed_box_peek_offset(box));
-}
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_multi_aff
+#undef FIELD_NAME
+#define FIELD_NAME	offset
+#undef PROPERTY
+#define PROPERTY	offset
+
+static
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 
 /* Return the sizes of the box "box".
  */

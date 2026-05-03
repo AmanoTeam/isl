@@ -555,6 +555,7 @@ EXTRA_DIST = \
 	isl_drop_unused_params_templ.c \
 	extract_key.c \
 	isl_from_range_templ.c \
+	isl_get_templ.c \
 	isl_ilp_opt_fn_val_templ.c \
 	isl_ilp_opt_multi_val_templ.c \
 	isl_ilp_opt_val_templ.c \
@@ -622,6 +623,7 @@ EXTRA_DIST = \
 	isl_multi_zero_space_templ.c \
 	isl_opt_mpa_templ.c \
 	opt_type.h \
+	isl_peek_templ.c \
 	print_templ.c \
 	print_templ_yaml.c \
 	print_yaml_field_templ.c \

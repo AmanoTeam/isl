@@ -448,13 +448,19 @@ uint32_t isl_aff_get_hash(__isl_keep isl_aff *aff)
 	return hash;
 }
 
-/* Return the domain local space of "aff".
- */
-static __isl_keep isl_local_space *isl_aff_peek_domain_local_space(
-	__isl_keep isl_aff *aff)
-{
-	return aff ? aff->ls : NULL;
-}
+#undef TYPE
+#define TYPE	isl_aff
+
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_local_space
+#undef FIELD_NAME
+#define FIELD_NAME	ls
+#undef PROPERTY
+#define PROPERTY	domain_local_space
+
+static
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 
 /* Return the number of variables of the given type in the domain of "aff".
  */
@@ -542,14 +548,6 @@ __isl_give isl_space *isl_aff_get_space(__isl_keep isl_aff *aff)
 	space = isl_space_from_domain(space);
 	space = isl_space_add_dims(space, isl_dim_out, 1);
 	return space;
-}
-
-/* Return a copy of the domain space of "aff".
- */
-__isl_give isl_local_space *isl_aff_get_domain_local_space(
-	__isl_keep isl_aff *aff)
-{
-	return isl_local_space_copy(isl_aff_peek_domain_local_space(aff));
 }
 
 __isl_give isl_local_space *isl_aff_get_local_space(__isl_keep isl_aff *aff)

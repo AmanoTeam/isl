@@ -27,13 +27,19 @@
 
 #include <isl_list_templ.c>
 
-/* Return the local space of "constraint".
- */
-static __isl_keep isl_local_space *isl_constraint_peek_local_space(
-	__isl_keep isl_constraint *constraint)
-{
-	return constraint ? constraint->ls : NULL;
-}
+#undef TYPE
+#define TYPE	isl_constraint
+
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_local_space
+#undef FIELD_NAME
+#define FIELD_NAME	ls
+#undef PROPERTY
+#define PROPERTY	local_space
+
+static
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 
 isl_ctx *isl_constraint_get_ctx(__isl_keep isl_constraint *c)
 {
@@ -387,15 +393,6 @@ __isl_give isl_space *isl_constraint_get_space(
 	__isl_keep isl_constraint *constraint)
 {
 	return constraint ? isl_local_space_get_space(constraint->ls) : NULL;
-}
-
-__isl_give isl_local_space *isl_constraint_get_local_space(
-	__isl_keep isl_constraint *constraint)
-{
-	isl_local_space *ls;
-
-	ls = isl_constraint_peek_local_space(constraint);
-	return isl_local_space_copy(ls);
 }
 
 isl_size isl_constraint_dim(__isl_keep isl_constraint *constraint,

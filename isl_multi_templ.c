@@ -22,18 +22,6 @@ isl_ctx *FN(MULTI(BASE),get_ctx)(__isl_keep MULTI(BASE) *multi)
 	return multi ? isl_space_get_ctx(multi->space) : NULL;
 }
 
-/* Return the space of "multi".
- */
-__isl_keep isl_space *FN(MULTI(BASE),peek_space)(__isl_keep MULTI(BASE) *multi)
-{
-	return multi ? multi->space : NULL;
-}
-
-__isl_give isl_space *FN(MULTI(BASE),get_space)(__isl_keep MULTI(BASE) *multi)
-{
-	return isl_space_copy(FN(MULTI(BASE),peek_space)(multi));
-}
-
 __isl_give isl_space *FN(MULTI(BASE),get_domain_space)(
 	__isl_keep MULTI(BASE) *multi)
 {
@@ -148,6 +136,8 @@ __isl_null MULTI(BASE) *FN(MULTI(BASE),free)(__isl_take MULTI(BASE) *multi)
 #undef PROPERTY
 #define PROPERTY	space
 
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 #include "isl_take_templ.c"
 #include "isl_restore_templ.c"
 

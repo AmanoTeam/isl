@@ -413,21 +413,6 @@ __isl_give isl_aff *isl_local_space_get_div(__isl_keep isl_local_space *ls,
 		return drop_unknown_divs_and_extract_div(ls, pos);
 }
 
-/* Return the space of "ls".
- */
-__isl_keep isl_space *isl_local_space_peek_space(__isl_keep isl_local_space *ls)
-{
-	if (!ls)
-		return NULL;
-
-	return ls->dim;
-}
-
-__isl_give isl_space *isl_local_space_get_space(__isl_keep isl_local_space *ls)
-{
-	return isl_space_copy(isl_local_space_peek_space(ls));
-}
-
 #undef TYPE
 #define TYPE	isl_local_space
 
@@ -438,22 +423,10 @@ __isl_give isl_space *isl_local_space_get_space(__isl_keep isl_local_space *ls)
 #undef PROPERTY
 #define PROPERTY	space
 
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 #include "isl_take_templ.c"
 #include "isl_restore_templ.c"
-
-/* Return the local variables of "ls".
- */
-__isl_keep isl_local *isl_local_space_peek_local(__isl_keep isl_local_space *ls)
-{
-	return ls ? ls->div : NULL;
-}
-
-/* Return a copy of the local variables of "ls".
- */
-__isl_give isl_local *isl_local_space_get_local(__isl_keep isl_local_space *ls)
-{
-	return isl_local_copy(isl_local_space_peek_local(ls));
-}
 
 #undef TYPE
 #define TYPE	isl_local_space
@@ -465,6 +438,8 @@ __isl_give isl_local *isl_local_space_get_local(__isl_keep isl_local_space *ls)
 #undef PROPERTY
 #define PROPERTY	local
 
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 static
 #include "isl_take_templ.c"
 static

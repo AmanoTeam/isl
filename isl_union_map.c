@@ -179,23 +179,24 @@ isl_ctx *isl_union_set_get_ctx(__isl_keep isl_union_set *uset)
 	return uset ? uset->dim->ctx : NULL;
 }
 
-/* Return the space of "umap".
- */
-__isl_keep isl_space *isl_union_map_peek_space(__isl_keep isl_union_map *umap)
-{
-	return umap ? umap->dim : NULL;
-}
+#undef TYPE
+#define TYPE	isl_union_map
+
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_space
+#undef FIELD_NAME
+#define FIELD_NAME	dim
+#undef PROPERTY
+#define PROPERTY	space
+
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 
 /* Return the space of "uset".
  */
 __isl_keep isl_space *isl_union_set_peek_space(__isl_keep isl_union_set *uset)
 {
 	return isl_union_map_peek_space(uset_to_umap(uset));
-}
-
-__isl_give isl_space *isl_union_map_get_space(__isl_keep isl_union_map *umap)
-{
-	return isl_space_copy(isl_union_map_peek_space(umap));
 }
 
 /* Return the position of the parameter with the given name

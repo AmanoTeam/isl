@@ -414,11 +414,6 @@ __isl_keep isl_space *isl_basic_set_peek_space(__isl_keep isl_basic_set *bset)
 	return isl_basic_map_peek_space(bset_to_bmap(bset));
 }
 
-__isl_give isl_space *isl_basic_map_get_space(__isl_keep isl_basic_map *bmap)
-{
-	return isl_space_copy(isl_basic_map_peek_space(bmap));
-}
-
 __isl_give isl_space *isl_basic_set_get_space(__isl_keep isl_basic_set *bset)
 {
 	return isl_basic_map_get_space(bset_to_bmap(bset));
@@ -434,6 +429,7 @@ __isl_give isl_space *isl_basic_set_get_space(__isl_keep isl_basic_set *bset)
 #undef PROPERTY
 #define PROPERTY	space
 
+#include "isl_get_templ.c"
 static
 #include "isl_take_templ.c"
 static
@@ -559,11 +555,6 @@ __isl_give isl_basic_set *isl_basic_set_from_local_space(
 	return isl_basic_map_from_local_space(ls);
 }
 
-__isl_give isl_space *isl_map_get_space(__isl_keep isl_map *map)
-{
-	return isl_space_copy(isl_map_peek_space(map));
-}
-
 __isl_give isl_space *isl_set_get_space(__isl_keep isl_set *set)
 {
 	if (!set)
@@ -581,6 +572,7 @@ __isl_give isl_space *isl_set_get_space(__isl_keep isl_set *set)
 #undef PROPERTY
 #define PROPERTY	space
 
+#include "isl_get_templ.c"
 static
 #include "isl_take_templ.c"
 static

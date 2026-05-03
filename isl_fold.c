@@ -76,20 +76,6 @@ isl_ctx *isl_qpolynomial_fold_get_ctx(__isl_keep isl_qpolynomial_fold *fold)
 	return fold ? fold->dim->ctx : NULL;
 }
 
-/* Return the domain space of "fold".
- */
-static __isl_keep isl_space *isl_qpolynomial_fold_peek_domain_space(
-	__isl_keep isl_qpolynomial_fold *fold)
-{
-	return fold ? fold->dim : NULL;
-}
-
-__isl_give isl_space *isl_qpolynomial_fold_get_domain_space(
-	__isl_keep isl_qpolynomial_fold *fold)
-{
-	return isl_space_copy(isl_qpolynomial_fold_peek_domain_space(fold));
-}
-
 #undef TYPE
 #define TYPE	isl_qpolynomial_fold
 
@@ -100,6 +86,9 @@ __isl_give isl_space *isl_qpolynomial_fold_get_domain_space(
 #undef PROPERTY
 #define PROPERTY	domain_space
 
+static
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 static
 #include "isl_take_templ.c"
 static
@@ -117,22 +106,6 @@ __isl_give isl_space *isl_qpolynomial_fold_get_space(
 	return space;
 }
 
-/* Return the list of polynomials in the reduction "fold".
- */
-__isl_keep isl_qpolynomial_list *isl_qpolynomial_fold_peek_list(
-	__isl_keep isl_qpolynomial_fold *fold)
-{
-	return fold ? fold->list : NULL;
-}
-
-/* Return a copy of the list of polynomials in the reduction "fold".
- */
-static __isl_give isl_qpolynomial_list *isl_qpolynomial_fold_get_list(
-	__isl_keep isl_qpolynomial_fold *fold)
-{
-	return isl_qpolynomial_list_copy(isl_qpolynomial_fold_peek_list(fold));
-}
-
 #undef TYPE
 #define TYPE	isl_qpolynomial_fold
 
@@ -143,6 +116,9 @@ static __isl_give isl_qpolynomial_list *isl_qpolynomial_fold_get_list(
 #undef PROPERTY
 #define PROPERTY	list
 
+#include "isl_peek_templ.c"
+static
+#include "isl_get_templ.c"
 static
 #include "isl_take_templ.c"
 static

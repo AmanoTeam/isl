@@ -222,18 +222,6 @@ __isl_null PW *FN(PW,free)(__isl_take PW *pw)
 	return NULL;
 }
 
-/* Return the space of "pw".
- */
-__isl_keep isl_space *FN(PW,peek_space)(__isl_keep PW *pw)
-{
-	return pw ? pw->dim : NULL;
-}
-
-__isl_give isl_space *FN(PW,get_space)(__isl_keep PW *pw)
-{
-	return isl_space_copy(FN(PW,peek_space)(pw));
-}
-
 #undef TYPE
 #define TYPE	PW
 
@@ -244,6 +232,8 @@ __isl_give isl_space *FN(PW,get_space)(__isl_keep PW *pw)
 #undef PROPERTY
 #define PROPERTY	space
 
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 static
 #include "isl_take_templ.c"
 static

@@ -423,6 +423,9 @@ __isl_give isl_poly_rec *isl_poly_alloc_rec(isl_ctx *ctx, int var, int size)
 #define PROPERTY	domain_space
 
 static
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
+static
 #include "isl_take_templ.c"
 static
 #include "isl_restore_templ.c"
@@ -448,22 +451,6 @@ __isl_give isl_qpolynomial *isl_qpolynomial_reset_space_and_domain(
 isl_ctx *isl_qpolynomial_get_ctx(__isl_keep isl_qpolynomial *qp)
 {
 	return qp ? qp->dim->ctx : NULL;
-}
-
-/* Return the domain space of "qp".
- */
-static __isl_keep isl_space *isl_qpolynomial_peek_domain_space(
-	__isl_keep isl_qpolynomial *qp)
-{
-	return qp ? qp->dim : NULL;
-}
-
-/* Return a copy of the domain space of "qp".
- */
-__isl_give isl_space *isl_qpolynomial_get_domain_space(
-	__isl_keep isl_qpolynomial *qp)
-{
-	return isl_space_copy(isl_qpolynomial_peek_domain_space(qp));
 }
 
 #undef TYPE
@@ -619,13 +606,19 @@ unsigned isl_qpolynomial_domain_offset(__isl_keep isl_qpolynomial *qp,
 	}
 }
 
-/* Return the polynomial expression of "qp".
- */
-static __isl_keep isl_poly *isl_qpolynomial_peek_poly(
-	__isl_keep isl_qpolynomial *qp)
-{
-	return qp ? qp->poly : NULL;
-}
+#undef TYPE
+#define TYPE	isl_qpolynomial
+
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_poly
+#undef FIELD_NAME
+#define FIELD_NAME	poly
+#undef PROPERTY
+#define PROPERTY	poly
+
+static
+#include "isl_peek_templ.c"
+#include "isl_get_templ.c"
 
 isl_bool isl_qpolynomial_is_zero(__isl_keep isl_qpolynomial *qp)
 {
@@ -1360,13 +1353,6 @@ __isl_give isl_qpolynomial *isl_qpolynomial_copy(__isl_keep isl_qpolynomial *qp)
 
 	qp->ref++;
 	return qp;
-}
-
-/* Return a copy of the polynomial expression of "qp".
- */
-__isl_give isl_poly *isl_qpolynomial_get_poly(__isl_keep isl_qpolynomial *qp)
-{
-	return isl_poly_copy(isl_qpolynomial_peek_poly(qp));
 }
 
 #undef TYPE
@@ -4102,12 +4088,18 @@ isl_size isl_term_dim(__isl_keep isl_term *term, enum isl_dim_type type)
 	}
 }
 
-/* Return the space of "term".
- */
-static __isl_keep isl_space *isl_term_peek_space(__isl_keep isl_term *term)
-{
-	return term ? term->dim : NULL;
-}
+#undef TYPE
+#define TYPE	isl_term
+
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_space
+#undef FIELD_NAME
+#define FIELD_NAME	dim
+#undef PROPERTY
+#define PROPERTY	space
+
+static
+#include "isl_peek_templ.c"
 
 /* Return the offset of the first variable of type "type" within
  * the variables of "term".
