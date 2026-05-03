@@ -263,12 +263,9 @@ static isl_stat detect_stride(__isl_take isl_constraint *c, void *user)
 		isl_val_free(gcd);
 		isl_val_free(b);
 
+		c = isl_constraint_drop_all_locals(c);
 		aff = isl_constraint_get_aff(c);
-		for (i = 0; i < n_div; ++i)
-			aff = isl_aff_set_coefficient_si(aff,
-							 isl_dim_div, i, 0);
 		aff = isl_aff_set_coefficient_si(aff, isl_dim_in, data->pos, 0);
-		aff = isl_aff_remove_unused_divs(aff);
 		a = isl_val_neg(a);
 		aff = isl_aff_scale_val(aff, a);
 		aff = isl_aff_scale_down_val(aff, m);
