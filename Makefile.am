@@ -659,12 +659,14 @@ EXTRA_DIST = \
 	isl_pw_union_opt.c \
 	isl_read_from_str_templ.c \
 	read_in_string_templ.c \
+	isl_restore_templ.c \
 	set_to_map.c \
 	set_from_map.c \
 	set_list_from_map_list_inl.c \
 	isl_stream_read_pw_with_params_templ.c \
 	isl_stream_read_with_params_templ.c \
 	isl_tab_lexopt_templ.c \
+	isl_take_templ.c \
 	isl_test_list_templ.c \
 	isl_test_plain_equal_templ.c \
 	isl_type_check_equal_space_templ.c \

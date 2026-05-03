@@ -90,59 +90,20 @@ __isl_give isl_space *isl_qpolynomial_fold_get_domain_space(
 	return isl_space_copy(isl_qpolynomial_fold_peek_domain_space(fold));
 }
 
-/* Return the space of the domain of "fold".
- * This may be either a copy or the space itself
- * if there is only one reference to "fold".
- * This allows the space to be modified inplace
- * if both the expression and its space have only a single reference.
- * The caller is not allowed to modify "fold" between this call and
- * a subsequent call to isl_qpolynomial_fold_restore_domain_space.
- * The only exception is that isl_qpolynomial_fold_free can be called instead.
- */
-static __isl_give isl_space *isl_qpolynomial_fold_take_domain_space(
-	__isl_keep isl_qpolynomial_fold *fold)
-{
-	isl_space *space;
+#undef TYPE
+#define TYPE	isl_qpolynomial_fold
 
-	if (!fold)
-		return NULL;
-	if (fold->ref != 1)
-		return isl_qpolynomial_fold_get_domain_space(fold);
-	space = fold->dim;
-	fold->dim = NULL;
-	return space;
-}
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_space
+#undef FIELD_NAME
+#define FIELD_NAME	dim
+#undef PROPERTY
+#define PROPERTY	domain_space
 
-/* Set the space of the domain of "fold" to "space",
- * where the space of "fold" may be missing
- * due to a preceding call to isl_qpolynomial_fold_take_domain_space.
- * However, in this case, "fold" only has a single reference and
- * then the call to isl_qpolynomial_fold_cow has no effect.
- */
 static
-__isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_restore_domain_space(
-	__isl_keep isl_qpolynomial_fold *fold, __isl_take isl_space *space)
-{
-	if (!fold || !space)
-		goto error;
-
-	if (fold->dim == space) {
-		isl_space_free(space);
-		return fold;
-	}
-
-	fold = isl_qpolynomial_fold_cow(fold);
-	if (!fold)
-		goto error;
-	isl_space_free(fold->dim);
-	fold->dim = space;
-
-	return fold;
-error:
-	isl_qpolynomial_fold_free(fold);
-	isl_space_free(space);
-	return NULL;
-}
+#include "isl_take_templ.c"
+static
+#include "isl_restore_templ.c"
 
 __isl_give isl_space *isl_qpolynomial_fold_get_space(
 	__isl_keep isl_qpolynomial_fold *fold)
@@ -172,59 +133,20 @@ static __isl_give isl_qpolynomial_list *isl_qpolynomial_fold_get_list(
 	return isl_qpolynomial_list_copy(isl_qpolynomial_fold_peek_list(fold));
 }
 
-/* Return the list of polynomials of "fold".
- * This may be either a copy or the list itself
- * if there is only one reference to "fold".
- * This allows the list to be modified inplace
- * if both the expression and its list have only a single reference.
- * The caller is not allowed to modify "fold" between this call and
- * a subsequent call to isl_qpolynomial_fold_restore_list.
- * The only exception is that isl_qpolynomial_fold_free can be called instead.
- */
-static __isl_give isl_qpolynomial_list *isl_qpolynomial_fold_take_list(
-	__isl_keep isl_qpolynomial_fold *fold)
-{
-	isl_qpolynomial_list *list;
+#undef TYPE
+#define TYPE	isl_qpolynomial_fold
 
-	if (!fold)
-		return NULL;
-	if (fold->ref != 1)
-		return isl_qpolynomial_fold_get_list(fold);
-	list = fold->list;
-	fold->list = NULL;
-	return list;
-}
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_qpolynomial_list
+#undef FIELD_NAME
+#define FIELD_NAME	list
+#undef PROPERTY
+#define PROPERTY	list
 
-/* Set the space of the list of polynomials of "fold" to "space",
- * where the list of polynomials of "fold" may be missing
- * due to a preceding call to isl_qpolynomial_fold_take_list.
- * However, in this case, "fold" only has a single reference and
- * then the call to isl_qpolynomial_fold_cow has no effect.
- */
-static __isl_give isl_qpolynomial_fold *isl_qpolynomial_fold_restore_list(
-	__isl_keep isl_qpolynomial_fold *fold,
-	__isl_take isl_qpolynomial_list *list)
-{
-	if (!fold || !list)
-		goto error;
-
-	if (fold->list == list) {
-		isl_qpolynomial_list_free(list);
-		return fold;
-	}
-
-	fold = isl_qpolynomial_fold_cow(fold);
-	if (!fold)
-		goto error;
-	isl_qpolynomial_list_free(fold->list);
-	fold->list = list;
-
-	return fold;
-error:
-	isl_qpolynomial_fold_free(fold);
-	isl_qpolynomial_list_free(list);
-	return NULL;
-}
+static
+#include "isl_take_templ.c"
+static
+#include "isl_restore_templ.c"
 
 /* isl_qpolynomial_list_map callback that calls
  * isl_qpolynomial_reset_domain_space on "qp".

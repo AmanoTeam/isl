@@ -424,57 +424,20 @@ __isl_give isl_space *isl_basic_set_get_space(__isl_keep isl_basic_set *bset)
 	return isl_basic_map_get_space(bset_to_bmap(bset));
 }
 
-/* Return the space of "bmap".
- * This may be either a copy or the space itself
- * if there is only one reference to "bmap".
- * This allows the space to be modified inplace
- * if both the basic map and its space have only a single reference.
- * The caller is not allowed to modify "bmap" between this call and
- * a subsequent call to isl_basic_map_restore_space.
- * The only exception is that isl_basic_map_free can be called instead.
- */
-static __isl_give isl_space *isl_basic_map_take_space(
-	__isl_keep isl_basic_map *bmap)
-{
-	isl_space *space;
+#undef TYPE
+#define TYPE	isl_basic_map
 
-	if (!bmap)
-		return NULL;
-	if (bmap->ref != 1)
-		return isl_basic_map_get_space(bmap);
-	space = bmap->dim;
-	bmap->dim = NULL;
-	return space;
-}
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_space
+#undef FIELD_NAME
+#define FIELD_NAME	dim
+#undef PROPERTY
+#define PROPERTY	space
 
-/* Set the space of "bmap" to "space", where the space of "bmap" may be missing
- * due to a preceding call to isl_basic_map_take_space.
- * However, in this case, "bmap" only has a single reference and
- * then the call to isl_basic_map_cow has no effect.
- */
-static __isl_give isl_basic_map *isl_basic_map_restore_space(
-	__isl_take isl_basic_map *bmap, __isl_take isl_space *space)
-{
-	if (!bmap || !space)
-		goto error;
-
-	if (bmap->dim == space) {
-		isl_space_free(space);
-		return bmap;
-	}
-
-	bmap = isl_basic_map_cow(bmap);
-	if (!bmap)
-		goto error;
-	isl_space_free(bmap->dim);
-	bmap->dim = space;
-
-	return bmap;
-error:
-	isl_basic_map_free(bmap);
-	isl_space_free(space);
-	return NULL;
-}
+static
+#include "isl_take_templ.c"
+static
+#include "isl_restore_templ.c"
 
 /* Extract the divs in "bmap" as a matrix.
  */
@@ -608,56 +571,20 @@ __isl_give isl_space *isl_set_get_space(__isl_keep isl_set *set)
 	return isl_space_copy(set->dim);
 }
 
-/* Return the space of "map".
- * This may be either a copy or the space itself
- * if there is only one reference to "map".
- * This allows the space to be modified inplace
- * if both the map and its space have only a single reference.
- * The caller is not allowed to modify "map" between this call and
- * a subsequent call to isl_map_restore_space.
- * The only exception is that isl_map_free can be called instead.
- */
-static __isl_give isl_space *isl_map_take_space(__isl_keep isl_map *map)
-{
-	isl_space *space;
+#undef TYPE
+#define TYPE	isl_map
 
-	if (!map)
-		return NULL;
-	if (map->ref != 1)
-		return isl_map_get_space(map);
-	space = map->dim;
-	map->dim = NULL;
-	return space;
-}
+#undef FIELD_TYPE
+#define FIELD_TYPE	isl_space
+#undef FIELD_NAME
+#define FIELD_NAME	dim
+#undef PROPERTY
+#define PROPERTY	space
 
-/* Set the space of "map" to "space", where the space of "map" may be missing
- * due to a preceding call to isl_map_take_space.
- * However, in this case, "map" only has a single reference and
- * then the call to isl_map_cow has no effect.
- */
-static __isl_give isl_map *isl_map_restore_space(__isl_take isl_map *map,
-	__isl_take isl_space *space)
-{
-	if (!map || !space)
-		goto error;
-
-	if (map->dim == space) {
-		isl_space_free(space);
-		return map;
-	}
-
-	map = isl_map_cow(map);
-	if (!map)
-		goto error;
-	isl_space_free(map->dim);
-	map->dim = space;
-
-	return map;
-error:
-	isl_map_free(map);
-	isl_space_free(space);
-	return NULL;
-}
+static
+#include "isl_take_templ.c"
+static
+#include "isl_restore_templ.c"
 
 __isl_give isl_basic_map *isl_basic_map_set_tuple_name(
 	__isl_take isl_basic_map *bmap, enum isl_dim_type type, const char *s)
