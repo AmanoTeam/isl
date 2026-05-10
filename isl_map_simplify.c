@@ -2095,6 +2095,104 @@ static __isl_give isl_basic_map *check_for_div_constraints(
 	return bmap;
 }
 
+/* Does "fn" run successfully on all pairs of inequality constraints of
+ * "bmap" with opposite coefficients?  These are described by "opposite",
+ * an array of size "n" (the number of inequality constraints of "bmap")
+ * with as entries either
+ * - zero, if the constraint has no opposite, or
+ * - 1 + the position of the opposite constraint.
+ *
+ * "fn" is only called on each pair once (with k < l).
+ */
+static isl_bool every_opposite_constraint_pair(int n, int *opposite,
+	__isl_keep isl_basic_map *bmap,
+	isl_bool (*fn)(int *opposite, int k, int l, isl_int sum, void *user),
+	void *user)
+{
+	isl_bool ok = isl_bool_true;
+	int k, l;
+	isl_int sum;
+
+	isl_int_init(sum);
+	for (k = 0; k < n - 1; ++k) {
+		if (!opposite[k])
+			continue;
+		l = opposite[k] - 1;
+		if (l < k)
+			continue;
+		isl_int_add(sum, bmap->ineq[k][0], bmap->ineq[l][0]);
+		ok = fn(opposite, k, l, sum, user);
+		if (ok < 0 || !ok)
+			break;
+	}
+	isl_int_clear(sum);
+	free(opposite);
+
+	return ok;
+}
+
+/* Internal data structure for exploit_constraint_pair.
+ *
+ * "bmap" is the basic map being analyzed.
+ * "progress" is set if any progress is made.
+ * "detect_divs" determines whether to detect integer division definitions.
+ */
+struct isl_exploit_constraint_pair_data {
+	isl_basic_map *bmap;
+	int *progress;
+	int detect_divs;
+};
+
+/* Exploit the pair of inequality constraints with opposite coefficients
+ * "k" and "l" with "sum" equal to the sum of the constant terms and
+ * return isl_bool_true if further pairs of inequality constraints
+ * should be considered after this pair.
+ *
+ * If the sum is smaller than zero, then the constraints conflict.
+ * If the sum is equal to zero, then the constraints form
+ * an equality constraint.
+ * If the sum is greater than zero, then check whether this pair
+ * can be used to simplify any other constraints and/or,
+ * if "detect_divs" is set, whether a (better) integer division definition
+ * can be read off from the pair.
+ */
+static isl_bool exploit_constraint_pair(int *opposite, int k, int l,
+	isl_int sum, void *user)
+{
+	struct isl_exploit_constraint_pair_data *data = user;
+
+	if (isl_int_is_pos(sum)) {
+		int residue = 0;
+
+		data->bmap = check_for_residues(data->bmap, k, l, sum,
+			&residue);
+		if (data->detect_divs)
+			data->bmap = check_for_div_constraints(data->bmap,
+					opposite, k, l, sum, data->progress);
+		if (!data->bmap)
+			return isl_bool_error;
+		if (!residue)
+			return isl_bool_true;
+		mark_progress(data->progress);
+		return isl_bool_false;
+	}
+	if (isl_int_is_zero(sum)) {
+		/* We need to break out of the loop after these
+		 * changes since the contents of the hash
+		 * will no longer be valid.
+		 * Plus, we probably we want to regauss first.
+		 */
+		mark_progress(data->progress);
+		isl_basic_map_drop_inequality(data->bmap, l);
+		isl_basic_map_inequality_to_equality(data->bmap, k);
+	} else
+		data->bmap = isl_basic_map_set_to_empty(data->bmap);
+
+	if (!data->bmap)
+		return isl_bool_error;
+	return isl_bool_false;
+}
+
 /* Exploit the pairs of inequality constraints of "bmap"
  * with opposite coefficients.  They are described by "opposite",
  * an array of size equal to the number of inequality constraints
@@ -2103,65 +2201,25 @@ static __isl_give isl_basic_map *check_for_div_constraints(
  * - 1 + the position of the opposite constraint.
  * Detect (better) integer division expressions if "detect_divs" is set.
  * Set *progress if any progress is made.
- *
- * For each pair of constraints with opposite coefficients,
- * consider the sum of the constant terms.
- * If the sum is smaller than zero, then the constraints conflict.
- * If the sum is equal to zero, then the constraints form
- * an equality constraint.
- * If the sum is greater than zero, then check whether this pair
- * can be used to simplify any other constraints and/or,
- * if "detect_divs" is set, whether a (better) integer division definition
- * can be read off from the pair.
- *
- * Only check each pair once (with k < l).
  */
 static __isl_give isl_basic_map *exploit_opposite_constraints(
 	__isl_take isl_basic_map *bmap, int *opposite,
 	int *progress, int detect_divs)
 {
-	int k, l;
-	isl_int sum;
+	struct isl_exploit_constraint_pair_data data =
+		{ bmap, progress, detect_divs };
+	isl_size n;
 
 	if (!opposite)
 		return bmap;
-	isl_int_init(sum);
-	for (k = 0; bmap && k < bmap->n_ineq-1; ++k) {
-		if (!opposite[k])
-			continue;
-		l = opposite[k] - 1;
-		if (l < k)
-			continue;
-		isl_int_add(sum, bmap->ineq[k][0], bmap->ineq[l][0]);
-		if (isl_int_is_pos(sum)) {
-			int residue = 0;
+	n = isl_basic_map_n_inequality(data.bmap);
+	if (n < 0)
+		return isl_basic_map_free(data.bmap);
+	if (every_opposite_constraint_pair(n, opposite, data.bmap,
+					&exploit_constraint_pair, &data) < 0)
+		return isl_basic_map_free(data.bmap);
 
-			bmap = check_for_residues(bmap, k, l, sum, &residue);
-			if (detect_divs)
-				bmap = check_for_div_constraints(bmap, opposite,
-							k, l, sum, progress);
-			if (!residue)
-				continue;
-			mark_progress(progress);
-			break;
-		}
-		if (isl_int_is_zero(sum)) {
-			/* We need to break out of the loop after these
-			 * changes since the contents of the hash
-			 * will no longer be valid.
-			 * Plus, we probably we want to regauss first.
-			 */
-			mark_progress(progress);
-			isl_basic_map_drop_inequality(bmap, l);
-			isl_basic_map_inequality_to_equality(bmap, k);
-		} else
-			bmap = isl_basic_map_set_to_empty(bmap);
-		break;
-	}
-	isl_int_clear(sum);
-	free(opposite);
-
-	return bmap;
+	return data.bmap;
 }
 
 /* Look for pairs of constraints that have equal or opposite coefficients.
