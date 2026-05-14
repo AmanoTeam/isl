@@ -234,10 +234,8 @@ static isl_stat detect_stride(__isl_take isl_constraint *c, void *user)
 	relevant = isl_constraint_involves_dims(c, isl_dim_set, data->pos, 1);
 	if (is_eq < 0 || relevant < 0)
 		goto error;
-	if (!is_eq || !relevant) {
-		isl_constraint_free(c);
-		return isl_stat_ok;
-	}
+	if (!is_eq || !relevant)
+		goto done;
 
 	n_div = isl_constraint_dim(c, isl_dim_div);
 	if (n_div < 0)
@@ -276,13 +274,10 @@ static isl_stat detect_stride(__isl_take isl_constraint *c, void *user)
 		isl_val_free(v);
 	}
 
-	isl_constraint_free(c);
 	if (has_stride < 0)
-		return isl_stat_error;
+error:		r = isl_stat_error;
+done:	isl_constraint_free(c);
 	return r;
-error:
-	isl_constraint_free(c);
-	return isl_stat_error;
 }
 
 /* Check if the equality constraints implied by "set" impose any stride
