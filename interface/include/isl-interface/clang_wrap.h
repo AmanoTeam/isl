@@ -316,6 +316,31 @@ template <typename T,
 				bool>::type = true>
 static DiagnosticOptions *diag_opts_type();
 
+/* A template class with value true if the template argument
+ * has a createSourceManager method taking (a reference to) a FileManager.
+ */
+ISL_VALID_EXPR_FOR_TEMPLATE_ARG(CreateSourceManagerTakesFileManager,
+	std::declval<U>().createSourceManager(std::declval<FileManager &>()))
+template <typename T,
+	typename std::enable_if<CreateSourceManagerTakesFileManager<T>::value,
+				bool>::type = true>
+
+/* Create a source manager in "Clang".
+ *
+ * Only pass a FileManager to the createSourceManager method if it expects one.
+ */
+static void createSourceManager(T* Clang)
+{
+	Clang->createSourceManager(Clang->getFileManager());
+}
+template <typename T,
+	typename std::enable_if<!CreateSourceManagerTakesFileManager<T>::value,
+				bool>::type = true>
+static void createSourceManager(T* Clang)
+{
+	Clang->createSourceManager();
+}
+
 /* A helper class handling the invocation of clang on a file and
  * allowing a derived class to perform the actual parsing
  * in an overridden handle() method.
@@ -389,7 +414,7 @@ struct Wrap {
 		construct_invocation(Clang, filename, Diags);
 		Diags.setClient(construct_printer());
 		Clang->createFileManager();
-		Clang->createSourceManager(Clang->getFileManager());
+		createSourceManager(Clang);
 		HeaderSearchOptions &HSO = Clang->getHeaderSearchOpts();
 		LangOptions &LO = Clang->getLangOpts();
 		PreprocessorOptions &PO = Clang->getPreprocessorOpts();
