@@ -94,6 +94,7 @@ if test "$have_lib_clang" = yes; then
 else
 	_ISL_DETECT_CLANG_ADD_CLANG_LIB([clangSupport])
 	CLANG_LIBS="-lclangDriver -lclangBasic $CLANG_LIBS"
+	_ISL_DETECT_CLANG_ADD_CLANG_LIB([clangOptions])
 	_ISL_DETECT_CLANG_ADD_CLANG_LIB([clangASTMatchers])
 	CLANG_LIBS="-lclangAnalysis -lclangAST -lclangLex $CLANG_LIBS"
 	_ISL_DETECT_CLANG_ADD_CLANG_LIB([clangAnalysisLifetimeSafety])
