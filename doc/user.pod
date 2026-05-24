@@ -448,9 +448,9 @@ Installation prefix for C<GMP> (architecture-dependent files).
 
 =head2 Building the foreign language bindings
 
-The tarball already contains the generated foreign language bindings,
-but they are not included in the git repository.
-Building the C++ and Python bindings relies on the LLVM/clang libraries,
+The tarball and the git repository already contain the generated
+foreign language bindings, but rebuilding them requires
+the LLVM/clang libraries,
 see C<http://clang.llvm.org/get_started.html>.
 The C<configure> script will not assume that these are available
 on the system.
