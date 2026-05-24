@@ -727,6 +727,9 @@ dist-hook:
 pkgconfigdir=$(pkgconfig_libdir)
 pkgconfig_DATA = $(pkgconfig_libfile)
 
+aclocaldir = $(datadir)/aclocal
+aclocal_DATA = m4/isl_detect_clang.m4
+
 gitversion.h: @GIT_HEAD@
 	$(AM_V_GEN)echo '#define GIT_HEAD_ID "'@GIT_HEAD_VERSION@'"' > $@
 
