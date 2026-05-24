@@ -18,17 +18,32 @@ CLANG_LDFLAGS=`$LLVM_CONFIG --ldflags`
 # Construct a -R argument for libtool.
 # This is needed in case some of the clang libraries are shared libraries.
 CLANG_RFLAG=`echo "$CLANG_LDFLAGS" | $SED -e 's/-L/-R/g'`
-targets=`$LLVM_CONFIG --targets-built`
-components="$targets asmparser bitreader support mc"
-# Link in option and frontendopenmp components when available
-# since they may be used by the clang libraries.
-for c in option frontendopenmp; do
-	$LLVM_CONFIG --components | $GREP $c > /dev/null 2> /dev/null
-	if test $? -eq 0; then
-		components="$components $c"
-	fi
-done
-CLANG_LIBS=`$LLVM_CONFIG --libs $components`
+
+CLANG_VERSION=`$LLVM_CONFIG --version`
+CLANG_LIB="LLVM-$CLANG_VERSION"
+
+SAVE_LDFLAGS="$LDFLAGS"
+LDFLAGS="$CLANG_LDFLAGS $LDFLAGS"
+AC_CHECK_LIB([$CLANG_LIB], [main], [have_lib_llvm=yes], [have_lib_llvm=no])
+LDFLAGS="$SAVE_LDFLAGS"
+
+# Use single libLLVM shared library when available.
+# Otherwise, try and figure out all the required libraries
+if test "$have_lib_llvm" = yes; then
+	CLANG_LIBS="-l$CLANG_LIB"
+else
+	targets=`$LLVM_CONFIG --targets-built`
+	components="$targets asmparser bitreader support mc"
+	# Link in option and frontendopenmp components when available
+	# since they may be used by the clang libraries.
+	for c in option frontendopenmp; do
+		$LLVM_CONFIG --components | $GREP $c > /dev/null 2> /dev/null
+		if test $? -eq 0; then
+			components="$components $c"
+		fi
+	done
+	CLANG_LIBS=`$LLVM_CONFIG --libs $components`
+fi
 systemlibs=`$LLVM_CONFIG --system-libs 2> /dev/null | tail -1`
 if test $? -eq 0; then
 	CLANG_LIBS="$CLANG_LIBS $systemlibs"
