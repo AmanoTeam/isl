@@ -33,6 +33,64 @@ systemlibs=`$LLVM_CONFIG --system-libs 2> /dev/null | tail -1`
 if test $? -eq 0; then
 	CLANG_LIBS="$CLANG_LIBS $systemlibs"
 fi
+
+AC_LANG_PUSH(C++)
+
+SAVE_CPPFLAGS="$CPPFLAGS"
+SAVE_LDFLAGS="$LDFLAGS"
+SAVE_LIBS="$LIBS"
+
+CPPFLAGS="$CLANG_CXXFLAGS -I$srcdir $CPPFLAGS"
+LDFLAGS="$CLANG_LDFLAGS $LDFLAGS"
+
+# A test program for checking whether linking against libclang-cpp works.
+m4_define([_AX_DETECT_CLANG_PROGRAM], [AC_LANG_PROGRAM(
+	[[#include <clang/Frontend/CompilerInstance.h>]],
+	[[
+		new clang::CompilerInstance();
+	]])])
+
+# Use single libclang-cpp shared library when available.
+# Otherwise, use a selection of clang libraries that appears to work.
+AC_CHECK_LIB([clang-cpp], [main], [have_lib_clang=yes], [have_lib_clang=no])
+if test "$have_lib_clang" = yes; then
+	# The LLVM libraries may be linked into libclang-cpp already.
+	# Linking against them again can cause errors about options
+	# being registered more than once.
+	# Check whether linking against libclang-cpp requires
+	# linking against the LLVM libraries as well.
+	# Fail if linking fails with or without the LLVM libraries.
+	AC_MSG_CHECKING([whether libclang-cpp needs LLVM libraries])
+	LIBS="-lclang-cpp $SAVE_LIBS"
+	AC_LINK_IFELSE([_AX_DETECT_CLANG_PROGRAM], [clangcpp_needs_llvm=no], [
+		LIBS="-lclang-cpp $CLANG_LIBS $SAVE_LIBS"
+		AC_LINK_IFELSE([_AX_DETECT_CLANG_PROGRAM],
+			[clangcpp_needs_llvm=yes],
+			[clangcpp_needs_llvm=unknown])
+	])
+	AC_MSG_RESULT([$clangcpp_needs_llvm])
+	AS_IF([test "$clangcpp_needs_llvm" = "no"],
+			[CLANG_LIBS="-lclang-cpp"],
+	      [test "$clangcpp_needs_llvm" = "yes"],
+			[CLANG_LIBS="-lclang-cpp $CLANG_LIBS"],
+	      [AC_MSG_FAILURE([unable to link against libclang-cpp])])
+else
+	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangSupport])
+	CLANG_LIBS="-lclangDriver -lclangBasic $CLANG_LIBS"
+	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangASTMatchers])
+	CLANG_LIBS="-lclangAnalysis -lclangAST -lclangLex $CLANG_LIBS"
+	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangEdit])
+	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangAPINotes])
+	CLANG_LIBS="-lclangParse -lclangSema $CLANG_LIBS"
+	CLANG_LIBS="-lclangFrontend -lclangSerialization $CLANG_LIBS"
+fi
+
+CPPFLAGS="$SAVE_CPPFLAGS"
+LDFLAGS="$SAVE_LDFLAGS"
+LIBS="$SAVE_LIBS"
+
+AC_LANG_POP
+
 CLANG_PREFIX=`$LLVM_CONFIG --prefix`
 AC_DEFINE_UNQUOTED(ISL_CLANG_PREFIX,
 	["$CLANG_PREFIX"], [Clang installation prefix])
@@ -86,8 +144,6 @@ CC="$SAVE_CC"
 AC_LANG_PUSH(C++)
 
 SAVE_CPPFLAGS="$CPPFLAGS"
-SAVE_LDFLAGS="$LDFLAGS"
-SAVE_LIBS="$LIBS"
 
 CPPFLAGS="$CLANG_CXXFLAGS -I$srcdir $CPPFLAGS"
 AC_CHECK_HEADER([clang/Basic/SourceLocation.h], [],
@@ -178,54 +234,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 ]])], [AC_DEFINE([CREATEDIAGNOSTICS_TAKES_VFS], [],
        [Define if CompilerInstance::createDiagnostics takes VFS])])
 
-
-LDFLAGS="$CLANG_LDFLAGS $LDFLAGS"
-
-# A test program for checking whether linking against libclang-cpp works.
-m4_define([_AX_DETECT_CLANG_PROGRAM], [AC_LANG_PROGRAM(
-	[[#include <clang/Frontend/CompilerInstance.h>]],
-	[[
-		new clang::CompilerInstance();
-	]])])
-
-# Use single libclang-cpp shared library when available.
-# Otherwise, use a selection of clang libraries that appears to work.
-AC_CHECK_LIB([clang-cpp], [main], [have_lib_clang=yes], [have_lib_clang=no])
-if test "$have_lib_clang" = yes; then
-	# The LLVM libraries may be linked into libclang-cpp already.
-	# Linking against them again can cause errors about options
-	# being registered more than once.
-	# Check whether linking against libclang-cpp requires
-	# linking against the LLVM libraries as well.
-	# Fail if linking fails with or without the LLVM libraries.
-	AC_MSG_CHECKING([whether libclang-cpp needs LLVM libraries])
-	LIBS="-lclang-cpp $SAVE_LIBS"
-	AC_LINK_IFELSE([_AX_DETECT_CLANG_PROGRAM], [clangcpp_needs_llvm=no], [
-		LIBS="-lclang-cpp $CLANG_LIBS $SAVE_LIBS"
-		AC_LINK_IFELSE([_AX_DETECT_CLANG_PROGRAM],
-			[clangcpp_needs_llvm=yes],
-			[clangcpp_needs_llvm=unknown])
-	])
-	AC_MSG_RESULT([$clangcpp_needs_llvm])
-	AS_IF([test "$clangcpp_needs_llvm" = "no"],
-			[CLANG_LIBS="-lclang-cpp"],
-	      [test "$clangcpp_needs_llvm" = "yes"],
-			[CLANG_LIBS="-lclang-cpp $CLANG_LIBS"],
-	      [AC_MSG_FAILURE([unable to link against libclang-cpp])])
-else
-	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangSupport])
-	CLANG_LIBS="-lclangDriver -lclangBasic $CLANG_LIBS"
-	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangASTMatchers])
-	CLANG_LIBS="-lclangAnalysis -lclangAST -lclangLex $CLANG_LIBS"
-	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangEdit])
-	_AX_DETECT_CLANG_ADD_CLANG_LIB([clangAPINotes])
-	CLANG_LIBS="-lclangParse -lclangSema $CLANG_LIBS"
-	CLANG_LIBS="-lclangFrontend -lclangSerialization $CLANG_LIBS"
-fi
-
 CPPFLAGS="$SAVE_CPPFLAGS"
-LDFLAGS="$SAVE_LDFLAGS"
-LIBS="$SAVE_LIBS"
 
 AC_LANG_POP
 ])
