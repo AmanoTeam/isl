@@ -13,7 +13,9 @@ if test -z "$LLVM_CONFIG" || test ! -x "$LLVM_CONFIG"; then
 	AC_MSG_ERROR([llvm-config not found])
 fi
 CLANG_CXXFLAGS=`$LLVM_CONFIG --cxxflags | \
-	$SED -e 's/-Wcovered-switch-default//;s/-gsplit-dwarf//'`
+	$SED -e 's/-Wcovered-switch-default//' \
+	     -e 's/-gsplit-dwarf//' \
+	     -e 's/-Wl,--no-keep-files-mapped//'`
 CLANG_LDFLAGS=`$LLVM_CONFIG --ldflags`
 # Construct a -R argument for libtool.
 # This is needed in case some of the clang libraries are shared libraries.
