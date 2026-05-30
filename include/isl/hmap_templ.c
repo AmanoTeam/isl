@@ -273,6 +273,24 @@ error:
 
 #ifdef ISL_HMAP_IS_EQUAL
 #define ISL_HBASE_IS_EQUAL		ISL_HMAP_IS_EQUAL
+
+/* Does "hmap" have an entry with key pair->key and value pair->val?
+ */
+static isl_bool has_entry(void **entry, void *user)
+{
+	ISL_HMAP_EL *pair = *entry;
+	ISL_HMAP *hmap = user;
+	ISL_MAYBE(ISL_VAL) maybe_val;
+	isl_bool equal;
+
+	maybe_val = ISL_FN(ISL_HMAP,try_get)(hmap, pair->key);
+	if (maybe_val.valid < 0 || !maybe_val.valid)
+		return maybe_val.valid;
+	equal = ISL_VAL_IS_EQUAL(maybe_val.value, pair->val);
+	ISL_FN(ISL_VAL,free)(maybe_val.value);
+	return equal;
+}
+
 #endif
 
 /* Print the given key-value pair to "p".
@@ -508,23 +526,6 @@ isl_bool ISL_FN(ISL_HMAP,every)(__isl_keep ISL_HMAP *hmap,
 }
 
 #ifdef ISL_HBASE_IS_EQUAL
-
-/* Does "hmap" have an entry with key pair->key and value pair->val?
- */
-static isl_bool has_entry(void **entry, void *user)
-{
-	ISL_HMAP_EL *pair = *entry;
-	ISL_HMAP *hmap = user;
-	ISL_MAYBE(ISL_VAL) maybe_val;
-	isl_bool equal;
-
-	maybe_val = ISL_FN(ISL_HMAP,try_get)(hmap, pair->key);
-	if (maybe_val.valid < 0 || !maybe_val.valid)
-		return maybe_val.valid;
-	equal = ISL_VAL_IS_EQUAL(maybe_val.value, pair->val);
-	ISL_FN(ISL_VAL,free)(maybe_val.value);
-	return equal;
-}
 
 /* Is "hbase1" (obviously) equal to "hbase2"?
  *
