@@ -206,9 +206,69 @@ error:
 	return NULL;
 }
 
+/* Optional "val" parameter declaration.
+ */
+#define OPT_VAL_PARAM		, __isl_take ISL_VAL *val
 /* Optional "val" argument.
  */
 #define OPT_VAL_ARG		, val
+
+/* Add an entry with "key" and "val" (if specified) to "hhase".
+ * If "key" was already mapped to something else, then that mapping
+ * is replaced.
+ * If key happened to be mapped to "val" already, then we leave
+ * "hmap" untouched.
+ */
+static __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,add)(__isl_take ISL_HBASE *hbase,
+	__isl_take ISL_KEY *key OPT_VAL_PARAM)
+{
+	struct isl_hash_table_entry *entry;
+	uint32_t hash;
+
+	if (!hbase || !key)
+		goto error;
+
+	hash = ISL_FN(ISL_KEY,get_hash)(key);
+	entry = isl_hash_table_find(hbase->ctx, &hbase->table, hash,
+					&has_key, key, 0);
+	if (!entry)
+		goto error;
+	if (entry != isl_hash_table_entry_none) {
+		isl_bool equal;
+		equal = has_val(entry->data OPT_VAL_ARG);
+		if (equal < 0)
+			goto error;
+		if (equal) {
+			free_key_val(key OPT_VAL_ARG);
+			return hbase;
+		}
+	}
+
+	hbase = ISL_FN(ISL_HBASE,cow)(hbase);
+	if (!hbase)
+		goto error;
+
+	entry = isl_hash_table_find(hbase->ctx, &hbase->table, hash,
+					&has_key, key, 1);
+
+	if (!entry)
+		goto error;
+
+	if (entry->data) {
+		set_val(entry->data OPT_VAL_ARG);
+		ISL_FN(ISL_KEY,free)(key);
+		return hbase;
+	}
+
+	entry->data = create_entry(key OPT_VAL_ARG);
+	if (!entry->data)
+		return ISL_FN(ISL_HBASE,free)(hbase);
+
+	return hbase;
+error:
+	free_key_val(key OPT_VAL_ARG);
+	return ISL_FN(ISL_HBASE,free)(hbase);
+}
 
 /* If "hmap" contains a value associated to "key", then return
  * (isl_bool_true, copy of value).
@@ -331,60 +391,13 @@ error:
 }
 
 /* Add a mapping from "key" to "val" to "hmap".
- * If "key" was already mapped to something else, then that mapping
- * is replaced.
- * If key happened to be mapped to "val" already, then we leave
- * "hmap" untouched.
  */
 __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 	__isl_take ISL_KEY *key, __isl_take ISL_VAL *val)
 {
-	struct isl_hash_table_entry *entry;
-	uint32_t hash;
-
-	if (!hmap || !key || !val)
-		goto error;
-
-	hash = ISL_FN(ISL_KEY,get_hash)(key);
-	entry = isl_hash_table_find(hmap->ctx, &hmap->table, hash,
-					&has_key, key, 0);
-	if (!entry)
-		goto error;
-	if (entry != isl_hash_table_entry_none) {
-		isl_bool equal;
-		equal = has_val(entry->data OPT_VAL_ARG);
-		if (equal < 0)
-			goto error;
-		if (equal) {
-			free_key_val(key OPT_VAL_ARG);
-			return hmap;
-		}
-	}
-
-	hmap = ISL_FN(ISL_HMAP,cow)(hmap);
-	if (!hmap)
-		goto error;
-
-	entry = isl_hash_table_find(hmap->ctx, &hmap->table, hash,
-					&has_key, key, 1);
-
-	if (!entry)
-		goto error;
-
-	if (entry->data) {
-		set_val(entry->data OPT_VAL_ARG);
-		ISL_FN(ISL_KEY,free)(key);
-		return hmap;
-	}
-
-	entry->data = create_entry(key OPT_VAL_ARG);
-	if (!entry->data)
-		return ISL_FN(ISL_HMAP,free)(hmap);
-
-	return hmap;
-error:
-	free_key_val(key OPT_VAL_ARG);
-	return ISL_FN(ISL_HMAP,free)(hmap);
+	if (!val)
+		key = ISL_FN(ISL_KEY,free)(key);
+	return ISL_FN(ISL_HMAP,add)(hmap, key, val);
 }
 
 /* Internal data structure for isl_*_to_*_foreach.
