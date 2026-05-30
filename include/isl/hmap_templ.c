@@ -122,16 +122,16 @@ static isl_bool ISL_FN(ISL_HBASE,every_entry)(__isl_keep ISL_HBASE *hbase,
 	return isl_hash_table_every(hbase->ctx, &hbase->table, test, user);
 }
 
-__isl_give ISL_HMAP *ISL_FN(ISL_HMAP,dup)(__isl_keep ISL_HMAP *hmap)
+__isl_give ISL_HBASE *ISL_FN(ISL_HBASE,dup)(__isl_keep ISL_HBASE *hbase)
 {
-	ISL_HMAP *dup;
+	ISL_HBASE *dup;
 
-	if (!hmap)
+	if (!hbase)
 		return NULL;
 
-	dup = ISL_FN(ISL_HMAP,alloc)(hmap->ctx, hmap->table.n);
-	if (ISL_FN(ISL_HMAP,every_entry)(hmap, &add_entry, &dup) < 0)
-		return ISL_FN(ISL_HMAP,free)(dup);
+	dup = ISL_FN(ISL_HBASE,alloc)(hbase->ctx, hbase->table.n);
+	if (ISL_FN(ISL_HBASE,every_entry)(hbase, &add_entry, &dup) < 0)
+		return ISL_FN(ISL_HBASE,free)(dup);
 
 	return dup;
 }
