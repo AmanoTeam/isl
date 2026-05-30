@@ -2,6 +2,8 @@
 #include <isl/maybe.h>
 #include <isl/printer.h>
 
+#define ISL_HBASE			ISL_HMAP
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -11,8 +13,8 @@ extern "C" {
 #define ISL_xFN(TYPE,NAME) TYPE ## _ ## NAME
 #define ISL_FN(TYPE,NAME) ISL_xFN(TYPE,NAME)
 
-struct __isl_export ISL_HMAP;
-typedef struct ISL_HMAP	ISL_HMAP;
+struct __isl_export ISL_HBASE;
+typedef struct ISL_HBASE	ISL_HBASE;
 
 __isl_constructor
 __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,alloc)(isl_ctx *ctx, int min_size);
@@ -71,3 +73,5 @@ void ISL_FN(ISL_HMAP,dump)(__isl_keep ISL_HMAP *hmap);
 #if defined(__cplusplus)
 }
 #endif
+
+#undef ISL_HBASE

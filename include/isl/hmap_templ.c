@@ -22,7 +22,9 @@
 #define ISL_yS(TYPE1,TYPE2,NAME) ISL_xS(TYPE1,TYPE2,NAME)
 #define ISL_S(NAME) ISL_yS(ISL_KEY,ISL_VAL,NAME)
 
-struct ISL_HMAP {
+#define ISL_HBASE		ISL_HMAP
+
+struct ISL_HBASE {
 	int ref;
 	isl_ctx *ctx;
 	struct isl_hash_table table;
