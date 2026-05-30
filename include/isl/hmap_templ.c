@@ -136,15 +136,15 @@ __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,dup)(__isl_keep ISL_HBASE *hbase)
 	return dup;
 }
 
-__isl_give ISL_HMAP *ISL_FN(ISL_HMAP,cow)(__isl_take ISL_HMAP *hmap)
+__isl_give ISL_HBASE *ISL_FN(ISL_HBASE,cow)(__isl_take ISL_HBASE *hbase)
 {
-	if (!hmap)
+	if (!hbase)
 		return NULL;
 
-	if (hmap->ref == 1)
-		return hmap;
-	hmap->ref--;
-	return ISL_FN(ISL_HMAP,dup)(hmap);
+	if (hbase->ref == 1)
+		return hbase;
+	hbase->ref--;
+	return ISL_FN(ISL_HBASE,dup)(hbase);
 }
 
 __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,copy)(__isl_keep ISL_HMAP *hmap)
