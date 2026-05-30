@@ -26,6 +26,7 @@
 #define ISL_HMAP_EL		ISL_KV(pair)
 
 #define ISL_HBASE		ISL_HMAP
+#define ISL_HBASE_EL		ISL_HMAP_EL
 
 struct ISL_HBASE {
 	int ref;
@@ -57,12 +58,17 @@ __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,alloc)(isl_ctx *ctx, int min_size)
 	return hbase;
 }
 
-static isl_stat free_entry(void **entry, void *user)
+static void ISL_FN(ISL_HMAP_EL,free)(__isl_take ISL_HMAP_EL *pair)
 {
-	ISL_HMAP_EL *pair = *entry;
 	ISL_FN(ISL_KEY,free)(pair->key);
 	ISL_FN(ISL_VAL,free)(pair->val);
 	free(pair);
+}
+
+static isl_stat free_entry(void **entry, void *user)
+{
+	ISL_HBASE_EL *el = *entry;
+	ISL_FN(ISL_HBASE_EL,free)(el);
 	*entry = NULL;
 	return isl_stat_ok;
 }
