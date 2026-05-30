@@ -18,9 +18,10 @@
 #define ISL_CAT(A,B) ISL_xCAT(A,B)
 #define ISL_xFN(TYPE,NAME) TYPE ## _ ## NAME
 #define ISL_FN(TYPE,NAME) ISL_xFN(TYPE,NAME)
-#define ISL_xS(TYPE1,TYPE2,NAME) struct isl_ ## TYPE1 ## _ ## TYPE2 ## _ ## NAME
-#define ISL_yS(TYPE1,TYPE2,NAME) ISL_xS(TYPE1,TYPE2,NAME)
-#define ISL_S(NAME) ISL_yS(ISL_KEY,ISL_VAL,NAME)
+#define ISL_xKV(TYPE1,TYPE2,NAME) isl_ ## TYPE1 ## _ ## TYPE2 ## _ ## NAME
+#define ISL_yKV(TYPE1,TYPE2,NAME) ISL_xKV(TYPE1,TYPE2,NAME)
+#define ISL_KV(NAME) ISL_yKV(ISL_KEY,ISL_VAL,NAME)
+#define ISL_S(NAME) struct ISL_KV(NAME)
 
 #define ISL_HBASE		ISL_HMAP
 
