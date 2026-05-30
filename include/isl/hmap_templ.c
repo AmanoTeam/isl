@@ -23,6 +23,8 @@
 #define ISL_KV(NAME) ISL_yKV(ISL_KEY,ISL_VAL,NAME)
 #define ISL_S(NAME) struct ISL_KV(NAME)
 
+#define ISL_HMAP_EL		ISL_KV(pair)
+
 #define ISL_HBASE		ISL_HMAP
 
 struct ISL_HBASE {
@@ -31,10 +33,11 @@ struct ISL_HBASE {
 	struct isl_hash_table table;
 };
 
-ISL_S(pair) {
+struct ISL_HMAP_EL {
 	ISL_KEY *key;
 	ISL_VAL *val;
 };
+typedef struct ISL_HMAP_EL ISL_HMAP_EL;
 
 __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,alloc)(isl_ctx *ctx, int min_size)
 {
@@ -56,7 +59,7 @@ __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,alloc)(isl_ctx *ctx, int min_size)
 
 static isl_stat free_pair(void **entry, void *user)
 {
-	ISL_S(pair) *pair = *entry;
+	ISL_HMAP_EL *pair = *entry;
 	ISL_FN(ISL_KEY,free)(pair->key);
 	ISL_FN(ISL_VAL,free)(pair->val);
 	free(pair);
@@ -134,7 +137,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,copy)(__isl_keep ISL_HMAP *hmap)
 
 static isl_bool has_key(const void *entry, const void *c_key)
 {
-	const ISL_S(pair) *pair = entry;
+	const ISL_HMAP_EL *pair = entry;
 	ISL_KEY *key = (ISL_KEY *) c_key;
 
 	return ISL_KEY_IS_EQUAL(pair->key, key);
@@ -151,7 +154,7 @@ __isl_give ISL_MAYBE(ISL_VAL) ISL_FN(ISL_HMAP,try_get)(
 	__isl_keep ISL_HMAP *hmap, __isl_keep ISL_KEY *key)
 {
 	struct isl_hash_table_entry *entry;
-	ISL_S(pair) *pair;
+	ISL_HMAP_EL *pair;
 	uint32_t hash;
 	ISL_MAYBE(ISL_VAL) res = { isl_bool_false, NULL };
 
@@ -218,7 +221,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,drop)(__isl_take ISL_HMAP *hmap,
 	__isl_take ISL_KEY *key)
 {
 	struct isl_hash_table_entry *entry;
-	ISL_S(pair) *pair;
+	ISL_HMAP_EL *pair;
 	uint32_t hash;
 
 	if (!hmap || !key)
@@ -270,7 +273,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 	__isl_take ISL_KEY *key, __isl_take ISL_VAL *val)
 {
 	struct isl_hash_table_entry *entry;
-	ISL_S(pair) *pair;
+	ISL_HMAP_EL *pair;
 	uint32_t hash;
 
 	if (!hmap || !key || !val)
@@ -312,7 +315,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 		return hmap;
 	}
 
-	pair = isl_alloc_type(hmap->ctx, ISL_S(pair));
+	pair = isl_alloc_type(hmap->ctx, ISL_HMAP_EL);
 	if (!pair)
 		goto error;
 
@@ -341,7 +344,7 @@ ISL_S(foreach_data) {
  */
 static isl_stat call_on_copy(void **entry, void *user)
 {
-	ISL_S(pair) *pair = *entry;
+	ISL_HMAP_EL *pair = *entry;
 	ISL_S(foreach_data) *data = (ISL_S(foreach_data) *) user;
 
 	return data->fn(ISL_FN(ISL_KEY,copy)(pair->key),
@@ -380,7 +383,7 @@ ISL_S(every_data) {
  */
 static isl_bool call_on_pair(void **entry, void *user)
 {
-	ISL_S(pair) *pair = *entry;
+	ISL_HMAP_EL *pair = *entry;
 	ISL_S(every_data) *data = (ISL_S(every_data) *) user;
 
 	return data->test(pair->key, pair->val, data->test_user);
