@@ -35,22 +35,22 @@ ISL_S(pair) {
 	ISL_VAL *val;
 };
 
-__isl_give ISL_HMAP *ISL_FN(ISL_HMAP,alloc)(isl_ctx *ctx, int min_size)
+__isl_give ISL_HBASE *ISL_FN(ISL_HBASE,alloc)(isl_ctx *ctx, int min_size)
 {
-	ISL_HMAP *hmap;
+	ISL_HBASE *hbase;
 
-	hmap = isl_calloc_type(ctx, ISL_HMAP);
-	if (!hmap)
+	hbase = isl_calloc_type(ctx, ISL_HBASE);
+	if (!hbase)
 		return NULL;
 
-	hmap->ctx = ctx;
+	hbase->ctx = ctx;
 	isl_ctx_ref(ctx);
-	hmap->ref = 1;
+	hbase->ref = 1;
 
-	if (isl_hash_table_init(ctx, &hmap->table, min_size) < 0)
-		return ISL_FN(ISL_HMAP,free)(hmap);
+	if (isl_hash_table_init(ctx, &hbase->table, min_size) < 0)
+		return ISL_FN(ISL_HBASE,free)(hbase);
 
-	return hmap;
+	return hbase;
 }
 
 static isl_stat free_pair(void **entry, void *user)
