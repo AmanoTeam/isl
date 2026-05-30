@@ -274,6 +274,18 @@ error:
 #define ISL_HBASE_IS_EQUAL		ISL_HMAP_IS_EQUAL
 #endif
 
+/* Print the given key-value pair to "p".
+ */
+static __isl_give isl_printer *print(__isl_take isl_printer *p,
+	ISL_HMAP_EL *pair)
+{
+	p = ISL_KEY_PRINT(p, pair->key);
+	p = isl_printer_print_str(p, ": ");
+	p = ISL_VAL_PRINT(p, pair->val);
+
+	return p;
+}
+
 /* If "hmap" contains a value associated to "key", then return
  * (isl_bool_true, copy of value).
  * Otherwise, return
@@ -529,14 +541,11 @@ ISL_S(print_data) {
  */
 static isl_bool print_entry(void **entry, void *user)
 {
-	ISL_HMAP_EL *pair = *entry;
 	ISL_S(print_data) *data = user;
 
 	if (!data->first)
 		data->p = isl_printer_print_str(data->p, ", ");
-	data->p = ISL_KEY_PRINT(data->p, pair->key);
-	data->p = isl_printer_print_str(data->p, ": ");
-	data->p = ISL_VAL_PRINT(data->p, pair->val);
+	data->p = print(data->p, *entry);
 	data->first = 0;
 
 	return isl_bool_true;
