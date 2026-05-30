@@ -187,6 +187,25 @@ static void set_val(__isl_keep ISL_HMAP_EL *pair, __isl_take ISL_VAL *val)
 	pair->val = val;
 }
 
+/* Create a new entry from "key" and "val".
+ */
+static __isl_give ISL_HMAP_EL *create_entry(__isl_take ISL_KEY *key,
+	__isl_take ISL_VAL *val)
+{
+	ISL_HMAP_EL *pair;
+
+	pair = isl_alloc_type(ISL_FN(ISL_KEY,get_ctx)(key), ISL_HMAP_EL);
+	if (!pair)
+		goto error;
+
+	pair->key = key;
+	pair->val = val;
+	return pair;
+error:
+	free_key_val(key, val);
+	return NULL;
+}
+
 /* Optional "val" argument.
  */
 #define OPT_VAL_ARG		, val
@@ -321,7 +340,6 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 	__isl_take ISL_KEY *key, __isl_take ISL_VAL *val)
 {
 	struct isl_hash_table_entry *entry;
-	ISL_HMAP_EL *pair;
 	uint32_t hash;
 
 	if (!hmap || !key || !val)
@@ -359,13 +377,10 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 		return hmap;
 	}
 
-	pair = isl_alloc_type(hmap->ctx, ISL_HMAP_EL);
-	if (!pair)
-		goto error;
+	entry->data = create_entry(key OPT_VAL_ARG);
+	if (!entry->data)
+		return ISL_FN(ISL_HMAP,free)(hmap);
 
-	entry->data = pair;
-	pair->key = key;
-	pair->val = val;
 	return hmap;
 error:
 	free_key_val(key OPT_VAL_ARG);
