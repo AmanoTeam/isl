@@ -171,6 +171,14 @@ static isl_bool has_val(ISL_HMAP_EL *pair, __isl_keep ISL_VAL *val)
 	return ISL_VAL_IS_EQUAL(pair->val, val);
 }
 
+/* Free "key" and "val".
+ */
+static void free_key_val(__isl_take ISL_KEY *key, __isl_take ISL_VAL *val)
+{
+	ISL_FN(ISL_KEY,free)(key);
+	ISL_FN(ISL_VAL,free)(val);
+}
+
 /* Optional "val" argument.
  */
 #define OPT_VAL_ARG		, val
@@ -322,8 +330,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 		if (equal < 0)
 			goto error;
 		if (equal) {
-			ISL_FN(ISL_KEY,free)(key);
-			ISL_FN(ISL_VAL,free)(val);
+			free_key_val(key OPT_VAL_ARG);
 			return hmap;
 		}
 	}
@@ -355,8 +362,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 	pair->val = val;
 	return hmap;
 error:
-	ISL_FN(ISL_KEY,free)(key);
-	ISL_FN(ISL_VAL,free)(val);
+	free_key_val(key OPT_VAL_ARG);
 	return ISL_FN(ISL_HMAP,free)(hmap);
 }
 
