@@ -73,16 +73,16 @@ static isl_stat free_entry(void **entry, void *user)
 	return isl_stat_ok;
 }
 
-__isl_null ISL_HMAP *ISL_FN(ISL_HMAP,free)(__isl_take ISL_HMAP *hmap)
+__isl_null ISL_HBASE *ISL_FN(ISL_HBASE,free)(__isl_take ISL_HBASE *hbase)
 {
-	if (!hmap)
+	if (!hbase)
 		return NULL;
-	if (--hmap->ref > 0)
+	if (--hbase->ref > 0)
 		return NULL;
-	isl_hash_table_foreach(hmap->ctx, &hmap->table, &free_entry, NULL);
-	isl_hash_table_clear(&hmap->table);
-	isl_ctx_deref(hmap->ctx);
-	free(hmap);
+	isl_hash_table_foreach(hbase->ctx, &hbase->table, &free_entry, NULL);
+	isl_hash_table_clear(&hbase->table);
+	isl_ctx_deref(hbase->ctx);
+	free(hbase);
 	return NULL;
 }
 
