@@ -86,9 +86,9 @@ __isl_null ISL_HBASE *ISL_FN(ISL_HBASE,free)(__isl_take ISL_HBASE *hbase)
 	return NULL;
 }
 
-isl_ctx *ISL_FN(ISL_HMAP,get_ctx)(__isl_keep ISL_HMAP *hmap)
+isl_ctx *ISL_FN(ISL_HBASE,get_ctx)(__isl_keep ISL_HBASE *hbase)
 {
-	return hmap ? hmap->ctx : NULL;
+	return hbase ? hbase->ctx : NULL;
 }
 
 /* Add a mapping from "key" to "val" to the associative array
