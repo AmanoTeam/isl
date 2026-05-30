@@ -3,6 +3,7 @@
 #include <isl/printer.h>
 
 #define ISL_HBASE			ISL_HMAP
+#define ISL_HBASE_SUFFIX		ISL_HMAP_SUFFIX
 #ifdef ISL_HMAP_IS_EQUAL
 #define ISL_HBASE_IS_EQUAL		ISL_HMAP_IS_EQUAL
 #endif
@@ -59,8 +60,8 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,read_from_str)(isl_ctx *ctx,
 	const char *str);
 #endif
 __isl_give char *ISL_FN(ISL_HMAP,to_str)(__isl_keep ISL_HMAP *hmap);
-__isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HMAP_SUFFIX)(
-	__isl_take isl_printer *p, __isl_keep ISL_HMAP *hmap);
+__isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HBASE_SUFFIX)(
+	__isl_take isl_printer *p, __isl_keep ISL_HBASE *hbase);
 void ISL_FN(ISL_HMAP,dump)(__isl_keep ISL_HMAP *hmap);
 
 #undef ISL_xCAT
@@ -78,4 +79,5 @@ void ISL_FN(ISL_HMAP,dump)(__isl_keep ISL_HMAP *hmap);
 #endif
 
 #undef ISL_HBASE
+#undef ISL_HBASE_SUFFIX
 #undef ISL_HBASE_IS_EQUAL

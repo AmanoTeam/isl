@@ -26,6 +26,7 @@
 #define ISL_HMAP_EL		ISL_KV(pair)
 
 #define ISL_HBASE		ISL_HMAP
+#define ISL_HBASE_SUFFIX	ISL_HMAP_SUFFIX
 #define ISL_HBASE_EL		ISL_HMAP_EL
 
 struct ISL_HBASE {
@@ -551,20 +552,20 @@ static isl_bool print_entry(void **entry, void *user)
 	return isl_bool_true;
 }
 
-/* Print the associative array to "p".
+/* Print "hbase" to "p".
  */
-__isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HMAP_SUFFIX)(
-	__isl_take isl_printer *p, __isl_keep ISL_HMAP *hmap)
+__isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HBASE_SUFFIX)(
+	__isl_take isl_printer *p, __isl_keep ISL_HBASE *hbase)
 {
 	ISL_S(print_data) data;
 
-	if (!p || !hmap)
+	if (!p || !hbase)
 		return isl_printer_free(p);
 
 	p = isl_printer_print_str(p, "{");
 	data.p = p;
 	data.first = 1;
-	if (ISL_FN(ISL_HBASE,every_entry)(hmap, &print_entry, &data) < 0)
+	if (ISL_FN(ISL_HBASE,every_entry)(hbase, &print_entry, &data) < 0)
 		data.p = isl_printer_free(data.p);
 	p = data.p;
 	p = isl_printer_print_str(p, "}");
