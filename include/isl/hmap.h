@@ -62,7 +62,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,read_from_str)(isl_ctx *ctx,
 __isl_give char *ISL_FN(ISL_HMAP,to_str)(__isl_keep ISL_HMAP *hmap);
 __isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HBASE_SUFFIX)(
 	__isl_take isl_printer *p, __isl_keep ISL_HBASE *hbase);
-void ISL_FN(ISL_HMAP,dump)(__isl_keep ISL_HMAP *hmap);
+void ISL_FN(ISL_HBASE,dump)(__isl_keep ISL_HBASE *hbase);
 
 #undef ISL_xCAT
 #undef ISL_CAT

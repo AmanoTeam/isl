@@ -573,15 +573,15 @@ __isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HBASE_SUFFIX)(
 	return p;
 }
 
-void ISL_FN(ISL_HMAP,dump)(__isl_keep ISL_HMAP *hmap)
+void ISL_FN(ISL_HBASE,dump)(__isl_keep ISL_HBASE *hbase)
 {
 	isl_printer *printer;
 
-	if (!hmap)
+	if (!hbase)
 		return;
 
-	printer = isl_printer_to_file(ISL_FN(ISL_HMAP,get_ctx)(hmap), stderr);
-	printer = ISL_FN(isl_printer_print,ISL_HMAP_SUFFIX)(printer, hmap);
+	printer = isl_printer_to_file(ISL_FN(ISL_HBASE,get_ctx)(hbase), stderr);
+	printer = ISL_FN(isl_printer_print,ISL_HBASE_SUFFIX)(printer, hbase);
 	printer = isl_printer_end_line(printer);
 
 	isl_printer_free(printer);
