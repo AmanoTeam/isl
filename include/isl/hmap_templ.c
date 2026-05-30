@@ -527,21 +527,19 @@ ISL_S(print_data) {
 
 /* Print the given key-value pair to data->p.
  */
-static isl_stat print_pair(__isl_take ISL_KEY *key, __isl_take ISL_VAL *val,
-	void *user)
+static isl_bool print_entry(void **entry, void *user)
 {
+	ISL_HMAP_EL *pair = *entry;
 	ISL_S(print_data) *data = user;
 
 	if (!data->first)
 		data->p = isl_printer_print_str(data->p, ", ");
-	data->p = ISL_KEY_PRINT(data->p, key);
+	data->p = ISL_KEY_PRINT(data->p, pair->key);
 	data->p = isl_printer_print_str(data->p, ": ");
-	data->p = ISL_VAL_PRINT(data->p, val);
+	data->p = ISL_VAL_PRINT(data->p, pair->val);
 	data->first = 0;
 
-	ISL_FN(ISL_KEY,free)(key);
-	ISL_FN(ISL_VAL,free)(val);
-	return isl_stat_ok;
+	return isl_bool_true;
 }
 
 /* Print the associative array to "p".
@@ -557,7 +555,7 @@ __isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HMAP_SUFFIX)(
 	p = isl_printer_print_str(p, "{");
 	data.p = p;
 	data.first = 1;
-	if (ISL_FN(ISL_HMAP,foreach)(hmap, &print_pair, &data) < 0)
+	if (ISL_FN(ISL_HBASE,every_entry)(hmap, &print_entry, &data) < 0)
 		data.p = isl_printer_free(data.p);
 	p = data.p;
 	p = isl_printer_print_str(p, "}");
