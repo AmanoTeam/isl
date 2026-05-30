@@ -587,17 +587,17 @@ void ISL_FN(ISL_HBASE,dump)(__isl_keep ISL_HBASE *hbase)
 	isl_printer_free(printer);
 }
 
-/* Return a string representation of "hmap".
+/* Return a string representation of "hbase".
  */
-__isl_give char *ISL_FN(ISL_HMAP,to_str)(__isl_keep ISL_HMAP *hmap)
+__isl_give char *ISL_FN(ISL_HBASE,to_str)(__isl_keep ISL_HBASE *hbase)
 {
 	isl_printer *p;
 	char *s;
 
-	if (!hmap)
+	if (!hbase)
 		return NULL;
-	p = isl_printer_to_str(ISL_FN(ISL_HMAP,get_ctx)(hmap));
-	p = ISL_FN(isl_printer_print,ISL_HMAP_SUFFIX)(p, hmap);
+	p = isl_printer_to_str(ISL_FN(ISL_HBASE,get_ctx)(hbase));
+	p = ISL_FN(isl_printer_print,ISL_HBASE_SUFFIX)(p, hbase);
 	s = isl_printer_get_str(p);
 	isl_printer_free(p);
 

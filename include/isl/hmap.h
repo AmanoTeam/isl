@@ -59,7 +59,7 @@ __isl_constructor
 __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,read_from_str)(isl_ctx *ctx,
 	const char *str);
 #endif
-__isl_give char *ISL_FN(ISL_HMAP,to_str)(__isl_keep ISL_HMAP *hmap);
+__isl_give char *ISL_FN(ISL_HBASE,to_str)(__isl_keep ISL_HBASE *hbase);
 __isl_give isl_printer *ISL_FN(isl_printer_print,ISL_HBASE_SUFFIX)(
 	__isl_take isl_printer *p, __isl_keep ISL_HBASE *hbase);
 void ISL_FN(ISL_HBASE,dump)(__isl_keep ISL_HBASE *hbase);
