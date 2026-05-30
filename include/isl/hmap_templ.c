@@ -147,13 +147,13 @@ __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,cow)(__isl_take ISL_HBASE *hbase)
 	return ISL_FN(ISL_HBASE,dup)(hbase);
 }
 
-__isl_give ISL_HMAP *ISL_FN(ISL_HMAP,copy)(__isl_keep ISL_HMAP *hmap)
+__isl_give ISL_HBASE *ISL_FN(ISL_HBASE,copy)(__isl_keep ISL_HBASE *hbase)
 {
-	if (!hmap)
+	if (!hbase)
 		return NULL;
 
-	hmap->ref++;
-	return hmap;
+	hbase->ref++;
+	return hbase;
 }
 
 static isl_bool has_key(const void *entry, const void *c_key)
