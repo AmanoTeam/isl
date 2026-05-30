@@ -164,6 +164,17 @@ static isl_bool has_key(const void *entry, const void *c_key)
 	return ISL_KEY_IS_EQUAL(pair->key, key);
 }
 
+/* Does "pair" contain "val" as its value?
+ */
+static isl_bool has_val(ISL_HMAP_EL *pair, __isl_keep ISL_VAL *val)
+{
+	return ISL_VAL_IS_EQUAL(pair->val, val);
+}
+
+/* Optional "val" argument.
+ */
+#define OPT_VAL_ARG		, val
+
 /* If "hmap" contains a value associated to "key", then return
  * (isl_bool_true, copy of value).
  * Otherwise, return
@@ -307,8 +318,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 		goto error;
 	if (entry != isl_hash_table_entry_none) {
 		isl_bool equal;
-		pair = entry->data;
-		equal = ISL_VAL_IS_EQUAL(pair->val, val);
+		equal = has_val(entry->data OPT_VAL_ARG);
 		if (equal < 0)
 			goto error;
 		if (equal) {
