@@ -91,20 +91,35 @@ isl_ctx *ISL_FN(ISL_HBASE,get_ctx)(__isl_keep ISL_HBASE *hbase)
 	return hbase ? hbase->ctx : NULL;
 }
 
-/* Add a mapping from "key" to "val" to the associative array
+/* Add a mapping from pair->key to pair->val to the associative array
  * pointed to by user.
  */
-static isl_stat add_key_val(__isl_take ISL_KEY *key, __isl_take ISL_VAL *val,
-	void *user)
+static isl_bool add_entry(void **entry, void *user)
 {
+	ISL_HMAP_EL *pair = *entry;
 	ISL_HMAP **hmap = (ISL_HMAP **) user;
+	ISL_KEY *key;
+	ISL_VAL *val;
 
+	key = ISL_FN(ISL_KEY,copy)(pair->key);
+	val = ISL_FN(ISL_VAL,copy)(pair->val);
 	*hmap = ISL_FN(ISL_HMAP,set)(*hmap, key, val);
 
 	if (!*hmap)
-		return isl_stat_error;
+		return isl_bool_error;
 
-	return isl_stat_ok;
+	return isl_bool_true;
+}
+
+/* Call "test" on every entry of "hbase".
+ */
+static isl_bool ISL_FN(ISL_HBASE,every_entry)(__isl_keep ISL_HBASE *hbase,
+	isl_bool (*test)(void **entry, void *user), void *user)
+{
+	if (!hbase)
+		return isl_bool_error;
+
+	return isl_hash_table_every(hbase->ctx, &hbase->table, test, user);
 }
 
 __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,dup)(__isl_keep ISL_HMAP *hmap)
@@ -115,7 +130,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,dup)(__isl_keep ISL_HMAP *hmap)
 		return NULL;
 
 	dup = ISL_FN(ISL_HMAP,alloc)(hmap->ctx, hmap->table.n);
-	if (ISL_FN(ISL_HMAP,foreach)(hmap, &add_key_val, &dup) < 0)
+	if (ISL_FN(ISL_HMAP,every_entry)(hmap, &add_entry, &dup) < 0)
 		return ISL_FN(ISL_HMAP,free)(dup);
 
 	return dup;
