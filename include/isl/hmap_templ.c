@@ -57,7 +57,7 @@ __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,alloc)(isl_ctx *ctx, int min_size)
 	return hbase;
 }
 
-static isl_stat free_pair(void **entry, void *user)
+static isl_stat free_entry(void **entry, void *user)
 {
 	ISL_HMAP_EL *pair = *entry;
 	ISL_FN(ISL_KEY,free)(pair->key);
@@ -73,7 +73,7 @@ __isl_null ISL_HMAP *ISL_FN(ISL_HMAP,free)(__isl_take ISL_HMAP *hmap)
 		return NULL;
 	if (--hmap->ref > 0)
 		return NULL;
-	isl_hash_table_foreach(hmap->ctx, &hmap->table, &free_pair, NULL);
+	isl_hash_table_foreach(hmap->ctx, &hmap->table, &free_entry, NULL);
 	isl_hash_table_clear(&hmap->table);
 	isl_ctx_deref(hmap->ctx);
 	free(hmap);
