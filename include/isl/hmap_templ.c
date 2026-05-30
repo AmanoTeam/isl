@@ -179,6 +179,14 @@ static void free_key_val(__isl_take ISL_KEY *key, __isl_take ISL_VAL *val)
 	ISL_FN(ISL_VAL,free)(val);
 }
 
+/* Replace the value of "pair" by "val".
+ */
+static void set_val(__isl_keep ISL_HMAP_EL *pair, __isl_take ISL_VAL *val)
+{
+	ISL_FN(ISL_VAL,free)(pair->val);
+	pair->val = val;
+}
+
 /* Optional "val" argument.
  */
 #define OPT_VAL_ARG		, val
@@ -346,9 +354,7 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,set)(__isl_take ISL_HMAP *hmap,
 		goto error;
 
 	if (entry->data) {
-		pair = entry->data;
-		ISL_FN(ISL_VAL,free)(pair->val);
-		pair->val = val;
+		set_val(entry->data OPT_VAL_ARG);
 		ISL_FN(ISL_KEY,free)(key);
 		return hmap;
 	}
