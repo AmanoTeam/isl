@@ -81,10 +81,15 @@ struct unary {
 
 /* The type used to represent type T in a test.
  * By default, this is "const char *".
+ * However, a bool is represented by itself.
  */
 template <typename T>
 struct input {
 	using type = const char *;
+};
+template <>
+struct input<bool> {
+	using type = bool;
 };
 
 /* A description of the inputs and the output of a binary operation.
