@@ -7,6 +7,9 @@
 #ifdef ISL_HMAP_IS_EQUAL
 #define ISL_HBASE_IS_EQUAL		ISL_HMAP_IS_EQUAL
 #endif
+#ifdef ISL_HMAP_HAVE_READ_FROM_STR
+#define ISL_HBASE_HAVE_READ_FROM_STR
+#endif
 
 #if defined(__cplusplus)
 extern "C" {
@@ -54,9 +57,9 @@ isl_bool ISL_HBASE_IS_EQUAL(__isl_keep ISL_HBASE *hbase1,
 	__isl_keep ISL_HBASE *hbase2);
 #endif
 
-#ifdef ISL_HMAP_HAVE_READ_FROM_STR
+#ifdef ISL_HBASE_HAVE_READ_FROM_STR
 __isl_constructor
-__isl_give ISL_HMAP *ISL_FN(ISL_HMAP,read_from_str)(isl_ctx *ctx,
+__isl_give ISL_HBASE *ISL_FN(ISL_HBASE,read_from_str)(isl_ctx *ctx,
 	const char *str);
 #endif
 __isl_give char *ISL_FN(ISL_HBASE,to_str)(__isl_keep ISL_HBASE *hbase);
@@ -81,3 +84,4 @@ void ISL_FN(ISL_HBASE,dump)(__isl_keep ISL_HBASE *hbase);
 #undef ISL_HBASE
 #undef ISL_HBASE_SUFFIX
 #undef ISL_HBASE_IS_EQUAL
+#undef ISL_HBASE_HAVE_READ_FROM_STR

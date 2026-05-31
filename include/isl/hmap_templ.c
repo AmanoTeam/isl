@@ -288,6 +288,7 @@ static __isl_give isl_printer *print(__isl_take isl_printer *p,
 }
 
 #ifdef ISL_HMAP_HAVE_READ_FROM_STR
+#define ISL_HBASE_HAVE_READ_FROM_STR
 
 /* Read a key-value pair from "s", separated by a colon, and store it in "hmap".
  */
@@ -621,7 +622,7 @@ __isl_give char *ISL_FN(ISL_HBASE,to_str)(__isl_keep ISL_HBASE *hbase)
 	return s;
 }
 
-#ifdef ISL_HMAP_HAVE_READ_FROM_STR
+#ifdef ISL_HBASE_HAVE_READ_FROM_STR
 
 /* Read a hash table from "s".
  * The input format corresponds to the way associative arrays are printed
@@ -654,25 +655,24 @@ __isl_give ISL_HBASE *ISL_FN(isl_stream_read,ISL_HBASE_SUFFIX)(isl_stream *s)
 	return hbase;
 }
 
-/* Read an associative array from the string "str".
- * The input format corresponds to the way associative arrays are printed
+/* Read a hash table from the string "str".
+ * The input format corresponds to the way hash tables are printed
  * by isl_printer_print_*_to_*.
- * In particular, each key-value pair is separated by a colon,
- * the key-value pairs are separated by a comma and
- * the entire associative array is surrounded by braces.
+ * In particular, the entries are separated by a comma and
+ * the entire hash table is surrounded by braces.
  */
-__isl_give ISL_HMAP *ISL_FN(ISL_HMAP,read_from_str)(isl_ctx *ctx,
+__isl_give ISL_HBASE *ISL_FN(ISL_HBASE,read_from_str)(isl_ctx *ctx,
 	const char *str)
 {
-	ISL_HMAP *hmap;
+	ISL_HBASE *hbase;
 	isl_stream *s;
 
 	s = isl_stream_new_str(ctx, str);
 	if (!s)
 		return NULL;
-	hmap = ISL_FN(isl_stream_read,ISL_HMAP_SUFFIX)(s);
+	hbase = ISL_FN(isl_stream_read,ISL_HBASE_SUFFIX)(s);
 	isl_stream_free(s);
-	return hmap;
+	return hbase;
 }
 
 #endif
