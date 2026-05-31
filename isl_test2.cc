@@ -79,12 +79,21 @@ struct unary {
 	const char *res;
 };
 
+/* The type used to represent type T in a test.
+ * By default, this is "const char *".
+ */
+template <typename T>
+struct input {
+	using type = const char *;
+};
+
 /* A description of the inputs and the output of a binary operation.
  */
+template <typename R>
 struct binary {
 	const char *arg1;
 	const char *arg2;
-	const char *res;
+	R res;
 };
 
 /* A description of the inputs and the output of a ternary operation.
@@ -182,7 +191,7 @@ static void test(isl::ctx ctx, R (T::*fn)() const, const std::string &name,
  */
 template <typename R, typename T, typename A1>
 static void test(isl::ctx ctx, R (T::*fn)(A1) const, const std::string &name,
-	const std::vector<binary> &tests)
+	const std::vector<binary<typename input<R>::type>> &tests)
 {
 	for (const auto &test : tests) {
 		T obj(ctx, test.arg1);
