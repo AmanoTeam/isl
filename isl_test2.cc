@@ -190,6 +190,22 @@ static void test(isl::ctx ctx, R (T::*fn)() const, const std::string &name,
 	}
 }
 
+/* Create an object of type "T" from representation "arg".
+ * This usually creates an isl object from a string representation,
+ * but if the representation is a boolean then the object
+ * is simply that boolean value.
+ */
+template <typename T, typename I>
+T create(isl::ctx ctx, I arg)
+{
+	return T(ctx, arg);
+}
+template <>
+bool create(isl::ctx ctx, bool arg)
+{
+	return arg;
+}
+
 /* Run a sequence of tests of method "fn" with stringification "name" and
  * with inputs and output described by "test",
  * throwing an exception when an unexpected result is produced.
@@ -201,7 +217,7 @@ static void test(isl::ctx ctx, R (T::*fn)(A1) const, const std::string &name,
 	for (const auto &test : tests) {
 		T obj(ctx, test.arg1);
 		A1 arg1(ctx, test.arg2);
-		R expected(ctx, test.res);
+		auto expected = create<R>(ctx, test.res);
 		const auto &res = (obj.*fn)(arg1);
 		std::ostringstream ss;
 
