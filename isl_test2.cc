@@ -216,7 +216,7 @@ static void test(isl::ctx ctx, R (T::*fn)(A1) const, const std::string &name,
 {
 	for (const auto &test : tests) {
 		T obj(ctx, test.arg1);
-		A1 arg1(ctx, test.arg2);
+		typename std::remove_reference<A1>::type arg1(ctx, test.arg2);
 		auto expected = create<R>(ctx, test.res);
 		const auto &res = (obj.*fn)(arg1);
 		std::ostringstream ss;
