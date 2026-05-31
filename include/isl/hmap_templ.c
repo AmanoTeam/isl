@@ -623,35 +623,35 @@ __isl_give char *ISL_FN(ISL_HBASE,to_str)(__isl_keep ISL_HBASE *hbase)
 
 #ifdef ISL_HMAP_HAVE_READ_FROM_STR
 
-/* Read an associative array from "s".
+/* Read a hash table from "s".
  * The input format corresponds to the way associative arrays are printed
  * by isl_printer_print_*_to_*.
  * The entries are separated by a comma and
- * the entire associative array is surrounded by braces.
+ * the entire hash table is surrounded by braces.
  */
-__isl_give ISL_HMAP *ISL_FN(isl_stream_read,ISL_HMAP_SUFFIX)(isl_stream *s)
+__isl_give ISL_HBASE *ISL_FN(isl_stream_read,ISL_HBASE_SUFFIX)(isl_stream *s)
 {
 	isl_ctx *ctx;
-	ISL_HMAP *hmap;
+	ISL_HBASE *hbase;
 
 	if (!s)
 		return NULL;
 	ctx = isl_stream_get_ctx(s);
-	hmap = ISL_FN(ISL_HMAP,alloc)(ctx, 0);
-	if (!hmap)
+	hbase = ISL_FN(ISL_HBASE,alloc)(ctx, 0);
+	if (!hbase)
 		return NULL;
 	if (isl_stream_eat(s, '{') < 0)
-		return ISL_FN(ISL_HMAP,free)(hmap);
+		return ISL_FN(ISL_HBASE,free)(hbase);
 	if (isl_stream_eat_if_available(s, '}'))
-		return hmap;
+		return hbase;
 	do {
-		hmap = read_entry(s, hmap);
-		if (!hmap)
+		hbase = read_entry(s, hbase);
+		if (!hbase)
 			return NULL;
 	} while (isl_stream_eat_if_available(s, ','));
 	if (isl_stream_eat(s, '}') < 0)
-		return ISL_FN(ISL_HMAP,free)(hmap);
-	return hmap;
+		return ISL_FN(ISL_HBASE,free)(hbase);
+	return hbase;
 }
 
 /* Read an associative array from the string "str".
