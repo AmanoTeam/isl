@@ -474,19 +474,19 @@ isl_bool ISL_FN(ISL_HMAP,every)(__isl_keep ISL_HMAP *hmap,
 
 #ifdef ISL_HMAP_IS_EQUAL
 
-/* Does "hmap" have an entry with key "key" and value "val"?
+/* Does "hmap" have an entry with key pair->key and value pair->val?
  */
-static isl_bool has_entry(__isl_keep ISL_KEY *key, __isl_keep ISL_VAL *val,
-	void *user)
+static isl_bool has_entry(void **entry, void *user)
 {
+	ISL_HMAP_EL *pair = *entry;
 	ISL_HMAP *hmap = user;
 	ISL_MAYBE(ISL_VAL) maybe_val;
 	isl_bool equal;
 
-	maybe_val = ISL_FN(ISL_HMAP,try_get)(hmap, key);
+	maybe_val = ISL_FN(ISL_HMAP,try_get)(hmap, pair->key);
 	if (maybe_val.valid < 0 || !maybe_val.valid)
 		return maybe_val.valid;
-	equal = ISL_VAL_IS_EQUAL(maybe_val.value, val);
+	equal = ISL_VAL_IS_EQUAL(maybe_val.value, pair->val);
 	ISL_FN(ISL_VAL,free)(maybe_val.value);
 	return equal;
 }
@@ -506,7 +506,7 @@ isl_bool ISL_HMAP_IS_EQUAL(__isl_keep ISL_HMAP *hmap1,
 		return isl_bool_true;
 	if (hmap1->table.n != hmap2->table.n)
 		return isl_bool_false;
-	return ISL_FN(ISL_HMAP,every)(hmap1, &has_entry, hmap2);
+	return ISL_FN(ISL_HMAP,every_entry)(hmap1, &has_entry, hmap2);
 }
 
 #endif
