@@ -1013,6 +1013,32 @@ static void test_id_to_id(isl::ctx ctx)
 	});
 }
 
+/* Perform some basic isl::id_set tests.
+ */
+static void test_id_set(isl::ctx ctx)
+{
+	C(&isl::id_set::is_equal, {
+	{ "{ }", "{ }", true },
+	{ "{ }", "{ a }", false },
+	{ "{ a }", "{ }", false },
+	{ "{ a, b }", "{ b, a }", true },
+	{ "{ a, b }", "{ a }", false },
+	{ "{ a, b }", "{ b }", false },
+	{ "{ a, b }", "{ a, c }", false },
+	});
+
+	C((arg<isl::id>(&isl::id_set::insert)), {
+	{ "{ }", "a",
+	  "{ a }" },
+	{ "{ a }", "a",
+	  "{ a }" },
+	{ "{ a, c }", "a",
+	  "{ a, c }" },
+	{ "{ b }", "a",
+	  "{ a, b }" },
+	});
+}
+
 /* The list of tests to perform.
  */
 static std::vector<std::pair<const char *, void (*)(isl::ctx)>> tests =
@@ -1030,6 +1056,7 @@ static std::vector<std::pair<const char *, void (*)(isl::ctx)>> tests =
 	{ "reverse", &test_reverse },
 	{ "scale", &test_scale },
 	{ "id-to-id", &test_id_to_id },
+	{ "id-set", &test_id_set },
 };
 
 /* Perform some basic checks by means of the C++ bindings.

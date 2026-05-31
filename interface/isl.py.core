@@ -13228,6 +13228,86 @@ isl.isl_id_list_free.argtypes = [c_void_p]
 isl.isl_id_list_to_str.restype = POINTER(c_char)
 isl.isl_id_list_to_str.argtypes = [c_void_p]
 
+class id_set(object):
+    def __init__(self, *args, **keywords):
+        if "ptr" in keywords:
+            self.ctx = keywords["ctx"]
+            self.ptr = keywords["ptr"]
+            return
+        if len(args) == 1 and type(args[0]) == int:
+            self.ctx = Context.getDefaultInstance()
+            self.ptr = isl.isl_id_set_alloc(self.ctx, args[0])
+            return
+        if len(args) == 1 and type(args[0]) == str:
+            self.ctx = Context.getDefaultInstance()
+            self.ptr = isl.isl_id_set_read_from_str(self.ctx, args[0].encode('ascii'))
+            return
+        raise Error
+    def __del__(self):
+        if hasattr(self, 'ptr'):
+            isl.isl_id_set_free(self.ptr)
+    def __str__(arg0):
+        try:
+            if not arg0.__class__ is id_set:
+                arg0 = id_set(arg0)
+        except:
+            raise
+        ptr = isl.isl_id_set_to_str(arg0.ptr)
+        res = cast(ptr, c_char_p).value.decode('ascii')
+        libc.free(ptr)
+        return res
+    def __repr__(self):
+        s = str(self)
+        if '"' in s:
+            return 'isl.id_set("""%s""")' % s
+        else:
+            return 'isl.id_set("%s")' % s
+    def insert(arg0, arg1):
+        try:
+            if not arg0.__class__ is id_set:
+                arg0 = id_set(arg0)
+        except:
+            raise
+        try:
+            if not arg1.__class__ is id:
+                arg1 = id(arg1)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_id_set_insert(isl.isl_id_set_copy(arg0.ptr), isl.isl_id_copy(arg1.ptr))
+        obj = id_set(ctx=ctx, ptr=res)
+        return obj
+    def is_equal(arg0, arg1):
+        try:
+            if not arg0.__class__ is id_set:
+                arg0 = id_set(arg0)
+        except:
+            raise
+        try:
+            if not arg1.__class__ is id_set:
+                arg1 = id_set(arg1)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_id_set_is_equal(arg0.ptr, arg1.ptr)
+        if res < 0:
+            raise Error
+        return bool(res)
+
+isl.isl_id_set_alloc.restype = c_void_p
+isl.isl_id_set_alloc.argtypes = [Context, c_int]
+isl.isl_id_set_read_from_str.restype = c_void_p
+isl.isl_id_set_read_from_str.argtypes = [Context, c_char_p]
+isl.isl_id_set_insert.restype = c_void_p
+isl.isl_id_set_insert.argtypes = [c_void_p, c_void_p]
+isl.isl_id_set_is_equal.argtypes = [c_void_p, c_void_p]
+isl.isl_id_set_copy.restype = c_void_p
+isl.isl_id_set_copy.argtypes = [c_void_p]
+isl.isl_id_set_free.restype = c_void_p
+isl.isl_id_set_free.argtypes = [c_void_p]
+isl.isl_id_set_to_str.restype = POINTER(c_char)
+isl.isl_id_set_to_str.argtypes = [c_void_p]
+
 class id_to_ast_expr(object):
     def __init__(self, *args, **keywords):
         if "ptr" in keywords:

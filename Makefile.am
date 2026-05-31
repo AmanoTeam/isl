@@ -136,6 +136,7 @@ libisl_la_SOURCES = \
 	isl_fold.c \
 	isl_hash.c \
 	isl_hash_private.h \
+	isl_id_set.c \
 	isl_id_to_ast_expr.c \
 	isl_id_to_id.c \
 	isl_id_to_pw_aff.c \

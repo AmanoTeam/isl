@@ -621,6 +621,9 @@ in which the object was created.
 	isl_ctx *isl_multi_union_pw_aff_get_ctx(
 		__isl_keep isl_multi_union_pw_aff *mupa);
 
+	#include <isl/id_set.h>
+	isl_ctx *isl_id_set_get_ctx(__isl_keep isl_id_set *set);
+
 	#include <isl/id_to_ast_expr.h>
 	isl_ctx *isl_id_to_ast_expr_get_ctx(
 		__isl_keep isl_id_to_ast_expr *id2expr);
@@ -9786,6 +9789,69 @@ They can be read from input using the following function.
 	__isl_give isl_id_to_ast_expr *
 	isl_id_to_ast_expr_read_from_str(isl_ctx *ctx,
 		const char *str);
+
+=head2 Sets of Objects
+
+Sets of objects collect isl objects of a specific type.
+They are currently only defined for C<isl_id>.
+
+Sets of objects can be created, copied and freed using
+the following functions.
+
+	#include <isl/id_set.h>
+	__isl_give isl_id_set *isl_id_set_alloc(
+		isl_ctx *ctx, int min_size);
+	__isl_give isl_id_set *isl_id_set_copy(
+		__isl_keep isl_id_set *set);
+	__isl_null isl_id_set *isl_id_set_free(
+		__isl_take isl_id_set *set);
+
+The C<min_size> argument to C<isl_id_set_alloc> can be used
+to specify the expected size of the set of objects.
+The set of objects will be grown automatically as needed.
+
+Sets of objects can be inspected using the following function.
+
+	#include <isl/id_set.h>
+	isl_bool isl_id_set_has(__isl_keep isl_id_set *set,
+		__isl_keep isl_id *el);
+
+Sets of objects can be modified using the following functions.
+
+	#include <isl/id_set.h>
+	__isl_give isl_id_set *isl_id_set_insert(
+		__isl_take isl_id_set *set,
+		__isl_take isl_id *el);
+	__isl_give isl_id_set *isl_id_set_drop(
+		__isl_take isl_id_set *set,
+		__isl_take isl_id *el);
+
+Sets of objects can be checked for (obvious) equality
+using the following function.
+
+	#include <isl/id_set.h>
+	isl_bool isl_id_set_is_equal(
+		__isl_take isl_id_set *set1,
+		__isl_take isl_id_set *set2);
+
+Note that depending on how the keys and values are being compared,
+for other types of keys and/or values, this function may be called
+C<plain_is_equal> rather than C<is_equal>.
+
+Sets of objects can be printed using the following functions.
+
+	#include <isl/id_set.h>
+	__isl_give isl_printer *isl_printer_print_id_set(
+		__isl_take isl_printer *p,
+		__isl_keep isl_id_set *set);
+	__isl_give char *isl_id_set_to_str(
+		__isl_keep isl_id_set *set);
+
+They can be read from input using the following function.
+
+	#include <isl/id_set.h>
+	__isl_give isl_id_set * isl_id_set_read_from_str(
+		isl_ctx *ctx, const char *str);
 
 =head2 Vectors
 
