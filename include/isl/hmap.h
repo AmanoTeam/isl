@@ -3,6 +3,9 @@
 #include <isl/printer.h>
 
 #define ISL_HBASE			ISL_HMAP
+#ifdef ISL_HMAP_IS_EQUAL
+#define ISL_HBASE_IS_EQUAL		ISL_HMAP_IS_EQUAL
+#endif
 
 #if defined(__cplusplus)
 extern "C" {
@@ -44,10 +47,10 @@ isl_bool ISL_FN(ISL_HMAP,every)(__isl_keep ISL_HMAP *hmap,
 		void *user),
 	void *user);
 
-#ifdef ISL_HMAP_IS_EQUAL
+#ifdef ISL_HBASE_IS_EQUAL
 __isl_export
-isl_bool ISL_HMAP_IS_EQUAL(__isl_keep ISL_HMAP *hmap1,
-	__isl_keep ISL_HMAP *hmap2);
+isl_bool ISL_HBASE_IS_EQUAL(__isl_keep ISL_HBASE *hbase1,
+	__isl_keep ISL_HBASE *hbase2);
 #endif
 
 #ifdef ISL_HMAP_HAVE_READ_FROM_STR
@@ -75,3 +78,4 @@ void ISL_FN(ISL_HMAP,dump)(__isl_keep ISL_HMAP *hmap);
 #endif
 
 #undef ISL_HBASE
+#undef ISL_HBASE_IS_EQUAL

@@ -1859,7 +1859,7 @@ class id_to_ast_expr {
   inline bool is_null() const;
   inline isl::checked::ctx ctx() const;
 
-  inline boolean is_equal(const isl::checked::id_to_ast_expr &hmap2) const;
+  inline boolean is_equal(const isl::checked::id_to_ast_expr &hbase2) const;
   inline isl::checked::id_to_ast_expr set(isl::checked::id key, isl::checked::ast_expr val) const;
   inline isl::checked::id_to_ast_expr set(const std::string &key, const isl::checked::ast_expr &val) const;
 };
@@ -1891,7 +1891,7 @@ class id_to_id {
   inline bool is_null() const;
   inline isl::checked::ctx ctx() const;
 
-  inline boolean is_equal(const isl::checked::id_to_id &hmap2) const;
+  inline boolean is_equal(const isl::checked::id_to_id &hbase2) const;
   inline isl::checked::id_to_id set(isl::checked::id key, isl::checked::id val) const;
   inline isl::checked::id_to_id set(const isl::checked::id &key, const std::string &val) const;
   inline isl::checked::id_to_id set(const std::string &key, const isl::checked::id &val) const;
@@ -9461,9 +9461,9 @@ isl::checked::ctx id_to_ast_expr::ctx() const {
   return isl::checked::ctx(isl_id_to_ast_expr_get_ctx(ptr));
 }
 
-boolean id_to_ast_expr::is_equal(const isl::checked::id_to_ast_expr &hmap2) const
+boolean id_to_ast_expr::is_equal(const isl::checked::id_to_ast_expr &hbase2) const
 {
-  auto res = isl_id_to_ast_expr_is_equal(get(), hmap2.get());
+  auto res = isl_id_to_ast_expr_is_equal(get(), hbase2.get());
   return manage(res);
 }
 
@@ -9555,9 +9555,9 @@ isl::checked::ctx id_to_id::ctx() const {
   return isl::checked::ctx(isl_id_to_id_get_ctx(ptr));
 }
 
-boolean id_to_id::is_equal(const isl::checked::id_to_id &hmap2) const
+boolean id_to_id::is_equal(const isl::checked::id_to_id &hbase2) const
 {
-  auto res = isl_id_to_id_is_equal(get(), hmap2.get());
+  auto res = isl_id_to_id_is_equal(get(), hbase2.get());
   return manage(res);
 }
 

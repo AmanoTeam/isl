@@ -270,6 +270,10 @@ error:
 	return ISL_FN(ISL_HBASE,free)(hbase);
 }
 
+#ifdef ISL_HMAP_IS_EQUAL
+#define ISL_HBASE_IS_EQUAL		ISL_HMAP_IS_EQUAL
+#endif
+
 /* If "hmap" contains a value associated to "key", then return
  * (isl_bool_true, copy of value).
  * Otherwise, return
@@ -472,7 +476,7 @@ isl_bool ISL_FN(ISL_HMAP,every)(__isl_keep ISL_HMAP *hmap,
 				      &call_on_pair, &data);
 }
 
-#ifdef ISL_HMAP_IS_EQUAL
+#ifdef ISL_HBASE_IS_EQUAL
 
 /* Does "hmap" have an entry with key pair->key and value pair->val?
  */
@@ -491,22 +495,22 @@ static isl_bool has_entry(void **entry, void *user)
 	return equal;
 }
 
-/* Is "hmap1" (obviously) equal to "hmap2"?
+/* Is "hbase1" (obviously) equal to "hbase2"?
  *
- * In particular, do the two associative arrays have
+ * In particular, do the two hash tables have
  * the same number of entries and does every entry of the first
  * also appear in the second?
  */
-isl_bool ISL_HMAP_IS_EQUAL(__isl_keep ISL_HMAP *hmap1,
-	__isl_keep ISL_HMAP *hmap2)
+isl_bool ISL_HBASE_IS_EQUAL(__isl_keep ISL_HBASE *hbase1,
+	__isl_keep ISL_HBASE *hbase2)
 {
-	if (!hmap1 || !hmap2)
+	if (!hbase1 || !hbase2)
 		return isl_bool_error;
-	if (hmap1 == hmap2)
+	if (hbase1 == hbase2)
 		return isl_bool_true;
-	if (hmap1->table.n != hmap2->table.n)
+	if (hbase1->table.n != hbase2->table.n)
 		return isl_bool_false;
-	return ISL_FN(ISL_HMAP,every_entry)(hmap1, &has_entry, hmap2);
+	return ISL_FN(ISL_HBASE,every_entry)(hbase1, &has_entry, hbase2);
 }
 
 #endif

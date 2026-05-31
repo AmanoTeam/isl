@@ -1925,7 +1925,7 @@ class id_to_ast_expr {
   inline bool is_null() const;
   inline isl::ctx ctx() const;
 
-  inline bool is_equal(const isl::id_to_ast_expr &hmap2) const;
+  inline bool is_equal(const isl::id_to_ast_expr &hbase2) const;
   inline isl::id_to_ast_expr set(isl::id key, isl::ast_expr val) const;
   inline isl::id_to_ast_expr set(const std::string &key, const isl::ast_expr &val) const;
 };
@@ -1957,7 +1957,7 @@ class id_to_id {
   inline bool is_null() const;
   inline isl::ctx ctx() const;
 
-  inline bool is_equal(const isl::id_to_id &hmap2) const;
+  inline bool is_equal(const isl::id_to_id &hbase2) const;
   inline isl::id_to_id set(isl::id key, isl::id val) const;
   inline isl::id_to_id set(const isl::id &key, const std::string &val) const;
   inline isl::id_to_id set(const std::string &key, const isl::id &val) const;
@@ -11552,13 +11552,13 @@ isl::ctx id_to_ast_expr::ctx() const {
   return isl::ctx(isl_id_to_ast_expr_get_ctx(ptr));
 }
 
-bool id_to_ast_expr::is_equal(const isl::id_to_ast_expr &hmap2) const
+bool id_to_ast_expr::is_equal(const isl::id_to_ast_expr &hbase2) const
 {
-  if (!ptr || hmap2.is_null())
+  if (!ptr || hbase2.is_null())
     exception::throw_invalid("NULL input", __FILE__, __LINE__);
   auto saved_ctx = ctx();
   options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
-  auto res = isl_id_to_ast_expr_is_equal(get(), hmap2.get());
+  auto res = isl_id_to_ast_expr_is_equal(get(), hbase2.get());
   if (res < 0)
     exception::throw_last_error(saved_ctx);
   return res;
@@ -11684,13 +11684,13 @@ isl::ctx id_to_id::ctx() const {
   return isl::ctx(isl_id_to_id_get_ctx(ptr));
 }
 
-bool id_to_id::is_equal(const isl::id_to_id &hmap2) const
+bool id_to_id::is_equal(const isl::id_to_id &hbase2) const
 {
-  if (!ptr || hmap2.is_null())
+  if (!ptr || hbase2.is_null())
     exception::throw_invalid("NULL input", __FILE__, __LINE__);
   auto saved_ctx = ctx();
   options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
-  auto res = isl_id_to_id_is_equal(get(), hmap2.get());
+  auto res = isl_id_to_id_is_equal(get(), hbase2.get());
   if (res < 0)
     exception::throw_last_error(saved_ctx);
   return res;
