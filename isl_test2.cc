@@ -118,6 +118,8 @@ struct ternary {
  *
  * Since isl::multi_val has both an is_equal and a plain_is_equal,
  * use a specific overload for isl::multi_val that calls is_equal.
+ *
+ * If the objects are boolean values, then compare them directly.
  */
 template <typename T, typename std::decay<decltype(
 	std::declval<T>().is_equal(std::declval<T>()))>::type = true>
@@ -134,6 +136,10 @@ static bool is_equal(const T &a, const T &b)
 static bool is_equal(const isl::multi_val &a, const isl::multi_val &b)
 {
 	return a.is_equal(b);
+}
+static bool is_equal(bool a, bool b)
+{
+	return a == b;
 }
 
 /* A helper macro for throwing an isl::exception_invalid with message "msg".
