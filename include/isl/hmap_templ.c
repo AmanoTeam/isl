@@ -287,6 +287,23 @@ static __isl_give isl_printer *print(__isl_take isl_printer *p,
 	return p;
 }
 
+#ifdef ISL_HMAP_HAVE_READ_FROM_STR
+
+/* Read a key-value pair from "s", separated by a colon, and store it in "hmap".
+ */
+static __isl_give ISL_HMAP *read_entry(isl_stream *s, __isl_take ISL_HMAP *hmap)
+{
+	ISL_KEY *key;
+	ISL_VAL *val = NULL;
+
+	key = ISL_KEY_READ(s);
+	if (isl_stream_eat(s, ':') >= 0)
+		val = ISL_VAL_READ(s);
+	return ISL_FN(ISL_HMAP,set)(hmap, key, val);
+}
+
+#endif
+
 /* If "hmap" contains a value associated to "key", then return
  * (isl_bool_true, copy of value).
  * Otherwise, return
@@ -609,8 +626,7 @@ __isl_give char *ISL_FN(ISL_HBASE,to_str)(__isl_keep ISL_HBASE *hbase)
 /* Read an associative array from "s".
  * The input format corresponds to the way associative arrays are printed
  * by isl_printer_print_*_to_*.
- * In particular, each key-value pair is separated by a colon,
- * the key-value pairs are separated by a comma and
+ * The entries are separated by a comma and
  * the entire associative array is surrounded by braces.
  */
 __isl_give ISL_HMAP *ISL_FN(isl_stream_read,ISL_HMAP_SUFFIX)(isl_stream *s)
@@ -629,13 +645,7 @@ __isl_give ISL_HMAP *ISL_FN(isl_stream_read,ISL_HMAP_SUFFIX)(isl_stream *s)
 	if (isl_stream_eat_if_available(s, '}'))
 		return hmap;
 	do {
-		ISL_KEY *key;
-		ISL_VAL *val = NULL;
-
-		key = ISL_KEY_READ(s);
-		if (isl_stream_eat(s, ':') >= 0)
-			val = ISL_VAL_READ(s);
-		hmap = ISL_FN(ISL_HMAP,set)(hmap, key, val);
+		hmap = read_entry(s, hmap);
 		if (!hmap)
 			return NULL;
 	} while (isl_stream_eat_if_available(s, ','));
