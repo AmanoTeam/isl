@@ -225,7 +225,7 @@ static void test(isl::ctx ctx, R (T::*fn)(A1) const, const std::string &name,
 			continue;
 
 		ss << name << "(" << test.arg1 << ", " << test.arg2 << ") =\n"
-		   << res << "\n"
+		   << std::boolalpha << res << "\n"
 		   << "expecting:\n"
 		   << expected;
 		THROW_INVALID(ss.str().c_str());
