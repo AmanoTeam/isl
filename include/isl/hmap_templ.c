@@ -342,7 +342,7 @@ __isl_give ISL_VAL *ISL_FN(ISL_HMAP,get)(__isl_keep ISL_HMAP *hmap,
 /* Remove the mapping between "key" and its associated value (if any)
  * from "hmap".
  *
- * If "key" is not mapped to anything, then we leave "hmap" untouched"
+ * If "key" is not mapped to anything, then we leave "hmap" untouched.
  */
 __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,drop)(__isl_take ISL_HMAP *hmap,
 	__isl_take ISL_KEY *key)
