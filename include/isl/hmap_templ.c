@@ -340,49 +340,49 @@ __isl_give ISL_VAL *ISL_FN(ISL_HMAP,get)(__isl_keep ISL_HMAP *hmap,
 }
 
 /* Remove the mapping between "key" and its associated value (if any)
- * from "hmap".
+ * from "hbase".
  *
- * If "key" is not mapped to anything, then we leave "hmap" untouched.
+ * If "key" is not mapped to anything, then we leave "hbase" untouched.
  */
-__isl_give ISL_HMAP *ISL_FN(ISL_HMAP,drop)(__isl_take ISL_HMAP *hmap,
+__isl_give ISL_HBASE *ISL_FN(ISL_HBASE,drop)(__isl_take ISL_HBASE *hbase,
 	__isl_take ISL_KEY *key)
 {
 	struct isl_hash_table_entry *entry;
 	uint32_t hash;
 
-	if (!hmap || !key)
+	if (!hbase || !key)
 		goto error;
 
 	hash = ISL_FN(ISL_KEY,get_hash)(key);
-	entry = isl_hash_table_find(hmap->ctx, &hmap->table, hash,
+	entry = isl_hash_table_find(hbase->ctx, &hbase->table, hash,
 					&has_key, key, 0);
 	if (!entry)
 		goto error;
 	if (entry == isl_hash_table_entry_none) {
 		ISL_FN(ISL_KEY,free)(key);
-		return hmap;
+		return hbase;
 	}
 
-	hmap = ISL_FN(ISL_HMAP,cow)(hmap);
-	if (!hmap)
+	hbase = ISL_FN(ISL_HBASE,cow)(hbase);
+	if (!hbase)
 		goto error;
-	entry = isl_hash_table_find(hmap->ctx, &hmap->table, hash,
+	entry = isl_hash_table_find(hbase->ctx, &hbase->table, hash,
 					&has_key, key, 0);
 	ISL_FN(ISL_KEY,free)(key);
 
 	if (!entry)
-		return ISL_FN(ISL_HMAP,free)(hmap);
+		return ISL_FN(ISL_HBASE,free)(hbase);
 	if (entry == isl_hash_table_entry_none)
-		isl_die(hmap->ctx, isl_error_internal,
-			"missing entry" , return ISL_FN(ISL_HMAP,free)(hmap));
+		isl_die(hbase->ctx, isl_error_internal,
+			"missing entry" , return ISL_FN(ISL_HBASE,free)(hbase));
 
 	ISL_FN(ISL_HBASE_EL,free)(entry->data);
-	isl_hash_table_remove(hmap->ctx, &hmap->table, entry);
+	isl_hash_table_remove(hbase->ctx, &hbase->table, entry);
 
-	return hmap;
+	return hbase;
 error:
 	ISL_FN(ISL_KEY,free)(key);
-	ISL_FN(ISL_HMAP,free)(hmap);
+	ISL_FN(ISL_HBASE,free)(hbase);
 	return NULL;
 }
 
