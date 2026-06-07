@@ -348,7 +348,6 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,drop)(__isl_take ISL_HMAP *hmap,
 	__isl_take ISL_KEY *key)
 {
 	struct isl_hash_table_entry *entry;
-	ISL_HMAP_EL *pair;
 	uint32_t hash;
 
 	if (!hmap || !key)
@@ -377,11 +376,8 @@ __isl_give ISL_HMAP *ISL_FN(ISL_HMAP,drop)(__isl_take ISL_HMAP *hmap,
 		isl_die(hmap->ctx, isl_error_internal,
 			"missing entry" , return ISL_FN(ISL_HMAP,free)(hmap));
 
-	pair = entry->data;
+	ISL_FN(ISL_HBASE_EL,free)(entry->data);
 	isl_hash_table_remove(hmap->ctx, &hmap->table, entry);
-	ISL_FN(ISL_KEY,free)(pair->key);
-	ISL_FN(ISL_VAL,free)(pair->val);
-	free(pair);
 
 	return hmap;
 error:
