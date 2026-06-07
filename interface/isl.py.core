@@ -13262,6 +13262,21 @@ class id_set(object):
             return 'isl.id_set("""%s""")' % s
         else:
             return 'isl.id_set("%s")' % s
+    def drop(arg0, arg1):
+        try:
+            if not arg0.__class__ is id_set:
+                arg0 = id_set(arg0)
+        except:
+            raise
+        try:
+            if not arg1.__class__ is id:
+                arg1 = id(arg1)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_id_set_drop(isl.isl_id_set_copy(arg0.ptr), isl.isl_id_copy(arg1.ptr))
+        obj = id_set(ctx=ctx, ptr=res)
+        return obj
     def insert(arg0, arg1):
         try:
             if not arg0.__class__ is id_set:
@@ -13298,6 +13313,8 @@ isl.isl_id_set_alloc.restype = c_void_p
 isl.isl_id_set_alloc.argtypes = [Context, c_int]
 isl.isl_id_set_read_from_str.restype = c_void_p
 isl.isl_id_set_read_from_str.argtypes = [Context, c_char_p]
+isl.isl_id_set_drop.restype = c_void_p
+isl.isl_id_set_drop.argtypes = [c_void_p, c_void_p]
 isl.isl_id_set_insert.restype = c_void_p
 isl.isl_id_set_insert.argtypes = [c_void_p, c_void_p]
 isl.isl_id_set_is_equal.argtypes = [c_void_p, c_void_p]
@@ -13342,6 +13359,21 @@ class id_to_ast_expr(object):
             return 'isl.id_to_ast_expr("""%s""")' % s
         else:
             return 'isl.id_to_ast_expr("%s")' % s
+    def drop(arg0, arg1):
+        try:
+            if not arg0.__class__ is id_to_ast_expr:
+                arg0 = id_to_ast_expr(arg0)
+        except:
+            raise
+        try:
+            if not arg1.__class__ is id:
+                arg1 = id(arg1)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_id_to_ast_expr_drop(isl.isl_id_to_ast_expr_copy(arg0.ptr), isl.isl_id_copy(arg1.ptr))
+        obj = id_to_ast_expr(ctx=ctx, ptr=res)
+        return obj
     def is_equal(arg0, arg1):
         try:
             if not arg0.__class__ is id_to_ast_expr:
@@ -13383,6 +13415,8 @@ isl.isl_id_to_ast_expr_alloc.restype = c_void_p
 isl.isl_id_to_ast_expr_alloc.argtypes = [Context, c_int]
 isl.isl_id_to_ast_expr_read_from_str.restype = c_void_p
 isl.isl_id_to_ast_expr_read_from_str.argtypes = [Context, c_char_p]
+isl.isl_id_to_ast_expr_drop.restype = c_void_p
+isl.isl_id_to_ast_expr_drop.argtypes = [c_void_p, c_void_p]
 isl.isl_id_to_ast_expr_is_equal.argtypes = [c_void_p, c_void_p]
 isl.isl_id_to_ast_expr_set.restype = c_void_p
 isl.isl_id_to_ast_expr_set.argtypes = [c_void_p, c_void_p, c_void_p]
@@ -13427,6 +13461,21 @@ class id_to_id(object):
             return 'isl.id_to_id("""%s""")' % s
         else:
             return 'isl.id_to_id("%s")' % s
+    def drop(arg0, arg1):
+        try:
+            if not arg0.__class__ is id_to_id:
+                arg0 = id_to_id(arg0)
+        except:
+            raise
+        try:
+            if not arg1.__class__ is id:
+                arg1 = id(arg1)
+        except:
+            raise
+        ctx = arg0.ctx
+        res = isl.isl_id_to_id_drop(isl.isl_id_to_id_copy(arg0.ptr), isl.isl_id_copy(arg1.ptr))
+        obj = id_to_id(ctx=ctx, ptr=res)
+        return obj
     def is_equal(arg0, arg1):
         try:
             if not arg0.__class__ is id_to_id:
@@ -13468,6 +13517,8 @@ isl.isl_id_to_id_alloc.restype = c_void_p
 isl.isl_id_to_id_alloc.argtypes = [Context, c_int]
 isl.isl_id_to_id_read_from_str.restype = c_void_p
 isl.isl_id_to_id_read_from_str.argtypes = [Context, c_char_p]
+isl.isl_id_to_id_drop.restype = c_void_p
+isl.isl_id_to_id_drop.argtypes = [c_void_p, c_void_p]
 isl.isl_id_to_id_is_equal.argtypes = [c_void_p, c_void_p]
 isl.isl_id_to_id_set.restype = c_void_p
 isl.isl_id_to_id_set.argtypes = [c_void_p, c_void_p, c_void_p]

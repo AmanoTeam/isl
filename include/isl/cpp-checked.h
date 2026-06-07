@@ -1861,6 +1861,8 @@ class id_set {
   inline bool is_null() const;
   inline isl::checked::ctx ctx() const;
 
+  inline isl::checked::id_set drop(isl::checked::id key) const;
+  inline isl::checked::id_set drop(const std::string &key) const;
   inline isl::checked::id_set insert(isl::checked::id el) const;
   inline isl::checked::id_set insert(const std::string &el) const;
   inline boolean is_equal(const isl::checked::id_set &hbase2) const;
@@ -1893,6 +1895,8 @@ class id_to_ast_expr {
   inline bool is_null() const;
   inline isl::checked::ctx ctx() const;
 
+  inline isl::checked::id_to_ast_expr drop(isl::checked::id key) const;
+  inline isl::checked::id_to_ast_expr drop(const std::string &key) const;
   inline boolean is_equal(const isl::checked::id_to_ast_expr &hbase2) const;
   inline isl::checked::id_to_ast_expr set(isl::checked::id key, isl::checked::ast_expr val) const;
   inline isl::checked::id_to_ast_expr set(const std::string &key, const isl::checked::ast_expr &val) const;
@@ -1925,6 +1929,8 @@ class id_to_id {
   inline bool is_null() const;
   inline isl::checked::ctx ctx() const;
 
+  inline isl::checked::id_to_id drop(isl::checked::id key) const;
+  inline isl::checked::id_to_id drop(const std::string &key) const;
   inline boolean is_equal(const isl::checked::id_to_id &hbase2) const;
   inline isl::checked::id_to_id set(isl::checked::id key, isl::checked::id val) const;
   inline isl::checked::id_to_id set(const isl::checked::id &key, const std::string &val) const;
@@ -9495,6 +9501,17 @@ isl::checked::ctx id_set::ctx() const {
   return isl::checked::ctx(isl_id_set_get_ctx(ptr));
 }
 
+isl::checked::id_set id_set::drop(isl::checked::id key) const
+{
+  auto res = isl_id_set_drop(copy(), key.release());
+  return manage(res);
+}
+
+isl::checked::id_set id_set::drop(const std::string &key) const
+{
+  return this->drop(isl::checked::id(ctx(), key));
+}
+
 isl::checked::id_set id_set::insert(isl::checked::id el) const
 {
   auto res = isl_id_set_insert(copy(), el.release());
@@ -9589,6 +9606,17 @@ isl::checked::ctx id_to_ast_expr::ctx() const {
   return isl::checked::ctx(isl_id_to_ast_expr_get_ctx(ptr));
 }
 
+isl::checked::id_to_ast_expr id_to_ast_expr::drop(isl::checked::id key) const
+{
+  auto res = isl_id_to_ast_expr_drop(copy(), key.release());
+  return manage(res);
+}
+
+isl::checked::id_to_ast_expr id_to_ast_expr::drop(const std::string &key) const
+{
+  return this->drop(isl::checked::id(ctx(), key));
+}
+
 boolean id_to_ast_expr::is_equal(const isl::checked::id_to_ast_expr &hbase2) const
 {
   auto res = isl_id_to_ast_expr_is_equal(get(), hbase2.get());
@@ -9681,6 +9709,17 @@ bool id_to_id::is_null() const {
 
 isl::checked::ctx id_to_id::ctx() const {
   return isl::checked::ctx(isl_id_to_id_get_ctx(ptr));
+}
+
+isl::checked::id_to_id id_to_id::drop(isl::checked::id key) const
+{
+  auto res = isl_id_to_id_drop(copy(), key.release());
+  return manage(res);
+}
+
+isl::checked::id_to_id id_to_id::drop(const std::string &key) const
+{
+  return this->drop(isl::checked::id(ctx(), key));
 }
 
 boolean id_to_id::is_equal(const isl::checked::id_to_id &hbase2) const

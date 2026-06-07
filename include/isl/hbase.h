@@ -18,6 +18,7 @@ __isl_null ISL_HBASE *ISL_FN(ISL_HBASE,free)(__isl_take ISL_HBASE *hbase);
 
 isl_ctx *ISL_FN(ISL_HBASE,get_ctx)(__isl_keep ISL_HBASE *hbase);
 
+__isl_export
 __isl_give ISL_HBASE *ISL_FN(ISL_HBASE,drop)(__isl_take ISL_HBASE *hbase,
 	__isl_take ISL_KEY *key);
 

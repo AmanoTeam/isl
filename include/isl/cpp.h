@@ -1927,6 +1927,8 @@ class id_set {
   inline bool is_null() const;
   inline isl::ctx ctx() const;
 
+  inline isl::id_set drop(isl::id key) const;
+  inline isl::id_set drop(const std::string &key) const;
   inline isl::id_set insert(isl::id el) const;
   inline isl::id_set insert(const std::string &el) const;
   inline bool is_equal(const isl::id_set &hbase2) const;
@@ -1959,6 +1961,8 @@ class id_to_ast_expr {
   inline bool is_null() const;
   inline isl::ctx ctx() const;
 
+  inline isl::id_to_ast_expr drop(isl::id key) const;
+  inline isl::id_to_ast_expr drop(const std::string &key) const;
   inline bool is_equal(const isl::id_to_ast_expr &hbase2) const;
   inline isl::id_to_ast_expr set(isl::id key, isl::ast_expr val) const;
   inline isl::id_to_ast_expr set(const std::string &key, const isl::ast_expr &val) const;
@@ -1991,6 +1995,8 @@ class id_to_id {
   inline bool is_null() const;
   inline isl::ctx ctx() const;
 
+  inline isl::id_to_id drop(isl::id key) const;
+  inline isl::id_to_id drop(const std::string &key) const;
   inline bool is_equal(const isl::id_to_id &hbase2) const;
   inline isl::id_to_id set(isl::id key, isl::id val) const;
   inline isl::id_to_id set(const isl::id &key, const std::string &val) const;
@@ -11586,6 +11592,25 @@ isl::ctx id_set::ctx() const {
   return isl::ctx(isl_id_set_get_ctx(ptr));
 }
 
+isl::id_set id_set::drop(isl::id key) const
+{
+  if (!ptr || key.is_null())
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  auto saved_ctx = ctx();
+  options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
+  auto res = isl_id_set_drop(copy(), key.release());
+  if (!res)
+    exception::throw_last_error(saved_ctx);
+  return manage(res);
+}
+
+isl::id_set id_set::drop(const std::string &key) const
+{
+  if (!ptr)
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  return this->drop(isl::id(ctx(), key));
+}
+
 isl::id_set id_set::insert(isl::id el) const
 {
   if (!ptr || el.is_null())
@@ -11718,6 +11743,25 @@ isl::ctx id_to_ast_expr::ctx() const {
   return isl::ctx(isl_id_to_ast_expr_get_ctx(ptr));
 }
 
+isl::id_to_ast_expr id_to_ast_expr::drop(isl::id key) const
+{
+  if (!ptr || key.is_null())
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  auto saved_ctx = ctx();
+  options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
+  auto res = isl_id_to_ast_expr_drop(copy(), key.release());
+  if (!res)
+    exception::throw_last_error(saved_ctx);
+  return manage(res);
+}
+
+isl::id_to_ast_expr id_to_ast_expr::drop(const std::string &key) const
+{
+  if (!ptr)
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  return this->drop(isl::id(ctx(), key));
+}
+
 bool id_to_ast_expr::is_equal(const isl::id_to_ast_expr &hbase2) const
 {
   if (!ptr || hbase2.is_null())
@@ -11848,6 +11892,25 @@ bool id_to_id::is_null() const {
 
 isl::ctx id_to_id::ctx() const {
   return isl::ctx(isl_id_to_id_get_ctx(ptr));
+}
+
+isl::id_to_id id_to_id::drop(isl::id key) const
+{
+  if (!ptr || key.is_null())
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  auto saved_ctx = ctx();
+  options_scoped_set_on_error saved_on_error(saved_ctx, exception::on_error);
+  auto res = isl_id_to_id_drop(copy(), key.release());
+  if (!res)
+    exception::throw_last_error(saved_ctx);
+  return manage(res);
+}
+
+isl::id_to_id id_to_id::drop(const std::string &key) const
+{
+  if (!ptr)
+    exception::throw_invalid("NULL input", __FILE__, __LINE__);
+  return this->drop(isl::id(ctx(), key));
 }
 
 bool id_to_id::is_equal(const isl::id_to_id &hbase2) const

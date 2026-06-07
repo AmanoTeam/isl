@@ -1037,6 +1037,17 @@ static void test_id_set(isl::ctx ctx)
 	{ "{ b }", "a",
 	  "{ a, b }" },
 	});
+
+	C((arg<isl::id>(&isl::id_set::drop)), {
+	{ "{ }", "a",
+	  "{ }" },
+	{ "{ a }", "a",
+	  "{ }" },
+	{ "{ b }", "a",
+	  "{ b }" },
+	{ "{ a, b }", "a",
+	  "{ b }" },
+	});
 }
 
 /* The list of tests to perform.
