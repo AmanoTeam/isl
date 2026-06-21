@@ -2034,6 +2034,8 @@ static __isl_give isl_basic_map *check_for_residue_div(
 					progress);
 		bmap = set_residue_div(bmap, l, sum, div, v_div, total, j, i,
 					progress);
+		if (!bmap)
+			return NULL;
 	}
 
 	return bmap;
