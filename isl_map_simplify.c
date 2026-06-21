@@ -2087,6 +2087,8 @@ static __isl_give isl_basic_map *check_for_div_constraints(
 			continue;
 		bmap = check_for_residue_div(bmap, opposite, c, sum, i,
 						&div_set);
+		if (!bmap)
+			return NULL;
 		bmap = set_div_from_lower_bound_if_better(bmap, i,
 						bmap->ineq[c], &div_set);
 		if (!bmap)
