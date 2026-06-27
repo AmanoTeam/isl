@@ -462,6 +462,8 @@ pkginclude_HEADERS = \
 	include/isl/id_to_pw_aff.h \
 	include/isl/ilp.h \
 	include/isl/hash.h \
+	include/isl/hbase.h \
+	include/isl/hbase_templ.c \
 	include/isl/hmap.h \
 	include/isl/hmap_templ.c \
 	include/isl/list.h \
