@@ -466,6 +466,8 @@ pkginclude_HEADERS = \
 	include/isl/hbase_templ.c \
 	include/isl/hmap.h \
 	include/isl/hmap_templ.c \
+	include/isl/hset.h \
+	include/isl/hset_templ.c \
 	include/isl/list.h \
 	include/isl/local_space.h \
 	include/isl/lp.h \
