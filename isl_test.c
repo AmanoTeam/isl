@@ -2994,11 +2994,13 @@ static isl_stat test_pw_max(struct isl_ctx *ctx)
 
 /* A specialized isl_set_min_val test case that would return the wrong result
  * in earlier versions of isl.
- * The explicit call to isl_basic_set_union prevents the second basic set
+ * "empty_pos" determines the position of the empty basic set
+ * in the input set.
+ * The explicit call to isl_basic_set_union prevents the empty basic set
  * from being determined to be empty prior to the call to isl_set_min_val,
  * at least at the point where this test case was introduced.
  */
-static int test_min_special(isl_ctx *ctx)
+static int test_min_special(isl_ctx *ctx, int empty_pos)
 {
 	const char *str;
 	isl_basic_set *bset1, *bset2;
@@ -3011,7 +3013,10 @@ static int test_min_special(isl_ctx *ctx)
 	bset1 = isl_basic_set_read_from_str(ctx, str);
 	str = "{ [a, b] : 1 <= a, b and a + b <= 1 }";
 	bset2 = isl_basic_set_read_from_str(ctx, str);
-	set = isl_basic_set_union(bset1, bset2);
+	if (empty_pos == 0)
+		set = isl_basic_set_union(bset2, bset1);
+	else
+		set = isl_basic_set_union(bset1, bset2);
 	obj = isl_aff_read_from_str(ctx, "{ [a, b] -> [a] }");
 
 	res = isl_set_min_val(set, obj);
@@ -3150,7 +3155,9 @@ static int test_min(struct isl_ctx *ctx)
 
 	if (test_pw_max(ctx) < 0)
 		return -1;
-	if (test_min_special(ctx) < 0)
+	if (test_min_special(ctx, 0) < 0)
+		return -1;
+	if (test_min_special(ctx, 1) < 0)
 		return -1;
 	if (test_min_special2(ctx) < 0)
 		return -1;
