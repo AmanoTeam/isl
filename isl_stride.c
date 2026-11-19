@@ -192,11 +192,7 @@ error:
  * of a pair of constraints with opposite coefficients.
  * If "c" is an equality constraint, then "round" is 0 and "gap"
  * is not used (it is effectively considered to be equal to 0).
- * If "c" is an inequality constraint, then "round" is set to 1
- * if "c" is a lower bound on data->pos (meaning that the ceil
- * of the derived offset needs to be computed) and set to -1
- * if "c" is an upper bound on data->pos (meaning that the floor
- * of the derived offset needs to be computed), while "gap"
+ * If "c" is an inequality constraint, then "round" is set to 1, while "gap"
  * is the sum of the constant terms of the two constraints.
  *
  * In order to impose a stride on the dimension,
@@ -214,6 +210,23 @@ error:
  *	0 <= h(p) + g * v * i + g * stride * f(alpha) <= gap
  *
  *
+ * In the case of an equality constraint,
+ *
+ *	v i = -h(p)/g - stride f(alpha)
+ *
+ * while in the case of an inequality constraint (pair),
+ *
+ *	v i = ceil(-h(p)/g) - stride f(alpha)
+ *
+ * provided gap < g.  A ceil is required since in this case, "-h(p)"
+ * can no longer be assumed to be a multiple of g.
+ * In either case,
+ *
+ *	v i = C(-h(p)/g) - stride f(alpha)
+ *
+ * with C either ceil or an identity function.
+ *
+ *
  * If "stride" is not zero and not one, then it represents a non-trivial stride
  * on "i".  We compute a and b such that
  *
@@ -221,28 +234,15 @@ error:
  *
  * We have
  *
- *	g v i = -h(p) + g stride f(alpha)
+ *	v i = C(-h(p)/g) - stride f(alpha)
  *
- *	a g v i = -a h(p) + g stride f(alpha)
+ *	a v i = a C(-h(p)/g) - a stride f(alpha)
  *
- *	a g v i + b g stride i = -a h(p) + g stride * (...)
+ *	a v i + b stride i = a C(-h(p)/g) + stride * (...)
  *
- *	g i = -a h(p) + g stride * (...)
+ *	i = a C(-h(p)/g) + stride * (...)
  *
- *	i = -a h(p)/g + stride * (...)
- *
- * The expression "-a h(p)/g" can therefore be used as offset.
- *
- * If "c" is an inequality constraint, then the last equality is
- *
- *	-a h(p)/g + stride * (...) <= i <= gap/g
- *
- * and so a stride can only be derived from this if gap < g.
- * In this case, the offset is "ceil(-a h(p)/g)" since "-a h(p)"
- * can no longer be assumed to be a multiple of g.
- * Note that this assumes that the original coefficient of i was positive
- * (a lower bound on i).  If the coefficient is negative, then the offset
- * is "floor(-a h(p)/g)".
+ * The expression "a C(-h(p)/g)" can therefore be used as offset.
  */
 static isl_stat detect_stride(struct isl_detect_stride_data *data,
 	__isl_take isl_constraint *c, int round, __isl_keep isl_val *gap)
@@ -288,13 +288,11 @@ static isl_stat detect_stride(struct isl_detect_stride_data *data,
 		c = isl_constraint_drop_all_locals(c);
 		aff = isl_constraint_get_aff(c);
 		aff = isl_aff_set_coefficient_si(aff, isl_dim_in, data->pos, 0);
-		a = isl_val_neg(a);
-		aff = isl_aff_scale_val(aff, a);
+		aff = isl_aff_neg(aff);
 		aff = isl_aff_scale_down_val(aff, m);
-		if (round > 0)
+		if (round)
 			aff = isl_aff_ceil(aff);
-		else if (round < 0)
-			aff = isl_aff_floor(aff);
+		aff = isl_aff_scale_val(aff, a);
 		r = set_stride(data, stride, aff);
 	} else {
 		isl_val_free(stride);
@@ -367,13 +365,8 @@ static isl_stat detect_stride_ineq(__isl_take isl_constraint *c,
 {
 	struct isl_detect_stride_data *data = user;
 	isl_stat res;
-	isl_bool upper;
 
-	upper = isl_constraint_is_upper_bound(c, isl_dim_set, data->pos);
-	if (upper < 0)
-		c = isl_constraint_free(c);
-
-	res = detect_stride(data, c, upper ? -1 : 1, gap);
+	res = detect_stride(data, c, 1, gap);
 
 	isl_val_free(gap);
 
