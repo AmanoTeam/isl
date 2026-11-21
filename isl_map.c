@@ -3148,7 +3148,7 @@ static isl_bool detect_mod(__isl_keep isl_basic_map *bmap,
 		    !isl_int_is_negone(bmap->ineq[i][1 + data->pos]))
 			continue;
 		j = find_earlier_constraint_in_pair(bmap, i, data->pos, v_div,
-							data->m, &data->sum);
+							data->n, &data->sum);
 		if (j < 0)
 			return isl_bool_error;
 		if (j >= n_ineq)
