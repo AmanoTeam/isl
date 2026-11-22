@@ -2938,12 +2938,18 @@ static __isl_give isl_set *pw_aff_locus(__isl_take isl_pw_aff *pwaff,
 	for (i = 0; i < pwaff->n; ++i) {
 		isl_basic_set *bset;
 		isl_set *set_i, *locus;
-		isl_bool rational;
+		isl_bool nan, rational;
 
-		if (isl_aff_is_nan(pwaff->p[i].aff))
+		nan = isl_aff_is_nan(pwaff->p[i].aff);
+		rational = isl_set_has_rational(pwaff->p[i].set);
+		if (nan < 0 || rational < 0) {
+			set = isl_set_free(set);
+			break;
+		}
+
+		if (nan)
 			continue;
 
-		rational = isl_set_has_rational(pwaff->p[i].set);
 		bset = fn(isl_aff_copy(pwaff->p[i].aff), rational, user);
 		locus = isl_set_from_basic_set(bset);
 		set_i = isl_set_copy(pwaff->p[i].set);
