@@ -2915,6 +2915,19 @@ static isl_bool isl_pw_aff_domain_is_product(__isl_keep isl_pw_aff *pa)
 #define TYPE	isl_pw_aff
 #include <isl_domain_factor_templ.c>
 
+/* Subtract "locus" from "set" and return the result,
+ * checking that "rational" is not set.
+ */
+static __isl_give isl_set *locus_subtract(__isl_take isl_set *set,
+	__isl_take isl_set *locus, int rational)
+{
+	if (rational)
+		isl_die(isl_set_get_ctx(set), isl_error_unsupported,
+			"rational sets not supported",
+			locus = isl_set_free(locus));
+	return isl_set_subtract(set, locus);
+}
+
 /* Return a set containing those elements in the domain
  * of "pwaff" where it satisfies "fn" (if complement is 0) or
  * does not satisfy "fn" (if complement is 1).
@@ -2954,7 +2967,7 @@ static __isl_give isl_set *pw_aff_locus(__isl_take isl_pw_aff *pwaff,
 		locus = isl_set_from_basic_set(bset);
 		set_i = isl_set_copy(pwaff->p[i].set);
 		if (complement)
-			set_i = isl_set_subtract(set_i, locus);
+			set_i = locus_subtract(set_i, locus, rational);
 		else
 			set_i = isl_set_intersect(set_i, locus);
 		set = isl_set_union_disjoint(set, set_i);
